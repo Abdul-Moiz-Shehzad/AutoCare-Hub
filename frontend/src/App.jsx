@@ -1,24 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Landing from './Pages/Landing';
+import Login from './Pages/Login';
+import Register from './Pages/Register';
+import DashboardSwitcher from './Components/DashboardSwitcher';
+import ServiceBooking from './Pages/ServiceBooking';
+import ServiceHistory from './Pages/ServiceHistory';
+import ServiceTracking from './Pages/ServiceTracking';
+import VehicleManagement from './Pages/VehicleManagement';
+
+function MainApp(){
+    document.title = "AutoCare Hub";
+    return (
+        <div>
+            <Routes>
+                <Route path="/" element= {<Landing />}/>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/dashboard" element={<DashboardSwitcher />} />
+                <Route path="/servicebooking" element={<ServiceBooking />} />
+                <Route path="/servicehistory" element={<ServiceHistory />} />
+                <Route path="/servicetracking" element={<ServiceTracking />} />
+                <Route path="/vehiclemanagement" element={<VehicleManagement />} />
+            </Routes>
+        </div>
+    );
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    return (
+        <BrowserRouter>
+            <MainApp />
+        </BrowserRouter>
   );
 }
 
