@@ -1,0 +1,225 @@
+:root {
+    --surface: #131316;
+    --surface-low: #1b1b1e;
+    --surface-container: #1f1f22;
+    --surface-high: #2a2a2d;
+    --surface-bright: #39393c;
+    --primary: #c0c1ff;
+    --primary-container: #4e4feb;
+    --on-primary-container: #e3e2ff;
+    --outline-variant: #464555;
+    --tertiary: #ffb1c0;
+    --tertiary-container: #bb2d5b;
+    --border-color: rgba(255, 255, 255, 0.05);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--surface);
+    color: #e4e1e5;
+    overflow-x: hidden;
+}
+
+.font-headline,
+h1,
+h2,
+h3,
+h4,
+label {
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Atmospheric Background Texture */
+.grainy-surface {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background-color: var(--surface);
+    border-right: 1px solid var(--border-color);
+    z-index: 1040;
+}
+
+.main-content {
+    margin-left: 260px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* Custom UI Colors */
+.bg-surface-low {
+    background-color: var(--surface-low);
+}
+
+.bg-surface-container {
+    background-color: var(--surface-container);
+}
+
+.text-primary-accent {
+    color: var(--primary);
+}
+
+.bg-primary-container {
+    background-color: var(--primary-container);
+    color: var(--on-primary-container);
+}
+
+.text-on-primary-container {
+    color: var(--on-primary-container);
+}
+
+/* Typography Utilities */
+.text-xxs {
+    font-size: 10px;
+}
+
+.tracking-widest {
+    letter-spacing: 0.1em;
+}
+
+.tracking-tighter {
+    letter-spacing: -0.05em;
+}
+
+/* Navigation Links */
+.nav-link-custom {
+    color: #908fa1;
+    transition: all 0.2s ease;
+}
+
+.nav-link-custom:hover {
+    color: #e4e1e5;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link-active {
+    background-color: var(--surface-low);
+    color: var(--primary);
+    border-left: 4px solid var(--primary-container);
+    transform: translateX(4px);
+}
+
+/* Forms */
+.custom-form-element {
+    background-color: #0e0e11;
+    border: none;
+    border-bottom: 2px solid var(--outline-variant);
+    color: white;
+    border-radius: 0;
+    padding: 1rem 0;
+    box-shadow: none;
+}
+
+.custom-form-element:focus {
+    background-color: #0e0e11;
+    border-bottom-color: var(--primary);
+    color: white;
+    box-shadow: none;
+}
+
+/* Select Dropdown Arrow Customization */
+.custom-select-wrapper {
+    position: relative;
+}
+
+.custom-select-wrapper i {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #908fa1;
+    pointer-events: none;
+}
+
+/* Service Type Buttons */
+.service-btn {
+    background-color: var(--surface-container);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.service-btn:hover {
+    background-color: var(--surface-bright);
+    border-color: rgba(192, 193, 255, 0.3);
+}
+
+.service-btn-active {
+    background-color: var(--primary-container);
+    border: 1px solid transparent;
+    box-shadow: 0 4px 20px rgba(78, 79, 235, 0.3);
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.calendar-btn {
+    background: transparent;
+    border: none;
+    color: #e4e1e5;
+    padding: 0.75rem 0;
+    border-radius: 0.25rem;
+    transition: background 0.2s;
+}
+
+.calendar-btn:hover {
+    background-color: var(--surface-high);
+}
+
+.calendar-btn.active {
+    background-color: var(--primary);
+    color: var(--surface);
+    font-weight: bold;
+    position: relative;
+}
+
+.calendar-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: var(--primary-container);
+    border-radius: 50%;
+}
+
+.calendar-btn.inactive {
+    color: #464555;
+    pointer-events: none;
+}
+
+/* Time Slots */
+.time-slot {
+    background-color: var(--surface-container);
+    color: #908fa1;
+    border: 1px solid transparent;
+    font-family: monospace;
+    transition: all 0.2s;
+}
+
+.time-slot:hover {
+    color: white;
+}
+
+.time-slot.active {
+    border-color: rgba(192, 193, 255, 0.4);
+    color: var(--primary);
+}
