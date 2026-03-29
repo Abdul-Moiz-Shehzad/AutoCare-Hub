@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../Styles/history.css';
+import '../Styles/History.css';
 import Sidebar from '../Components/Sidebar';
 import Navbar from '../Components/Navbar';
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../Styles/serviceBooking.css';
+import '../Styles/ServiceBooking.css';
 import Sidebar from '../Components/Sidebar';
 import Navbar from '../Components/Navbar';
 
