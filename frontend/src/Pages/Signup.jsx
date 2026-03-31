@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import '../Styles/Auth.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Wrench, User, Briefcase, ShieldCheck, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Wrench, User, Briefcase, ShieldCheck, Mail, Lock, UserPlus, ArrowRight } from 'lucide-react';
 
-const roles = [
-  { value: 'customer', label: 'Customer', desc: 'Book services & track vehicles', icon: <User size={20} /> },
-  { value: 'mechanic', label: 'Mechanic', desc: 'Manage assigned jobs', icon: <Briefcase size={20} /> },
-  { value: 'manager', label: 'Manager', desc: 'Oversee operations', icon: <ShieldCheck size={20} /> },
+const roleConfig = [
+  { value: 'customer', label: 'Customer', icon: <User size={20} /> },
+  { value: 'mechanic', label: 'Mechanic', icon: <Briefcase size={20} /> },
+  { value: 'manager', label: 'Manager', icon: <ShieldCheck size={20} /> },
 ];
 
-const Login = () => {
+const Signup = () => {
   const [selectedRole, setSelectedRole] = useState('customer');
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
     login(selectedRole);
     const paths = {
@@ -32,27 +32,26 @@ const Login = () => {
         
         {/* Left Side: Hero */}
         <div className="col-lg-6 d-none d-lg-flex flex-column align-items-center justify-content-center p-5 auth-hero">
-          {/* Decorative orb */}
-          <div className="auth-hero-orb auth-hero-orb-top" />
+          <div className="auth-hero-orb auth-hero-orb-bottom" />
           <div className="text-center auth-hero-content">
             <div className="d-inline-flex align-items-center justify-content-center mb-4 auth-logo">
               <Wrench size={28} color="#0f0e17" strokeWidth={2.5} />
             </div>
-            <h2 className="display-5 fw-bold mb-3 auth-text-primary">Welcome Back</h2>
+            <h2 className="display-5 fw-bold mb-3 auth-text-primary">Join AutoCare Hub</h2>
             <p className="lead mb-5 auth-text-secondary">
-              Log in to manage your vehicle services and track maintenance progress.
+              Create your account and start managing vehicle services effortlessly.
             </p>
             <div className="auth-hero-image">
               <img
-                src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&h=600&fit=crop"
-                alt="Automotive service"
+                src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&h=600&fit=crop"
+                alt="Automotive diagnostic"
                 className="img-fluid w-100 d-block"
               />
             </div>
           </div>
         </div>
 
-        {/* Right Side: Login Form */}
+        {/* Right Side: Signup Form */}
         <div className="col-lg-6 d-flex align-items-center justify-content-center p-4 auth-page">
           <div className="w-100 auth-form-card">
             <div className="p-5">
@@ -61,15 +60,15 @@ const Login = () => {
                 <div className="d-inline-flex align-items-center justify-content-center mb-3 d-lg-none auth-logo-sm">
                   <Wrench size={24} color="#0f0e17" strokeWidth={2.5} />
                 </div>
-                <h3 className="fw-bold auth-text-primary">Sign In</h3>
-                <p className="auth-text-secondary">Select your role and sign in to continue</p>
+                <h3 className="fw-bold auth-text-primary">Create Account</h3>
+                <p className="auth-text-secondary">Fill in your details to get started</p>
               </div>
 
-              <form onSubmit={handleLogin}>
+              <form onSubmit={handleSignup}>
                 
                 {/* Role Selection Grid */}
                 <div className="row g-2 mb-4">
-                  {roles.map((r) => (
+                  {roleConfig.map((r) => (
                     <div className="col-4" key={r.value}>
                       <button
                         type="button"
@@ -80,10 +79,20 @@ const Login = () => {
                           {r.icon}
                         </div>
                         <div className="fw-bold small auth-role-label">{r.label}</div>
-                        <div className="small auth-text-muted auth-role-desc">{r.desc}</div>
                       </button>
                     </div>
                   ))}
+                </div>
+
+                {/* Full Name Input */}
+                <div className="mb-4">
+                  <label htmlFor="name" className="form-label fw-medium small auth-text-secondary">Full Name</label>
+                  <div className="input-group">
+                    <span className="input-group-text auth-input-icon">
+                      <UserPlus size={16} />
+                    </span>
+                    <input id="name" type="text" className="form-control auth-input-box" placeholder="John Doe" required />
+                  </div>
                 </div>
 
                 {/* Email Input */}
@@ -93,14 +102,7 @@ const Login = () => {
                     <span className="input-group-text auth-input-icon">
                       <Mail size={16} />
                     </span>
-                    <input 
-                      id="email" 
-                      type="email" 
-                      className="form-control auth-input-box" 
-                      placeholder="you@example.com" 
-                      defaultValue="john@example.com" 
-                      required
-                    />
+                    <input id="email" type="email" className="form-control auth-input-box" placeholder="you@example.com" required />
                   </div>
                 </div>
 
@@ -111,28 +113,21 @@ const Login = () => {
                     <span className="input-group-text auth-input-icon">
                       <Lock size={16} />
                     </span>
-                    <input 
-                      id="password" 
-                      type="password" 
-                      className="form-control auth-input-box" 
-                      placeholder="••••••••" 
-                      defaultValue="password123" 
-                      required 
-                    />
+                    <input id="password" type="password" className="form-control auth-input-box" placeholder="••••••••" required />
                   </div>
                 </div>
 
                 {/* Submit Button */}
-                <button type="submit" className="btn btn-primary w-100 fw-bold py-2 mb-3 d-flex align-items-center justify-content-center gap-2">
-                  Sign In
+                <button type="submit" className="btn btn-primary w-100 fw-bold py-3 mb-3 d-flex align-items-center justify-content-center gap-2">
+                  Create Account
                   <ArrowRight size={18} />
                 </button>
 
-                {/* Sign Up Link */}
+                {/* Sign In Link */}
                 <p className="text-center small mb-0 auth-text-muted">
-                  Don't have an account?{' '}
-                  <Link to="/signup" className="fw-bold text-decoration-none auth-text-accent">
-                    Sign up
+                  Already have an account?{' '}
+                  <Link to="/login" className="fw-bold text-decoration-none auth-text-accent">
+                    Sign in
                   </Link>
                 </p>
 
@@ -146,4 +141,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

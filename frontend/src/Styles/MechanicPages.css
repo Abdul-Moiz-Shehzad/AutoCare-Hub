@@ -1,0 +1,32 @@
+/* =============================================
+   Mechanic Pages Styles
+   ============================================= */
+
+/* --- Job Card --- */
+.mechanic-job-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+/* --- Notes Panel --- */
+.mechanic-notes-panel {
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-subtle);
+}
+
+/* === Extracted Dashboard Classes === */
+.mechanic-text-primary { color: var(--text-primary) !important; }
+.mechanic-text-secondary { color: var(--text-secondary) !important; }
+.mechanic-text-muted { color: var(--text-muted) !important; }
+
+.mechanic-table-header { color: var(--text-muted) !important; font-size: 0.7rem !important; background: var(--bg-secondary) !important; }
+
+.mechanic-notes-wrapper {
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-subtle);
+}
+

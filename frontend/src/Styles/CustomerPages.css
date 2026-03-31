@@ -1,0 +1,149 @@
+/* =============================================
+   Customer Pages Styles
+   Dashboard, Vehicles, BookService,
+   ServiceTracking, ServiceHistory
+   ============================================= */
+
+/* --- Quick Action Links --- */
+.quick-action-link {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.quick-action-link:hover {
+  background: var(--accent-glow);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* --- Vehicle Card Detail Row --- */
+.vehicle-detail-row {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* --- Modal Close Button --- */
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent-glow);
+  border: none;
+  color: var(--accent-primary);
+}
+
+/* --- Service Selection Card --- */
+.service-select-card {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+.service-select-card.active {
+  border-color: var(--accent-primary);
+  background: var(--accent-glow);
+}
+
+/* --- Success Screen --- */
+.booking-success-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  background: var(--color-success-bg);
+}
+
+/* --- Progress Stepper --- */
+.stepper-node {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.stepper-node-active {
+  background: var(--gradient-primary);
+  color: #0f0e17;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+}
+
+.stepper-node-inactive {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+
+.stepper-label-active {
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+.stepper-label-inactive {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* --- Notes Section --- */
+.notes-container {
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-subtle);
+}
+
+/* --- Search/Filter Table Container --- */
+.table-container {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+
+/* --- Empty State Icon --- */
+.empty-state-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: var(--accent-glow);
+}
+
+/* === New Layout/Utility Classes Extracted from Inline Styles === */
+.text-primary-custom { color: var(--text-primary) !important; }
+.text-secondary-custom { color: var(--text-secondary) !important; }
+.text-muted-custom { color: var(--text-muted) !important; }
+
+.section-header-border { border-bottom: 1px solid var(--border-color); }
+
+.stat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stat-title-small { font-size: 0.7rem; letter-spacing: 0.05em; }
+
+.table-header-small { font-size: 0.7rem; letter-spacing: 0.05em; }
+.table-header-secondary { background: var(--bg-secondary) !important; }
+
+.vehicle-img-container { height: 180px; border-bottom: 1px solid var(--border-color); }
+.vehicle-modal-backdrop { z-index: 1040; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
+.vehicle-modal { z-index: 1050; }
+.vehicle-modal-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
+
+.book-success-container { min-height: 60vh; }
+.book-summary-sticky { top: 1rem; }
+.book-divider { border-color: var(--border-color); }
+
+.tracking-empty-container { min-height: 40vh; }
+.tracking-progress-bg { height: 4px; background: var(--bg-secondary); }
+.tracking-progress-bar { transition: width 0.5s ease; }
+.tracking-step-wrapper { background: var(--bg-card); }
+
+.search-input-group-text {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-right: none;
+  color: var(--text-muted);
+}
+.search-input-box { border-left: none; }

@@ -1,0 +1,29 @@
+/* =============================================
+   404 Not Found Page Styles
+   ============================================= */
+
+.notfound-page {
+  background: var(--gradient-hero);
+  position: relative;
+  overflow: hidden;
+}
+
+.notfound-orb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.notfound-icon-box {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  background: var(--accent-glow);
+  margin: 0 auto;
+}

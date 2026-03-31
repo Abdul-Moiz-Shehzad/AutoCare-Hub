@@ -1,0 +1,50 @@
+/* =============================================
+   Manager Pages Styles
+   ============================================= */
+
+/* --- Chart Tooltip --- */
+.manager-chart-tooltip {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: var(--shadow-md);
+}
+
+/* --- Mechanic Workload Card --- */
+.manager-workload-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-subtle);
+}
+
+/* --- Kanban Column --- */
+.manager-kanban-column {
+  background: var(--bg-secondary);
+}
+
+.manager-kanban-column-header {
+  background: var(--bg-card);
+}
+
+.manager-kanban-item {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-subtle);
+  transition: var(--transition);
+}
+
+/* === Extracted Dashboard Classes === */
+.manager-text-primary { color: var(--text-primary) !important; }
+.manager-text-secondary { color: var(--text-secondary) !important; }
+.manager-text-muted { color: var(--text-muted) !important; }
+.manager-text-accent { color: var(--accent-primary) !important; }
+.manager-text-warning { color: var(--color-warning) !important; }
+
+.manager-table-header { color: var(--text-muted) !important; font-size: 0.7rem !important; background: var(--bg-secondary) !important; }
+.manager-select-assign { max-width: 140px; }
+.manager-mechanic-card { background: var(--bg-secondary); border-radius: var(--radius); border: 1px solid var(--border-subtle); }
+.manager-kanban-column-bg { background: var(--bg-secondary); }
+.manager-kanban-column-hdr { color: var(--text-primary); background: var(--bg-card) !important; }
+.manager-kanban-item-card { background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border-subtle); transition: var(--transition); }
+

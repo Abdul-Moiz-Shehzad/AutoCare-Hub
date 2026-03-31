@@ -1,0 +1,95 @@
+/* =============================================
+   Dashboard Layout Styles (shared by all roles)
+   ============================================= */
+
+/* --- Sidebar --- */
+.sidebar {
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-expanded {
+  min-width: 260px;
+  width: 260px;
+}
+
+.sidebar-collapsed {
+  min-width: 80px;
+  width: 80px;
+}
+
+.sidebar-header {
+  height: 64px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-logo {
+  background: var(--gradient-primary);
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.sidebar-section-label {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+/* --- Top Header Bar --- */
+.dashboard-header {
+  height: 64px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-toggle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-glow);
+  border: 1px solid var(--border-color);
+  color: var(--accent-primary);
+  transition: var(--transition);
+}
+
+/* --- User Dropdown --- */
+.dashboard-user-btn {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+}
+
+.dashboard-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--gradient-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f0e17;
+}
+
+/* --- Shared Table Headers --- */
+.table-header-cell {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  background: var(--bg-secondary);
+}
+
+/* --- Shared Stat Label --- */
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+/* --- Page Divider --- */
+.page-divider {
+  border-bottom: 1px solid var(--border-color);
+}
