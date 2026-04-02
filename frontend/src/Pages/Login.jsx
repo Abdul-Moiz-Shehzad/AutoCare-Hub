@@ -5,9 +5,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { Wrench, User, Briefcase, ShieldCheck, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const roles = [
-  { value: 'customer', label: 'Customer', desc: 'Book services & track vehicles', icon: <User size={20} /> },
-  { value: 'mechanic', label: 'Mechanic', desc: 'Manage assigned jobs', icon: <Briefcase size={20} /> },
-  { value: 'manager', label: 'Manager', desc: 'Oversee operations', icon: <ShieldCheck size={20} /> },
+  { value: 'customer', label: 'Customer', desc: 'Book & track', icon: <User size={22} /> },
+  { value: 'mechanic', label: 'Mechanic', desc: 'Manage jobs', icon: <Briefcase size={22} /> },
+  { value: 'manager', label: 'Manager', desc: 'Run workshop', icon: <ShieldCheck size={22} /> },
 ];
 
 const Login = () => {
@@ -32,14 +32,14 @@ const Login = () => {
         
         {/* Left Side: Hero */}
         <div className="col-lg-6 d-none d-lg-flex flex-column align-items-center justify-content-center p-5 auth-hero">
-          {/* Decorative orb */}
           <div className="auth-hero-orb auth-hero-orb-top" />
+          <div className="auth-hero-orb auth-hero-orb-bottom" />
           <div className="text-center auth-hero-content">
             <div className="d-inline-flex align-items-center justify-content-center mb-4 auth-logo">
-              <Wrench size={28} color="#0f0e17" strokeWidth={2.5} />
+              <Wrench size={32} color="#ffffff" strokeWidth={2.5} />
             </div>
-            <h2 className="display-5 fw-bold mb-3 auth-text-primary">Welcome Back</h2>
-            <p className="lead mb-5 auth-text-secondary">
+            <h2 className="display-5 fw-bold mb-3 text-white" style={{ letterSpacing: '-1px' }}>Welcome Back</h2>
+            <p className="lead mb-5" style={{ color: 'rgba(255,255,255,0.7)' }}>
               Log in to manage your vehicle services and track maintenance progress.
             </p>
             <div className="auth-hero-image">
@@ -55,32 +55,32 @@ const Login = () => {
         {/* Right Side: Login Form */}
         <div className="col-lg-6 d-flex align-items-center justify-content-center p-4 auth-page">
           <div className="w-100 auth-form-card">
-            <div className="p-5">
+            <div className="p-4 p-sm-5">
               
               <div className="text-center mb-4">
                 <div className="d-inline-flex align-items-center justify-content-center mb-3 d-lg-none auth-logo-sm">
-                  <Wrench size={24} color="#0f0e17" strokeWidth={2.5} />
+                  <Wrench size={24} color="#ffffff" strokeWidth={2.5} />
                 </div>
-                <h3 className="fw-bold auth-text-primary">Sign In</h3>
-                <p className="auth-text-secondary">Select your role and sign in to continue</p>
+                <h3 className="fw-bold text-white mb-1" style={{ letterSpacing: '-0.5px' }}>Sign In</h3>
+                <p className="text-muted">Select your role and sign in to continue.</p>
               </div>
 
               <form onSubmit={handleLogin}>
                 
-                {/* Role Selection Grid */}
-                <div className="row g-2 mb-4">
+                {/* Role Selection Grid (3 columns for Login) */}
+                <div className="row g-2 g-sm-3 mb-4">
                   {roles.map((r) => (
                     <div className="col-4" key={r.value}>
                       <button
                         type="button"
                         onClick={() => setSelectedRole(r.value)}
-                        className={`btn w-100 h-100 p-2 text-center auth-role-btn ${selectedRole === r.value ? 'active' : ''}`}
+                        className={`btn w-100 h-100 p-2 p-sm-3 text-center auth-role-btn ${selectedRole === r.value ? 'active' : ''}`}
                       >
-                        <div className="mb-1 d-flex justify-content-center auth-role-icon">
+                        <div className="mb-2 d-flex justify-content-center auth-role-icon">
                           {r.icon}
                         </div>
-                        <div className="fw-bold small auth-role-label">{r.label}</div>
-                        <div className="small auth-text-muted auth-role-desc">{r.desc}</div>
+                        <div className="fw-bold auth-role-label" style={{ fontSize: '0.85rem' }}>{r.label}</div>
+                        <div className="small auth-role-desc mt-1 opacity-75 d-none d-sm-block">{r.desc}</div>
                       </button>
                     </div>
                   ))}
@@ -88,15 +88,15 @@ const Login = () => {
 
                 {/* Email Input */}
                 <div className="mb-4">
-                  <label htmlFor="email" className="form-label fw-medium small auth-text-secondary">Email</label>
+                  <label htmlFor="email" className="form-label fw-medium small text-muted text-uppercase" style={{ letterSpacing: '0.5px' }}>Email Address</label>
                   <div className="input-group">
-                    <span className="input-group-text auth-input-icon">
+                    <span className="input-group-text">
                       <Mail size={16} />
                     </span>
                     <input 
                       id="email" 
                       type="email" 
-                      className="form-control auth-input-box" 
+                      className="form-control" 
                       placeholder="you@example.com" 
                       defaultValue="john@example.com" 
                       required
@@ -106,15 +106,15 @@ const Login = () => {
 
                 {/* Password Input */}
                 <div className="mb-5">
-                  <label htmlFor="password" className="form-label fw-medium small auth-text-secondary">Password</label>
+                  <label htmlFor="password" className="form-label fw-medium small text-muted text-uppercase" style={{ letterSpacing: '0.5px' }}>Password</label>
                   <div className="input-group">
-                    <span className="input-group-text auth-input-icon">
+                    <span className="input-group-text">
                       <Lock size={16} />
                     </span>
                     <input 
                       id="password" 
                       type="password" 
-                      className="form-control auth-input-box" 
+                      className="form-control" 
                       placeholder="••••••••" 
                       defaultValue="password123" 
                       required 
@@ -123,16 +123,16 @@ const Login = () => {
                 </div>
 
                 {/* Submit Button */}
-                <button type="submit" className="btn btn-primary w-100 fw-bold py-2 mb-3 d-flex align-items-center justify-content-center gap-2">
+                <button type="submit" className="btn btn-primary w-100 fw-bold py-3 mb-4 d-flex align-items-center justify-content-center gap-2" style={{ fontSize: '1.05rem' }}>
                   Sign In
                   <ArrowRight size={18} />
                 </button>
 
                 {/* Sign Up Link */}
-                <p className="text-center small mb-0 auth-text-muted">
+                <p className="text-center small mb-0 text-muted">
                   Don't have an account?{' '}
-                  <Link to="/signup" className="fw-bold text-decoration-none auth-text-accent">
-                    Sign up
+                  <Link to="/signup" className="fw-bold text-decoration-none" style={{ color: 'var(--accent-primary)' }}>
+                    Sign up here
                   </Link>
                 </p>
 

@@ -18,9 +18,15 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed }) => {
       {/* Sidebar Header */}
       <div className="d-flex align-items-center gap-3 p-3 sidebar-header">
         <div className="sidebar-logo">
-          <Wrench size={18} color="#0f0e17" strokeWidth={2.5} />
+          {/* Removed the dark color prop so it inherits white from CSS */}
+          <Wrench size={18} strokeWidth={2.5} />
         </div>
-        {!collapsed && <span className="fs-5 fw-bold sidebar-title">AutoCare</span>}
+        {!collapsed && (
+          <div className="d-flex flex-column justify-content-center">
+            <span className="fw-bold sidebar-title lh-1 mb-1" style={{ fontSize: '1rem', letterSpacing: '0.5px' }}>AUTOCARE</span>
+            <span className="sidebar-section-label lh-1 m-0">PRECISION HUB</span>
+          </div>
+        )}
       </div>
 
       {/* Sidebar Menu */}

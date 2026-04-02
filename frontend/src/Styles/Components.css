@@ -5,21 +5,25 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: rgba(15, 14, 23, 0.85);
+    background: rgba(13, 13, 18, 0.85); /* Darker to match new theme */
     backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid var(--border-color);
 }
 .navbar-brand-icon {
-    background: var(--gradient-primary);
-    border-radius: 10px;
+    background: var(--accent-primary); /* Swapped gradient for solid primary */
+    color: #ffffff;
+    border-radius: 8px;
     width: 36px;
     height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 12px rgba(78, 79, 235, 0.25);
 }
 .navbar-brand-text {
     font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 .nav-link-btn {
     font-size: 0.9rem;
@@ -34,7 +38,8 @@
     padding: 3rem 0;
 }
 .footer-icon-wrapper {
-    background: var(--accent-glow);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     width: 32px;
     height: 32px;
@@ -51,16 +56,55 @@
 .footer-social-btn {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
-    background: var(--accent-glow);
-    color: var(--accent-primary);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
     transition: var(--transition);
     cursor: pointer;
+}
+.footer-social-btn:hover {
+    background: var(--accent-primary);
+    color: #ffffff;
+    border-color: var(--accent-primary);
 }
 
 /* =========================================
    DashboardLayout.jsx
    ========================================= */
+.sidebar-logo {
+    background: var(--accent-primary) !important; /* Blue background */
+    color: #ffffff !important; /* White icon */
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(78, 79, 235, 0.3);
+}
+
+/* Forces override of the solid blue Global.css nav-link */
+.sidebar-nav-link.active {
+    background: rgba(255, 255, 255, 0.05) !important; 
+    color: #ffffff !important; 
+    box-shadow: none !important; /* Removes the global blue drop-shadow */
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--accent-primary);
+    border-radius: 0 4px 4px 0;
+}
 .sidebar-container {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--bg-secondary);
@@ -70,37 +114,39 @@
     height: 64px;
     border-bottom: 1px solid var(--border-color);
 }
-.sidebar-logo {
-    background: var(--gradient-primary);
-    border-radius: 10px;
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-}
 .sidebar-title {
     color: var(--text-primary);
+    font-weight: 600;
 }
 .sidebar-section-label {
     color: var(--text-muted);
     font-size: 0.7rem;
     letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 .sidebar-nav-link {
-    border-radius: var(--radius);
+    border-radius: 8px;
     transition: var(--transition);
     font-size: 0.9rem;
     background: transparent;
     color: var(--text-secondary);
-    font-weight: 400;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
 }
-.sidebar-nav-link.active {
-    background: var(--accent-glow-strong);
-    color: var(--accent-primary);
-    font-weight: 600;
+.sidebar-nav-link:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.02);
+}
+/* This pseudoclass adds the sharp blue vertical indicator line on the left */
+.sidebar-nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px; /* The sharp indicator line width */
+    background: var(--accent-primary); /* Primary Blue indicator color */
+    border-radius: 0 4px 4px 0;
 }
 .sidebar-nav-icon {
     display: flex;
@@ -117,11 +163,15 @@
 .dashboard-toggle-btn {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
-    background: var(--accent-glow);
+    border-radius: 8px;
+    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
-    color: var(--accent-primary);
+    color: var(--text-primary);
     transition: var(--transition);
+}
+.dashboard-toggle-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
 }
 .user-profile-dropdown {
     background: var(--bg-elevated);
@@ -132,17 +182,18 @@
 .user-profile-avatar {
     width: 32px;
     height: 32px;
-    border-radius: 10px;
-    background: var(--gradient-primary);
+    border-radius: 8px;
+    background: var(--accent-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 13px;
     font-weight: 700;
-    color: #0f0e17;
+    color: #ffffff; /* White text on blue background */
 }
 .user-profile-name {
     font-size: 0.9rem;
+    font-weight: 500;
 }
 .user-profile-icon {
     color: var(--text-muted);
@@ -165,24 +216,29 @@
    ========================================= */
 .stat-card {
     transition: var(--transition);
+    background: var(--bg-card);
 }
 .stat-card-title {
     color: var(--text-muted);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 .stat-card-value {
     color: var(--text-primary);
+    font-weight: 700;
 }
 .stat-card-trend {
     color: var(--text-secondary);
+    font-size: 0.85rem;
 }
 .stat-card-icon-container {
-    width: 50px;
-    height: 50px;
-    border-radius: var(--radius);
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
 }
-.icon-style-accent { background: var(--accent-glow); color: var(--accent-primary); }
+/* Updated colors for stat cards to match blue/neutral theme */
+.icon-style-accent { background: rgba(78, 79, 235, 0.1); color: var(--accent-primary); }
 .icon-style-success { background: var(--color-success-bg); color: var(--color-success); }
 .icon-style-warning { background: var(--color-warning-bg); color: var(--color-warning); }
 .icon-style-danger { background: var(--color-danger-bg); color: var(--color-danger); }
@@ -193,37 +249,84 @@
    ========================================= */
 .status-badge-base {
     font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35em 0.65em;
 }
-.status-badge-pending { background: var(--color-warning-bg); color: var(--color-warning); border: 1px solid rgba(251, 191, 36, 0.2); }
-.status-badge-received { background: var(--accent-glow); color: var(--accent-primary); border: 1px solid rgba(167, 139, 250, 0.2); }
-.status-badge-diagnosed { background: var(--color-info-bg); color: var(--color-info); border: 1px solid rgba(96, 165, 250, 0.2); }
-.status-badge-in-progress { background: var(--accent-glow); color: var(--accent-primary); border: 1px solid rgba(167, 139, 250, 0.2); }
-.status-badge-completed { background: var(--color-success-bg); color: var(--color-success); border: 1px solid rgba(52, 211, 153, 0.2); }
-.status-badge-cancelled { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid rgba(248, 113, 113, 0.2); }
-.status-badge-low { background: rgba(107, 103, 131, 0.15); color: var(--text-secondary); border: 1px solid rgba(107, 103, 131, 0.2); }
+
+/* Assigned / Pending -> Primary Theme Color */
+.status-badge-pending { 
+    background: var(--color-danger-bg) !important; 
+    color: var(--color-danger) !important; 
+    border: 1px solid rgba(248, 113, 113, 0.2) !important; 
+}
+
+.status-badge-received { 
+    background: rgba(78, 79, 235, 0.1); 
+    color: var(--accent-primary); 
+    border: 1px solid rgba(78, 79, 235, 0.2); 
+}
+
+/* Diagnosed -> Info (Blue) */
+.status-badge-diagnosed { 
+    background: var(--color-info-bg); 
+    color: var(--color-info); 
+    border: 1px solid rgba(96, 165, 250, 0.2); 
+}
+
+/* In Progress -> Warning (Yellow) */
+.status-badge-in-progress { 
+    background: var(--color-warning-bg); 
+    color: var(--color-warning); 
+    border: 1px solid rgba(251, 191, 36, 0.2); 
+}
+
+/* Completed -> Success (Green) */
+.status-badge-completed { 
+    background: var(--color-success-bg); 
+    color: var(--color-success); 
+    border: 1px solid rgba(52, 211, 153, 0.2); 
+}
+
+/* Cancelled -> Danger (Red) */
+.status-badge-cancelled { 
+    background: var(--color-danger-bg); 
+    color: var(--color-danger); 
+    border: 1px solid rgba(248, 113, 113, 0.2); 
+}
+
+/* Priority Badges */
+.status-badge-low { background: rgba(255, 255, 255, 0.05); color: var(--text-secondary); border: 1px solid rgba(255, 255, 255, 0.1); }
 .status-badge-medium { background: var(--color-warning-bg); color: var(--color-warning); border: 1px solid rgba(251, 191, 36, 0.2); }
 .status-badge-high { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid rgba(248, 113, 113, 0.2); }
 .status-badge-urgent { background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid rgba(248, 113, 113, 0.2); }
-.status-badge-default { background: rgba(107, 103, 131, 0.15); color: var(--text-secondary); border: 1px solid rgba(107, 103, 131, 0.2); }
-
+.status-badge-default { background: rgba(255, 255, 255, 0.05); color: var(--text-secondary); border: 1px solid rgba(255, 255, 255, 0.1); }
 /* =========================================
    PageHeader.jsx
    ========================================= */
 .page-header-breadcrumb {
-    gap: 4px;
+    gap: 6px; /* increased slightly */
+    font-size: 0.85rem;
 }
 .page-header-crumb-active {
     color: var(--text-primary) !important;
+    font-weight: 500;
 }
 .page-header-crumb-inactive {
     color: var(--text-muted) !important;
 }
 .page-header-link {
+    color: var(--text-secondary) !important;
+    transition: var(--transition);
+}
+.page-header-link:hover {
     color: var(--accent-primary) !important;
 }
 .page-header-title {
     color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 .page-header-desc {
-    color: var(--text-secondary);
+    color: var(--text-secondary); /* swapped to secondary */
+    font-size: 0.95rem;
 }

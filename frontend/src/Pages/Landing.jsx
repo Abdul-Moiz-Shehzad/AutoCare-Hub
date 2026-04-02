@@ -6,19 +6,17 @@ import Footer from '../Components/layout/Footer';
 import { serviceTypes } from '../data/mockData';
 import { 
   Car, Clock, Shield, BarChart3, Users, Wrench, 
-  ArrowRight, Star, Headphones, CheckCircle2, Sparkles, Zap, Settings
+  ArrowRight, Star, Headphones, CheckCircle2, Sparkles, Zap, Columns, Camera
 } from 'lucide-react';
 
 const features = [
-  { icon: <Car size={28} />, title: 'Vehicle Management', desc: 'Register and manage all your vehicles in one place with complete service history.' },
-  { icon: <Clock size={28} />, title: 'Easy Scheduling', desc: 'Book services online with flexible time slots and instant confirmation.' },
-  { icon: <Shield size={28} />, title: 'Real-Time Tracking', desc: 'Track your service progress from drop-off to completion in real time.' },
-  { icon: <BarChart3 size={28} />, title: 'Analytics Dashboard', desc: 'Comprehensive reporting and insights for service managers.' },
-  { icon: <Users size={28} />, title: 'Team Management', desc: 'Assign mechanics, manage workloads, and optimize workflow.' },
-  { icon: <Wrench size={28} />, title: 'Service Catalog', desc: 'Browse our complete range of maintenance and repair services.' },
+  { icon: <Car size={28} />, title: 'Digital Garage', desc: 'Customers can register their vehicles and access a complete, rated service history.' },
+  { icon: <Clock size={28} />, title: 'Smart Scheduling', desc: 'Book appointments instantly for diagnostics, routine maintenance, and major repairs.' },
+  { icon: <Shield size={28} />, title: 'Live 3-Step Tracking', desc: 'Customers track their vehicle through our Pending, In Progress, and Completed pipeline.' },
+  { icon: <BarChart3 size={28} />, title: 'Manager Analytics', desc: 'Shop managers get a bird\'s-eye view of revenue trends, weekly bookings, and team ratings.' },
+  { icon: <Columns size={28} />, title: 'Kanban Command Center', desc: 'Managers can seamlessly drag, assign, and oversee active workbays and mechanic workloads.' },
+  { icon: <Camera size={28} />, title: 'Mechanic Workspaces', desc: 'Technicians get dedicated digital workspaces to log milestones, attach photos, and complete jobs.' },
 ];
-
-
 
 const Landing = () => {
   return (
@@ -27,40 +25,45 @@ const Landing = () => {
 
       {/* Hero Section */}
       <section className="landing-hero-section">
-        {/* Decorative background elements */}
         <div className="landing-decorative-orb-top" />
         <div className="landing-decorative-orb-bottom" />
         
         <div className="container position-relative z-1">
-          <div className="row align-items-center">
-            <div className="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
-              <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-hero-badge">
-                <Sparkles size={14} className="auth-text-accent" />
-                <span className="small fw-medium auth-text-accent">AI-Powered Service Management</span>
+          <div className="row align-items-center py-5">
+            <div className="col-lg-6 text-center text-lg-start mb-5 mb-lg-0 pe-lg-5">
+              
+              <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-hero-badge glass-effect">
+                <Sparkles size={16} className="text-accent" />
+                <span className="small fw-bold text-accent text-uppercase" style={{ letterSpacing: '0.5px' }}>Precision Shop Management</span>
               </div>
-              <h1 className="display-4 fw-bold mb-4 auth-text-primary" style={{ lineHeight: 1.15 }}>
-                Professional Vehicle Service{' '}
-                <span className="accent-gradient-text">Made Simple</span>
+              
+              <h1 className="display-4 fw-bold mb-4 text-white" style={{ lineHeight: 1.15, letterSpacing: '-1px' }}>
+                The Operating System for <span className="text-accent">Modern Auto Shops.</span>
               </h1>
-              <p className="lead mb-4 auth-text-secondary" style={{ fontSize: '1.15rem' }}>
-                Book, track, and manage vehicle maintenance with AutoCare Hub — the all-in-one platform for customers, mechanics, and service managers.
+              
+              <p className="lead mb-5 text-muted-light" style={{ fontSize: '1.15rem' }}>
+                AutoCare Hub bridges the gap between customers, mechanics, and managers. Book services, assign workloads, and track repairs—all in one high-performance platform.
               </p>
-              <div className="d-flex gap-3 justify-content-center justify-content-lg-start">
-                <Link to="/signup" className="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4">
+              
+              <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
+                <Link to="/signup" className="btn btn-primary btn-lg fw-bold d-flex align-items-center justify-content-center gap-2 px-4 py-3">
                   Get Started Free
                   <ArrowRight size={18} />
                 </Link>
-                <a href="#features" className="btn btn-outline-light btn-lg px-4">
-                  Learn More
+                <a href="#features" className="btn btn-outline-light btn-lg fw-bold px-4 py-3 d-flex align-items-center justify-content-center">
+                  Explore Features
                 </a>
               </div>
+
             </div>
+            
             <div className="col-lg-6">
-              <div className="landing-hero-image">
+              <div className="landing-hero-image-wrapper">
+                <div className="landing-hero-image-glow"></div>
                 <img
-                  src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=800&h=500&fit=crop"
+                  src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=800&h=550&fit=crop"
                   alt="Modern mechanic workshop"
-                  className="img-fluid w-100 d-block"
+                  className="img-fluid landing-hero-img"
                 />
               </div>
             </div>
@@ -70,24 +73,28 @@ const Landing = () => {
 
       {/* Features Section */}
       <section id="features" className="landing-features-section">
-        <div className="container text-center">
-          <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-pill-muted">
-            <Zap size={14} className="auth-text-accent" />
-            <span className="small fw-medium auth-text-accent">Features</span>
+        <div className="container">
+          <div className="text-center mb-5 pb-3">
+            <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-pill">
+              <Zap size={14} className="text-accent" />
+              <span className="small fw-bold text-accent text-uppercase" style={{ letterSpacing: '0.5px' }}>Platform Capabilities</span>
+            </div>
+            <h2 className="fw-bold mb-4 text-white" style={{ fontSize: '2.5rem', letterSpacing: '-0.5px' }}>Built for the Entire Shop</h2>
+            <p className="lead text-muted-light mx-auto" style={{ maxWidth: '700px' }}>
+              Whether you are dropping off your car, turning a wrench, or balancing the books, AutoCare gives you the exact tools you need.
+            </p>
           </div>
-          <h2 className="fw-bold mb-4 auth-text-primary" style={{ fontSize: '2.5rem' }}>Everything You Need</h2>
-          <p className="lead mb-5 auth-text-secondary" style={{ fontSize: '1.25rem' }}>Powerful features to manage your vehicle service operations efficiently.</p>
           
-          <div className="row g-5">
+          <div className="row g-4">
             {features.map((f, i) => (
               <div key={i} className="col-md-6 col-lg-4">
                 <div className="card h-100 border-0 landing-feature-card">
-                  <div className="card-body p-5 text-center">
-                    <div className="d-inline-flex align-items-center justify-content-center mb-3 landing-feature-icon">
+                  <div className="card-body p-4 p-xl-5">
+                    <div className="d-inline-flex align-items-center justify-content-center mb-4 landing-feature-icon">
                       {f.icon}
                     </div>
-                    <h5 className="fw-bold auth-text-primary">{f.title}</h5>
-                    <p className="auth-text-secondary">{f.desc}</p>
+                    <h5 className="fw-bold text-white mb-3">{f.title}</h5>
+                    <p className="text-muted mb-0 lh-lg">{f.desc}</p>
                   </div>
                 </div>
               </div>
@@ -99,31 +106,33 @@ const Landing = () => {
       {/* Services Section */}
       <section id="services" className="landing-services-section">
         <div className="container">
-          <div className="text-center mb-5">
-            <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-pill-muted">
-              <Wrench size={14} className="auth-text-accent" />
-              <span className="small fw-medium auth-text-accent">Services</span>
+          <div className="row align-items-end mb-5 pb-3">
+            <div className="col-lg-8 mb-4 mb-lg-0">
+              <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-pill">
+                <Wrench size={14} className="text-accent" />
+                <span className="small fw-bold text-accent text-uppercase" style={{ letterSpacing: '0.5px' }}>Service Catalog</span>
+              </div>
+              <h2 className="fw-bold text-white mb-3" style={{ fontSize: '2.5rem', letterSpacing: '-0.5px' }}>Standardized Repair Menus</h2>
+              <p className="lead text-muted-light mb-0">Pre-configured services to keep your bookings consistent and transparent.</p>
             </div>
-            <h2 className="fw-bold mb-4 auth-text-primary" style={{ fontSize: '2.5rem' }}>Our Services</h2>
-            <p className="lead auth-text-secondary" style={{ fontSize: '1.25rem' }}>Comprehensive vehicle maintenance and repair services.</p>
+            <div className="col-lg-4 text-lg-end">
+              <Link to="/signup" className="btn btn-outline-primary fw-bold">Book a Service Now</Link>
+            </div>
           </div>
           
-          <div className="row g-5">
+          <div className="row g-4">
             {serviceTypes.map((s) => (
               <div key={s.id} className="col-md-6 col-lg-4">
-                <div className="card h-100 border-0 shadow-sm">
-                  <div className="card-body p-5 d-flex align-items-start gap-4">
-                    <div className="d-flex align-items-center justify-content-center landing-service-icon">
-                      <Settings size={20} />
+                <div className="card h-100 border-0 landing-service-card">
+                  <div className="card-body p-4">
+                    <div className="d-flex justify-content-between align-items-start mb-3">
+                      <h5 className="fw-bold text-white mb-0">{s.name}</h5>
+                      <span className="badge bg-primary text-white fw-bold px-2 py-1 fs-6">${s.price}</span>
                     </div>
-                    <div>
-                      <h5 className="fw-bold mb-2 auth-text-primary">{s.name}</h5>
-                      <p className="small mb-3 auth-text-secondary">{s.description}</p>
-                      <div className="d-flex align-items-center fw-bold auth-text-primary">
-                        <span>${s.price}</span>
-                        <span className="mx-2 auth-text-muted">•</span>
-                        <span className="auth-text-muted">{s.duration}</span>
-                      </div>
+                    <p className="small text-muted mb-4">{s.description}</p>
+                    <div className="d-flex align-items-center text-accent fw-medium small bg-accent-subtle d-inline-flex px-3 py-2 rounded">
+                      <Clock size={14} className="me-2" />
+                      Est. Time: {s.duration}
                     </div>
                   </div>
                 </div>
@@ -133,39 +142,39 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Trust / About Section */}
+      {/* Trust / Stats Section */}
       <section id="about" className="landing-trust-section">
         <div className="container">
           <div className="row align-items-center g-5">
-            <div className="col-lg-5 text-center">
-              <div className="landing-trust-image">
+            <div className="col-lg-5">
+              <div className="landing-trust-image-wrapper">
                 <img
-                  src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=450&fit=crop"
+                  src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=600&fit=crop"
                   alt="Mechanic working on car"
-                  className="img-fluid w-100 d-block"
+                  className="img-fluid landing-trust-img"
                 />
               </div>
             </div>
-            <div className="col-lg-7 text-center text-lg-start">
-              <h2 className="fw-bold mb-4 auth-text-primary" style={{ fontSize: '2.5rem' }}>Trusted by Service Centers Nationwide</h2>
-              <p className="lead mb-5 auth-text-secondary" style={{ fontSize: '1.25rem' }}>
-                AutoCare Hub streamlines operations for over 500 service centers, helping them deliver exceptional customer experiences with powerful management tools.
+            <div className="col-lg-7 ps-lg-5">
+              <h2 className="fw-bold mb-4 text-white" style={{ fontSize: '2.5rem', letterSpacing: '-0.5px' }}>Built for Scale and Reliability</h2>
+              <p className="lead mb-5 text-muted-light">
+                AutoCare Hub removes the chaos of paper tickets and endless phone calls. Our system connects your technicians directly to your customers' dashboards.
               </p>
               
-              <div className="row g-4 text-center">
+              <div className="row g-4">
                 {[
-                  { num: '500+', label: 'Service Centers', icon: <Wrench size={18} /> },
-                  { num: '50,000+', label: 'Vehicles Serviced', icon: <Car size={18} /> },
-                  { num: '98%', label: 'Customer Satisfaction', icon: <Star size={18} /> },
-                  { num: '24/7', label: 'Support Available', icon: <Headphones size={18} /> },
+                  { num: '500+', label: 'Active Shops', icon: <Wrench size={20} /> },
+                  { num: '50k+', label: 'Cars Serviced', icon: <Car size={20} /> },
+                  { num: '4.9/5', label: 'Mechanic Rating', icon: <Star size={20} /> },
+                  { num: '99%', label: 'Uptime', icon: <Shield size={20} /> },
                 ].map((stat, i) => (
                   <div key={i} className="col-6">
-                    <div className="p-4 landing-stat-card">
-                      <div className="d-flex align-items-center justify-content-center mb-2 auth-text-accent">
+                    <div className="p-4 landing-stat-card h-100">
+                      <div className="mb-3 text-accent bg-accent-subtle d-inline-flex p-2 rounded">
                         {stat.icon}
                       </div>
-                      <h3 className="fw-bold mb-1 accent-gradient-text">{stat.num}</h3>
-                      <p className="small mb-0 auth-text-muted">{stat.label}</p>
+                      <h3 className="fw-bold mb-1 text-white">{stat.num}</h3>
+                      <p className="small mb-0 text-muted">{stat.label}</p>
                     </div>
                   </div>
                 ))}
@@ -176,17 +185,22 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="landing-cta-section">
-        {/* Decorative glow */}
+      <section className="landing-cta-section text-center">
         <div className="landing-cta-orb" />
-        <div className="container position-relative z-1">
-          <CheckCircle2 size={48} className="auth-text-accent" style={{ marginBottom: '1rem' }} />
-          <h2 className="fw-bold mb-3 auth-text-primary" style={{ fontSize: '2rem' }}>Ready to Get Started?</h2>
-          <p className="lead mb-4 auth-text-secondary">Join thousands of vehicle owners and service professionals.</p>
-          <Link to="/signup" className="btn btn-primary btn-lg fw-bold d-inline-flex align-items-center gap-2 px-4">
-            Create Free Account
-            <ArrowRight size={18} />
-          </Link>
+        <div className="container position-relative z-1 py-5">
+          <div className="bg-accent-subtle text-accent d-inline-flex p-3 rounded-circle mb-4">
+            <CheckCircle2 size={32} />
+          </div>
+          <h2 className="fw-bold mb-4 text-white" style={{ fontSize: '3rem', letterSpacing: '-1px' }}>Ready to Modernize?</h2>
+          <p className="lead mb-5 text-muted-light mx-auto" style={{ maxWidth: '600px' }}>
+            Join the platform that is changing how auto repair shops communicate, organize, and grow.
+          </p>
+          <div className="d-flex justify-content-center gap-3">
+            <Link to="/signup" className="btn btn-primary btn-lg fw-bold px-5 py-3 d-flex align-items-center gap-2">
+              Create Account
+              <ArrowRight size={18} />
+            </Link>
+          </div>
         </div>
       </section>
 

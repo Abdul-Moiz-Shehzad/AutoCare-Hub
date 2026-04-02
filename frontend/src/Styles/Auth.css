@@ -9,17 +9,19 @@
 
 /* --- Left Hero Panel --- */
 .auth-hero {
-  background: var(--gradient-hero);
+  background: var(--bg-secondary);
   position: relative;
   overflow: hidden;
+  border-right: 1px solid var(--border-color);
 }
 
+/* Updated to Blue Glows */
 .auth-hero-orb {
   position: absolute;
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(78, 79, 235, 0.12) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -35,90 +37,77 @@
 
 /* --- Logo Icon --- */
 .auth-logo {
-  background: var(--gradient-primary);
+  background: var(--accent-primary);
   border-radius: 16px;
-  width: 64px;
-  height: 64px;
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+  width: 72px;
+  height: 72px;
+  box-shadow: 0 8px 32px rgba(78, 79, 235, 0.35);
 }
 
 .auth-logo-sm {
-  background: var(--gradient-primary);
+  background: var(--accent-primary);
   border-radius: 14px;
   width: 52px;
   height: 52px;
+  box-shadow: 0 4px 16px rgba(78, 79, 235, 0.3);
 }
 
 /* --- Hero Image --- */
 .auth-hero-image {
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-glow);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* --- Form Card --- */
 .auth-form-card {
-  max-width: 450px;
+  max-width: 480px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
 }
 
-/* --- Role Selection Button --- */
+/* --- Role Selection Button (Updated for sleekness) --- */
 .auth-role-btn {
   border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--radius);
-  transition: var(--transition);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-secondary);
 }
 
+.auth-role-btn:hover {
+  background: rgba(78, 79, 235, 0.05);
+  border-color: rgba(78, 79, 235, 0.4);
+}
+
+/* Active state pops perfectly */
 .auth-role-btn.active {
-  border-color: var(--accent-primary);
-  background: var(--accent-glow);
+  border-color: var(--accent-primary) !important;
+  background: var(--accent-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(78, 79, 235, 0.35);
+  transform: translateY(-2px);
 }
 
 .auth-role-icon {
-  color: var(--text-secondary);
-  opacity: 0.7;
-}
-
-.auth-role-btn.active .auth-role-icon {
-  color: var(--accent-primary);
-  opacity: 1;
+  color: inherit;
 }
 
 .auth-role-label {
-  color: var(--text-primary);
-  opacity: 0.8;
-}
-
-.auth-role-btn.active .auth-role-label {
-  color: var(--accent-primary);
-  opacity: 1;
-}
-
-/* --- Input Icon --- */
-.auth-input-icon {
-  background: var(--bg-input);
-  border: 1px solid var(--border-color);
-  border-right: none;
-  color: var(--text-muted);
-  border-radius: var(--radius) 0 0 var(--radius);
-}
-
-.auth-input-box {
-  border-left: none;
-}
-
-.auth-hero-content {
-  max-width: 400px;
-  position: relative;
-  z-index: 1;
+  color: inherit;
+  font-size: 0.95rem;
 }
 
 .auth-role-desc {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
+  color: inherit;
 }
 
+.auth-hero-content {
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+}

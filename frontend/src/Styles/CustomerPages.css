@@ -36,53 +36,59 @@
 
 /* --- Service Selection Card --- */
 .service-select-card {
-  border: 1px solid var(--border-color);
-  background: transparent;
-  border-radius: var(--radius);
-  transition: var(--transition);
-}
-
-.service-select-card.active {
-  border-color: var(--accent-primary);
-  background: var(--accent-glow);
-}
-
-/* --- Success Screen --- */
-.booking-success-icon {
-  width: 80px;
-  height: 80px;
+  border: 1px solid var(--border-color) !important;
+  background: var(--bg-card) !important;
   border-radius: var(--radius-lg);
-  background: var(--color-success-bg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
 }
 
-/* --- Progress Stepper --- */
-.stepper-node {
-  width: 32px;
-  height: 32px;
-  font-size: 14px;
-  transition: all 0.3s;
+/* FIX: Ensure the entire card highlights and tints on hover */
+.service-select-card:hover {
+  border-color: var(--accent-primary) !important;
+  background: rgba(78, 79, 235, 0.05) !important; /* Adds a subtle blue glow inside the card */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(78, 79, 235, 0.2) !important;
 }
 
-.stepper-node-active {
-  background: var(--gradient-primary);
-  color: #0f0e17;
-  box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+/* Nuke Bootstrap focus outlines */
+.service-select-card:focus,
+.service-select-card:active {
+  outline: none !important;
+  box-shadow: none;
 }
 
-.stepper-node-inactive {
-  background: var(--bg-secondary);
-  color: var(--text-muted);
-  border: 1px solid var(--border-color);
+/* Base text styling */
+.service-select-card .service-icon { color: var(--text-secondary); transition: var(--transition); }
+.service-select-card .service-title { color: var(--text-primary); }
+.service-select-card .service-desc { color: var(--text-secondary); font-size: 0.75rem; letter-spacing: 0.5px; }
+.service-select-card .service-meta { color: var(--text-muted); }
+
+/* ====================================
+   THE ACTIVE STATE (Figma Matched)
+   ==================================== */
+.service-select-card.active {
+  background: var(--accent-primary) !important; /* Solid blue */
+  border-color: var(--accent-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(78, 79, 235, 0.4) !important;
+  transform: translateY(-2px);
 }
 
-.stepper-label-active {
-  font-weight: 600;
-  color: var(--accent-primary);
+.service-select-card.active .service-icon,
+.service-select-card.active .service-title,
+.service-select-card.active .service-meta {
+  color: #ffffff !important;
 }
 
-.stepper-label-inactive {
-  font-weight: 400;
-  color: var(--text-muted);
+.service-select-card.active .service-desc {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.service-select-card.active .border-top {
+  border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 /* --- Notes Section --- */
@@ -135,11 +141,6 @@
 .book-summary-sticky { top: 1rem; }
 .book-divider { border-color: var(--border-color); }
 
-.tracking-empty-container { min-height: 40vh; }
-.tracking-progress-bg { height: 4px; background: var(--bg-secondary); }
-.tracking-progress-bar { transition: width 0.5s ease; }
-.tracking-step-wrapper { background: var(--bg-card); }
-
 .search-input-group-text {
   background: var(--bg-input);
   border: 1px solid var(--border-color);
@@ -147,3 +148,72 @@
   color: var(--text-muted);
 }
 .search-input-box { border-left: none; }
+
+
+/* ====================================
+   Modern Progress Stepper (Updated)
+   ==================================== */
+.stepper-node {
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+
+/* Completed: Solid Blue, White Check */
+.stepper-node-completed {
+  background: var(--accent-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(78, 79, 235, 0.4);
+}
+
+/* Active: Dark background, Blue border, Blue dot */
+.stepper-node-active {
+  background: var(--bg-card);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 20px rgba(78, 79, 235, 0.2);
+}
+
+.stepper-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: pulse-glow 2s infinite;
+}
+
+/* Inactive (Future): Grey outline */
+.stepper-node-inactive {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border-color: var(--border-color);
+}
+
+.tracking-empty-container { 
+  min-height: 40vh; 
+}
+
+.tracking-progress-bg { 
+  height: 4px; 
+  background: var(--border-color); /* Grey track */
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tracking-progress-bar { 
+  background: var(--accent-primary); /* Blue fill */
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+/* The wrapper creates a break in the background line so it doesn't cut through the circles */
+.tracking-step-wrapper { 
+  background: var(--bg-card); 
+  padding: 0 12px; 
+}
+
+.transition-hover:hover {
+  color: var(--accent-primary) !important;
+}

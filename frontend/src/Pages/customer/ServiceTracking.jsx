@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../Styles/CustomerPages.css';
 import DashboardLayout from '../../Components/layout/DashboardLayout';
 import PageHeader from '../../Components/shared/PageHeader';
 import StatusBadge from '../../Components/shared/StatusBadge';
 import { mockServices, mockVehicles, mockMechanics } from '../../data/mockData';
 import { 
-  LayoutDashboard, Car, CalendarPlus, Activity, Clock
+  LayoutDashboard, Car, CalendarPlus, Activity, Clock, 
+  CheckCircle2, ChevronDown, ChevronUp, Circle
 } from 'lucide-react';
 
 const menuItems = [
@@ -16,11 +17,16 @@ const menuItems = [
   { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
 ];
 
-const steps = ['received', 'diagnosed', 'in-progress', 'completed'];
-const stepLabels = ['Received', 'Diagnosed', 'In Progress', 'Completed'];
+const steps = ['pending', 'in-progress', 'completed'];
+const stepLabels = ['Pending', 'In Progress', 'Completed'];
 
 const ServiceTracking = () => {
   const activeServices = mockServices.filter(s => !['completed', 'cancelled'].includes(s.status));
+  const [expandedLogs, setExpandedLogs] = useState({});
+
+  const toggleLog = (id) => {
+    setExpandedLogs(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
     <DashboardLayout menuItems={menuItems} sectionLabel="Customer">
@@ -36,14 +42,17 @@ const ServiceTracking = () => {
             <Activity size={32} className="tracking-activity-icon" />
           </div>
           <h4 className="fw-bold text-primary-custom">No Active Services</h4>
-          <p className="text-secondary-custom">All your services have been completed.</p>
+          <p className="text-secondary-custom">All your services have been completed or you haven't booked one yet.</p>
         </div>
       ) : (
         <div className="d-flex flex-column gap-4">
           {activeServices.map(s => {
             const v = mockVehicles.find(v => v.id === s.vehicleId);
             const m = mockMechanics.find(m => m.id === s.mechanicId);
-            const currentIdx = steps.indexOf(s.status);
+            
+            // Normalize status to the 3-step flow
+            const normalizedStatus = ['in-progress', 'completed'].includes(s.status) ? s.status : 'pending';
+            const currentIdx = steps.indexOf(normalizedStatus);
             const progressPercentage = (currentIdx / (steps.length - 1)) * 100;
 
             return (
@@ -55,7 +64,7 @@ const ServiceTracking = () => {
                     <div>
                       <div className="d-flex align-items-center gap-3 mb-1">
                         <h4 className="fw-bold mb-0 text-primary-custom">{s.serviceType}</h4>
-                        <StatusBadge status={s.status} />
+                        <StatusBadge status={normalizedStatus} />
                       </div>
                       <p className="small mb-0 text-secondary-custom">
                         {v ? `${v.year} ${v.make} ${v.model} · ${v.plate}` : '—'}
@@ -75,47 +84,72 @@ const ServiceTracking = () => {
                     </div>
                   </div>
 
-                  {/* Progress Stepper UI */}
+                  {/* Refined Progress Stepper UI */}
                   <div className="position-relative mt-5 mb-2 px-2">
-                    {/* The Background Line */}
                     <div className="position-absolute top-50 start-0 translate-middle-y w-100 px-4" style={{ zIndex: 1 }}>
                       <div className="progress tracking-progress-bg">
                         <div 
                           className="progress-bar tracking-stepper-bar tracking-progress-bar" 
                           role="progressbar" 
-                          style={{ 
-                            width: `${progressPercentage}%`,
-                          }}
+                          style={{ width: `${progressPercentage}%` }}
                         ></div>
                       </div>
                     </div>
 
-                    {/* The Step Nodes */}
                     <div className="d-flex justify-content-between position-relative" style={{ zIndex: 2 }}>
-                      {stepLabels.map((label, i) => (
-                        <div key={label} className="d-flex flex-column align-items-center tracking-step-wrapper">
-                          <div 
-                            className={`d-flex align-items-center justify-content-center rounded-circle stepper-node ${i <= currentIdx ? 'stepper-node-active' : 'stepper-node-inactive'}`}
-                          >
-                            {i + 1}
+                      {stepLabels.map((label, i) => {
+                        // Correct logic for determining node states
+                        const isCompleted = i < currentIdx || (normalizedStatus === 'completed' && i === currentIdx);
+                        const isActive = i === currentIdx && normalizedStatus !== 'completed';
+                        
+                        let nodeClass = 'stepper-node-inactive';
+                        if (isCompleted) nodeClass = 'stepper-node-completed';
+                        else if (isActive) nodeClass = 'stepper-node-active';
+
+                        return (
+                          <div key={label} className="d-flex flex-column align-items-center tracking-step-wrapper">
+                            <div className={`d-flex align-items-center justify-content-center rounded-circle stepper-node ${nodeClass}`}>
+                              {isCompleted ? <CheckCircle2 size={18} /> : (isActive ? <div className="stepper-dot"></div> : i + 1)}
+                            </div>
+                            <span className={`small mt-2 text-center fw-medium ${isCompleted || isActive ? 'text-primary-custom' : 'text-muted-custom'}`}>
+                              {label}
+                            </span>
                           </div>
-                          <span className={`small mt-2 text-center ${i <= currentIdx ? 'stepper-label-active' : 'stepper-label-inactive'}`}>
-                            {label}
-                          </span>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
 
-                  {/* Notes Section */}
+                  {/* Expandable Customer-Facing Notes Section */}
                   {s.notes && s.notes.length > 0 && (
-                    <div className="mt-5 p-3 notes-container">
-                      <p className="small fw-bold text-uppercase mb-2 stat-title-small text-muted-custom">Latest Updates</p>
-                      <ul className="mb-0 small ps-3 text-secondary-custom">
-                        {s.notes.map((n, i) => (
-                          <li key={i} className="mb-1">{n}</li>
-                        ))}
-                      </ul>
+                    <div className="mt-5 pt-3 border-top border-opacity-10">
+                      <button 
+                        className="btn btn-sm btn-link text-muted d-flex align-items-center gap-2 m-0 p-0 text-decoration-none transition-hover"
+                        onClick={() => toggleLog(s.id)}
+                      >
+                        {expandedLogs[s.id] ? <ChevronUp size={14} /> : <ChevronDown size={14} />} 
+                        {expandedLogs[s.id] ? 'Hide Service Log' : 'View Service Log & Milestones'}
+                      </button>
+
+                      {expandedLogs[s.id] && (
+                        <div className="mt-4 p-4 notes-container rounded" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)' }}>
+                          <p className="small fw-bold text-uppercase mb-3 stat-title-small text-muted-custom d-flex align-items-center gap-2">
+                            <Activity size={14} /> Logged Milestones
+                          </p>
+                          <ul className="mb-0 small ps-0 list-unstyled text-secondary-custom">
+                            {s.notes.map((n, i) => {
+                              // Extract ONLY the milestone text
+                              const milestoneText = typeof n === 'object' ? n.milestone : n;
+                              return milestoneText ? (
+                                <li key={i} className="mb-3 d-flex align-items-start gap-3">
+                                  <div className="mt-1"><Circle size={10} className="text-primary-custom" /></div>
+                                  <span className="text-primary-custom fw-medium lh-base">{milestoneText}</span>
+                                </li>
+                              ) : null;
+                            })}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   )}
 

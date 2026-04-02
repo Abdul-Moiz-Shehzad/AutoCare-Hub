@@ -12,39 +12,73 @@
 }
 
 /* --- Mechanic Workload Card --- */
-.manager-workload-card {
+.manager-mechanic-card {
   background: var(--bg-secondary);
   border-radius: var(--radius);
   border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+}
+.manager-mechanic-card:hover {
+  border-color: var(--accent-primary);
+  background: rgba(78, 79, 235, 0.05);
 }
 
-/* --- Kanban Column --- */
-.manager-kanban-column {
-  background: var(--bg-secondary);
+/* --- Kanban Workflow Styling --- */
+.kanban-scroll-area {
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+}
+.min-w-300 {
+  min-width: 320px;
 }
 
-.manager-kanban-column-header {
-  background: var(--bg-card);
+.manager-kanban-column-bg {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid var(--border-subtle) !important;
 }
 
-.manager-kanban-item {
+.manager-kanban-column-hdr {
+  color: var(--text-primary);
+  background: transparent !important;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.manager-kanban-item-card {
   background: var(--bg-card);
   border-radius: var(--radius);
-  border: 1px solid var(--border-subtle);
-  transition: var(--transition);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease-in-out;
+  cursor: default;
+}
+.manager-kanban-item-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(78, 79, 235, 0.4);
+  box-shadow: 0 6px 16px rgba(78, 79, 235, 0.15);
 }
 
-/* === Extracted Dashboard Classes === */
+/* === Utility Classes === */
+.bg-card { background: var(--bg-card) !important; }
 .manager-text-primary { color: var(--text-primary) !important; }
 .manager-text-secondary { color: var(--text-secondary) !important; }
 .manager-text-muted { color: var(--text-muted) !important; }
 .manager-text-accent { color: var(--accent-primary) !important; }
 .manager-text-warning { color: var(--color-warning) !important; }
 
-.manager-table-header { color: var(--text-muted) !important; font-size: 0.7rem !important; background: var(--bg-secondary) !important; }
-.manager-select-assign { max-width: 140px; }
-.manager-mechanic-card { background: var(--bg-secondary); border-radius: var(--radius); border: 1px solid var(--border-subtle); }
-.manager-kanban-column-bg { background: var(--bg-secondary); }
-.manager-kanban-column-hdr { color: var(--text-primary); background: var(--bg-card) !important; }
-.manager-kanban-item-card { background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border-subtle); transition: var(--transition); }
+.manager-table-header { 
+  color: var(--text-secondary) !important; 
+  font-size: 0.7rem !important; 
+  background: transparent !important; 
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
 
+.manager-select-assign { 
+  max-width: 160px; 
+  background-color: var(--bg-secondary) !important;
+}
+
+.transition-hover {
+  transition: all 0.3s ease;
+}
