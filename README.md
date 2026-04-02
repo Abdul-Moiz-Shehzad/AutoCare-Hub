@@ -1,1 +1,1 @@
-# DocuChat-RAG
+# AutoCare-Hub
