@@ -82,3 +82,46 @@
 .transition-hover {
   transition: all 0.3s ease;
 }
+
+/* =============================================
+   Manager Pages — Responsive
+   ============================================= */
+
+/* --- Tablet (≤992px) --- */
+@media (max-width: 992px) {
+  /* Kanban scrolls horizontally and columns stay min-width */
+  .kanban-scroll-area {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .min-w-300 {
+    min-width: 280px;
+  }
+
+  /* Mechanic card grid: 2-up */
+  .manager-mechanic-card {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* --- Mobile (≤576px) --- */
+@media (max-width: 576px) {
+  /* Assign select: full width */
+  .manager-select-assign {
+    max-width: 100%;
+  }
+
+  /* Kanban items font size */
+  .manager-kanban-item-card {
+    font-size: 0.85rem;
+  }
+
+  /* Chart tooltip smaller */
+  .manager-chart-tooltip {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}

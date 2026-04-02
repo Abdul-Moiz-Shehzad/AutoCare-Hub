@@ -69,13 +69,31 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* --- Role Selection Button (Updated for sleekness) --- */
+/* --- Role Selection Grid Container --- */
+.auth-role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+}
+
+/* Two-role variant (Signup) */
+.auth-role-grid--two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* --- Role Button base --- */
 .auth-role-btn {
   border: 1px solid var(--border-color);
   background: var(--bg-elevated);
   border-radius: var(--radius-lg);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--text-secondary);
+  width: 100%;
+  padding: 0.85rem 0.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .auth-role-btn:hover {
@@ -83,7 +101,7 @@
   border-color: rgba(78, 79, 235, 0.4);
 }
 
-/* Active state pops perfectly */
+/* Active state */
 .auth-role-btn.active {
   border-color: var(--accent-primary) !important;
   background: var(--accent-primary) !important;
@@ -92,17 +110,16 @@
   transform: translateY(-2px);
 }
 
-.auth-role-icon {
-  color: inherit;
-}
+.auth-role-icon { color: inherit; }
 
 .auth-role-label {
   color: inherit;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
+  line-height: 1.2;
 }
 
 .auth-role-desc {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: inherit;
 }
 
@@ -110,4 +127,102 @@
   max-width: 440px;
   position: relative;
   z-index: 1;
+}
+
+/* =============================================
+   Auth Pages — Responsive
+   ============================================= */
+
+/* --- Landscape Tablets (≤992px) — hide hero, form full-width --- */
+@media (max-width: 992px) {
+  .auth-hero { display: none !important; }
+
+  .auth-form-card {
+    max-width: 540px;
+    margin: 0 auto;
+  }
+}
+
+/* --- Portrait Tablets / Large Phones (≤768px) --- */
+@media (max-width: 768px) {
+  .auth-form-card {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 2rem !important;
+  }
+
+  .auth-logo { width: 60px; height: 60px; }
+  .auth-logo-sm { width: 48px; height: 48px; }
+
+  .auth-role-btn { padding: 0.9rem 0.6rem !important; }
+  .auth-role-grid { gap: 0.6rem; }
+}
+
+/* --- Standard Phones (≤576px) --- */
+@media (max-width: 576px) {
+  .auth-form-card {
+    max-width: 100%;
+    margin: 0 0.75rem;
+    padding: 1.5rem !important;
+    border-radius: var(--radius-lg);
+  }
+
+  .auth-logo { width: 52px; height: 52px; border-radius: 12px; }
+  .auth-logo-sm { width: 42px; height: 42px; border-radius: 10px; }
+
+  .auth-role-grid { gap: 0.5rem; }
+  .auth-role-btn { padding: 0.7rem 0.4rem !important; }
+  .auth-role-label { font-size: 0.82rem; }
+  .auth-role-desc { font-size: 0.65rem; }
+}
+
+/* --- Small Phones (≤480px) — iPhone SE, Galaxy A-series --- */
+@media (max-width: 480px) {
+  .auth-form-card {
+    margin: 0 0.5rem;
+    padding: 1.1rem !important;
+    border-radius: var(--radius);
+  }
+
+  .auth-logo { width: 44px; height: 44px; border-radius: 10px; }
+  .auth-logo-sm { width: 36px; height: 36px; border-radius: 8px; }
+
+  /* Role grid: switch to single column on tiny phones so buttons are roomy */
+  .auth-role-grid {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  /* Two-role grid: stays 2-col since there's more space per button */
+  .auth-role-grid--two {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Buttons become compact horizontal rows: icon left, text right */
+  .auth-role-grid .auth-role-btn {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem !important;
+    text-align: left;
+  }
+
+  /* Two-col grid buttons stay vertical */
+  .auth-role-grid--two .auth-role-btn {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.65rem 0.4rem !important;
+  }
+
+  .auth-role-icon { flex-shrink: 0; }
+  .auth-role-label { font-size: 0.85rem; }
+  .auth-role-desc { font-size: 0.68rem; display: block !important; opacity: 0.75; }
+
+  /* Reduce active lift on tiny screens */
+  .auth-role-btn.active { transform: none; }
+
+  .form-label { font-size: 0.76rem !important; }
 }

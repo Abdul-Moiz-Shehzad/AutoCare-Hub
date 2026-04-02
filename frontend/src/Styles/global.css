@@ -270,6 +270,161 @@ body {
 .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
 
 /* ===== Responsive ===== */
+
+/* --- Large Tablets / Small Laptops (≤1200px) --- */
+@media (max-width: 1200px) {
+  :root {
+    --radius-xl: 18px;
+  }
+}
+
+/* --- Landscape Tablets (≤992px) --- */
+@media (max-width: 992px) {
+  :root {
+    --radius: 10px;
+    --radius-lg: 12px;
+  }
+
+  /* Suppress card lift on touch devices */
+  .card:hover { transform: none; }
+
+  /* Scrollable tables */
+  .table-responsive-md {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* --- Portrait Tablets / Large Phones (≤768px) --- */
 @media (max-width: 768px) {
-  :root { --radius: 10px; --radius-lg: 12px; }
+  :root {
+    --radius: 10px;
+    --radius-lg: 11px;
+    --radius-xl: 14px;
+  }
+
+  /* Fluid heading scale */
+  h1 { font-size: 2rem !important; }
+  h2 { font-size: 1.6rem !important; }
+  h3 { font-size: 1.25rem !important; }
+
+  /* Touch-friendly minimum tap target */
+  .btn, .nav-link, button {
+    min-height: 44px;
+  }
+
+  /* Cards: no hover transform */
+  .card:hover { transform: none; }
+
+  /* Scrollable tables */
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Modals */
+  .modal-dialog { margin: 0.75rem !important; }
+  .modal-content { border-radius: var(--radius-lg) !important; }
+
+  /* Nav pills wrap */
+  .nav-pills { flex-wrap: wrap; }
+
+  /* Icon boxes */
+  .icon-box { width: 42px; height: 42px; }
+  .icon-box-lg { width: 54px; height: 54px; }
+}
+
+/* --- Standard Phones (≤576px) --- */
+@media (max-width: 576px) {
+  :root {
+    --radius: 9px;
+    --radius-lg: 11px;
+    --radius-xl: 13px;
+  }
+
+  /* More aggressive fluid heading scale */
+  h1 { font-size: 1.65rem !important; margin-bottom: 0.75rem !important; }
+  h2 { font-size: 1.35rem !important; margin-bottom: 0.5rem !important; }
+  h3 { font-size: 1.15rem !important; }
+  h4 { font-size: 1rem !important; }
+  h5 { font-size: 0.9rem !important; }
+  h6 { font-size: 0.85rem !important; }
+
+  /* Global Icon Scaling: Force Lucide icons to fit proportionally on mobile */
+  svg.lucide {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+  .icon-box svg.lucide { 
+    width: 1.5rem !important; 
+    height: 1.5rem !important; 
+  }
+  .stat-card-icon-container svg.lucide {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+
+  /* Full-width utility */
+  .btn-mobile-full { width: 100%; }
+
+  /* No hover effects on touch */
+  .card:hover { transform: none; box-shadow: none; }
+  .landing-feature-card:hover { transform: none; }
+  .landing-stat-card:hover { transform: none; }
+
+  /* Modal: edge-to-edge on phone */
+  .modal-dialog { margin: 0.5rem !important; }
+
+  /* Icon boxes */
+  .icon-box { width: 40px; height: 40px; }
+  .icon-box-lg { width: 50px; height: 50px; }
+
+  /* Ensure inputs are full width */
+  .form-control, .form-select { width: 100%; }
+}
+
+/* --- Small Phones (≤480px) --- */
+@media (max-width: 480px) {
+  :root {
+    --radius: 8px;
+    --radius-lg: 10px;
+    --radius-xl: 12px;
+  }
+
+  /* Tighter body text and even smaller headings for iPhone SE */
+  body { font-size: 0.85rem; }
+  
+  h1 { font-size: 1.45rem !important; letter-spacing: -0.5px !important; }
+  h2 { font-size: 1.25rem !important; }
+  h3 { font-size: 1.05rem !important; }
+  h4 { font-size: 0.95rem !important; }
+
+  /* Extra Small Icon Scaling for 320px-480px */
+  svg.lucide {
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+  }
+  .icon-box svg.lucide { 
+    width: 1.3rem !important; 
+    height: 1.3rem !important; 
+  }
+
+  /* Modals fully edge-to-edge */
+  .modal-dialog { margin: 0.25rem !important; }
+  .modal-content { border-radius: var(--radius) !important; }
+
+  /* Badges smaller */
+  .badge { font-size: 0.68rem !important; padding: 0.28em 0.55em !important; }
+
+  /* Icon boxes */
+  .icon-box { width: 36px; height: 36px; }
+  .icon-box-sm { width: 28px; height: 28px; }
+  .icon-box-lg { width: 46px; height: 46px; }
+
+  /* Buttons: shorter padding */
+  .btn { padding: 0.4rem 0.9rem; font-size: 0.875rem; }
 }

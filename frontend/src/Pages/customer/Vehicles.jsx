@@ -92,27 +92,27 @@ const Vehicles = () => {
                 <div className="modal-body p-4">
                   <form onSubmit={(e) => { e.preventDefault(); setDialogOpen(false); }}>
                     <div className="row g-3 mb-3">
-                      <div className="col-6">
+                      <div className="col-12 col-md-6">
                         <label className="form-label small fw-medium text-secondary-custom">Make</label>
                         <input type="text" className="form-control" placeholder="Changan" required />
                       </div>
-                      <div className="col-6">
+                      <div className="col-12 col-md-6">
                         <label className="form-label small fw-medium text-secondary-custom">Model</label>
                         <input type="text" className="form-control" placeholder="Alsvin" required />
                       </div>
-                      <div className="col-6">
+                      <div className="col-12 col-md-6">
                         <label className="form-label small fw-medium text-secondary-custom">Year</label>
                         <input type="number" className="form-control" placeholder="2023" required />
                       </div>
-                      <div className="col-6">
+                      <div className="col-12 col-md-6">
                         <label className="form-label small fw-medium text-secondary-custom">Color</label>
                         <input type="text" className="form-control" placeholder="White" required />
                       </div>
-                      <div className="col-6">
+                      <div className="col-12 col-md-6">
                         <label className="form-label small fw-medium text-secondary-custom">License Plate</label>
                         <input type="text" className="form-control" placeholder="ABC-1234" required />
                       </div>
-                      <div className="col-6">
+                      <div className="col-12 col-md-6">
                         <label className="form-label small fw-medium text-secondary-custom">Mileage</label>
                         <input type="number" className="form-control" placeholder="15000" required />
                       </div>

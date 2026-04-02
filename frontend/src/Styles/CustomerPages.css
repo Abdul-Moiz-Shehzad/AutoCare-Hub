@@ -217,3 +217,83 @@
 .transition-hover:hover {
   color: var(--accent-primary) !important;
 }
+
+/* =============================================
+   Customer Pages — Responsive
+   ============================================= */
+
+/* --- Landscape Tablets (≤992px) --- */
+@media (max-width: 992px) {
+  .service-select-card { margin-bottom: 0.75rem; }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .book-summary-sticky { position: static; }
+}
+
+/* --- Portrait Tablets / Large Phones (≤768px) --- */
+@media (max-width: 768px) {
+  .vehicle-img-container { height: 160px; }
+
+  .stepper-node { width: 28px; height: 28px; font-size: 12px; }
+  .stepper-dot { width: 8px; height: 8px; }
+
+  .notes-container { padding: 0.75rem !important; }
+
+  .book-success-container { min-height: 50vh; }
+  .tracking-empty-container { min-height: 35vh; }
+
+  /* Vehicle modal edge padding */
+  .vehicle-modal-content {
+    border-radius: var(--radius-lg);
+    margin: 0.75rem;
+  }
+}
+
+/* --- Standard Phones (≤576px) --- */
+@media (max-width: 576px) {
+  .vehicle-img-container { height: 140px; }
+
+  .vehicle-modal-content {
+    border-radius: var(--radius);
+    margin: 0.5rem;
+  }
+
+  /* Stepper scroll */
+  .stepper-node { width: 24px; height: 24px; font-size: 11px; flex-shrink: 0; }
+  .stepper-dot { width: 7px; height: 7px; }
+
+  .notes-container { padding: 0.75rem !important; }
+
+  .quick-action-link { padding: 0.65rem 0.75rem; justify-content: flex-start; }
+
+  .tracking-empty-container { min-height: 30vh; }
+  .book-success-container { min-height: 40vh; }
+}
+
+/* --- Small Phones (≤480px) — iPhone SE, Galaxy A-series --- */
+@media (max-width: 480px) {
+  .vehicle-img-container { height: 110px; }
+
+  .stepper-node { width: 22px; height: 22px; font-size: 10px; }
+  
+  .stepper-dot { width: 6px; height: 6px; }
+
+  /* Service selection cards stack single-column */
+  .service-select-card { padding: 0.65rem !important; }
+  .service-select-card .service-title { font-size: 0.9rem !important; }
+  .service-select-card .service-desc { font-size: 0.7rem !important; line-height: 1.25 !important; }
+
+  .notes-container { padding: 0.6rem !important; }
+
+  .quick-action-link { padding: 0.55rem 0.6rem; font-size: 0.85rem; }
+
+  .tracking-empty-container { min-height: 25vh; }
+  .book-success-container { min-height: 35vh; }
+
+  /* Tracking progress bar thinner */
+  .tracking-progress-bg { height: 3px; }
+}

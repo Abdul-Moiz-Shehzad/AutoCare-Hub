@@ -28,5 +28,58 @@
   background: var(--bg-secondary);
   border-radius: var(--radius);
   border: 1px solid var(--border-subtle);
+  padding: 1.25rem;
+}
+
+/* =============================================
+   Mechanic Pages — Responsive
+   ============================================= */
+
+/* --- Tablet (≤992px) --- */
+@media (max-width: 992px) {
+  .mechanic-job-card {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* --- Portrait Tablet / Large Phone (≤768px) --- */
+@media (max-width: 768px) {
+  .mechanic-notes-wrapper {
+    padding: 1rem !important;
+  }
+}
+
+/* --- Mobile (≤576px) --- */
+@media (max-width: 576px) {
+  .mechanic-notes-panel,
+  .mechanic-notes-wrapper {
+    padding: 0.85rem !important;
+  }
+
+  .mechanic-job-card {
+    font-size: 0.9rem;
+  }
+  
+  /* Reduce indentation in hierarchical logs to save space */
+  .mechanic-notes-wrapper ul.ps-4 {
+    padding-left: 1.25rem !important;
+  }
+}
+
+/* --- Small Phones (≤480px) — iPhone SE --- */
+@media (max-width: 480px) {
+  .mechanic-notes-wrapper {
+    padding: 0.75rem !important;
+  }
+
+  /* Force buttons to fill width if they stack */
+  .mechanic-notes-wrapper .btn-sm {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .w-100-mobile {
+    width: 100% !important;
+  }
 }
 

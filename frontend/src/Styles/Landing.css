@@ -188,3 +188,137 @@
   background: radial-gradient(circle, rgba(78, 79, 235, 0.1) 0%, transparent 60%);
   pointer-events: none;
 }
+
+/* =============================================
+   Landing Page — Responsive
+   ============================================= */
+
+/* --- Large Tablets (≤1200px) --- */
+@media (max-width: 1200px) {
+  .landing-hero-section,
+  .landing-features-section,
+  .landing-services-section,
+  .landing-trust-section,
+  .landing-cta-section {
+    padding: 6rem 0;
+  }
+}
+
+/* --- Landscape Tablets (≤992px) --- */
+@media (max-width: 992px) {
+  .landing-hero-section,
+  .landing-features-section,
+  .landing-services-section,
+  .landing-trust-section,
+  .landing-cta-section {
+    padding: 5rem 0;
+  }
+
+  .landing-decorative-orb-top,
+  .landing-decorative-orb-bottom {
+    width: 350px;
+    height: 350px;
+  }
+
+  .landing-cta-orb { width: 400px; height: 400px; }
+
+  .landing-feature-card:hover { transform: none; }
+}
+
+/* --- Portrait Tablets / Large Phones (≤768px) --- */
+@media (max-width: 768px) {
+  .landing-hero-section,
+  .landing-features-section,
+  .landing-services-section,
+  .landing-trust-section,
+  .landing-cta-section {
+    padding: 4rem 0;
+  }
+
+  /* Hero text left-aligned → center on portrait tablet */
+  .landing-hero-section .text-start {
+    text-align: center !important;
+  }
+
+  /* Hero image below content */
+  .landing-hero-image-wrapper { margin-top: 2.5rem; }
+
+  /* Hide decorative orbs */
+  .landing-decorative-orb-top,
+  .landing-decorative-orb-bottom { display: none; }
+
+  .landing-cta-orb { width: 300px; height: 300px; }
+
+  /* Feature icon */
+  .landing-feature-icon { width: 56px; height: 56px; }
+
+  /* Stat cards: 2×2 grid */
+  .landing-stat-card { margin-bottom: 1rem; }
+  .landing-stat-card:hover { transform: none; }
+}
+
+/* --- Standard Phones (≤576px) --- */
+@media (max-width: 576px) {
+  .landing-hero-section,
+  .landing-features-section,
+  .landing-services-section,
+  .landing-trust-section,
+  .landing-cta-section {
+    padding: 3rem 0;
+  }
+
+  /* Orbs fully hidden */
+  .landing-decorative-orb-top,
+  .landing-decorative-orb-bottom,
+  .landing-cta-orb { display: none; }
+
+  .landing-hero-image-wrapper { margin-top: 2rem; }
+
+  .landing-feature-card { border-radius: var(--radius); }
+  .landing-feature-card:hover { transform: none; box-shadow: none; }
+
+  .landing-service-card { border-radius: var(--radius); }
+
+  .landing-feature-icon { width: 48px; height: 48px; }
+
+  /* Trust stat cards stacked */
+  .landing-stat-card {
+    margin-bottom: 0.75rem;
+    padding: 1rem !important;
+  }
+
+  /* hero badge smaller */
+  .landing-hero-badge { font-size: 0.8rem !important; padding: 0.35rem 0.75rem !important; }
+
+  /* Landing pill smaller */
+  .landing-pill { font-size: 0.78rem !important; }
+}
+
+/* --- Small Phones (≤480px) --- */
+@media (max-width: 480px) {
+  .landing-hero-section,
+  .landing-features-section,
+  .landing-services-section,
+  .landing-trust-section,
+  .landing-cta-section {
+    padding: 2.5rem 0;
+  }
+
+  .landing-hero-image-wrapper { margin-top: 1.5rem; }
+
+  .landing-feature-icon { width: 40px; height: 40px; border-radius: var(--radius); }
+
+  .landing-feature-card { padding: 1rem !important; }
+
+  .landing-stat-card { padding: 0.75rem !important; }
+
+  /* CTA buttons stack on tiny phones */
+  .landing-cta-section .d-flex.gap-3 {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .landing-cta-section .d-flex.gap-3 .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

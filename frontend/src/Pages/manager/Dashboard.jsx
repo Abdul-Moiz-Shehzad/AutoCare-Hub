@@ -119,46 +119,47 @@ const ManagerDashboard = () => {
             <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Weekly Bookings</div>
             <div className="card-body">
               <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={weeklyBookingsData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                  <XAxis dataKey="day" tick={{ fontSize: 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-                  <Bar dataKey="bookings" fill={CHART_PURPLE} radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+                  <BarChart data={weeklyBookingsData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                    <XAxis dataKey="day" tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+                    <Bar dataKey="bookings" fill={CHART_PURPLE} radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="col-lg-4">
-          <div className="card border-0 h-100 bg-card">
-            <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Services by Type</div>
-            <div className="card-body">
-              <ResponsiveContainer width="100%" height={220}>
-                <PieChart>
-                  <Pie data={purpleServicesByType} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={10} stroke="none">
-                    {purpleServicesByType.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
+  
+          <div className="col-lg-4">
+            {/* Same logic for Pie Chart label sizing if needed, but labels are already 10px */}
+            <div className="card border-0 h-100 bg-card">
+              <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Services by Type</div>
+              <div className="card-body">
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie data={purpleServicesByType} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={window.innerWidth <= 768 ? 9 : 10} stroke="none">
+                      {purpleServicesByType.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="col-lg-4">
-          <div className="card border-0 h-100 bg-card">
-            <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Revenue Trend</div>
-            <div className="card-body">
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                  <XAxis dataKey="month" tick={{ fontSize: 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Line type="monotone" dataKey="revenue" stroke={CHART_GREEN} strokeWidth={3} dot={{ fill: CHART_GREEN, r: 4, strokeWidth: 0 }} activeDot={{ r: 6, stroke: '#ffffff', strokeWidth: 2 }} />
-                </LineChart>
+  
+          <div className="col-lg-4">
+            <div className="card border-0 h-100 bg-card">
+              <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Revenue Trend</div>
+              <div className="card-body">
+                <ResponsiveContainer width="100%" height={220}>
+                  <LineChart data={revenueData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                    <XAxis dataKey="month" tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Line type="monotone" dataKey="revenue" stroke={CHART_GREEN} strokeWidth={3} dot={{ fill: CHART_GREEN, r: 4, strokeWidth: 0 }} activeDot={{ r: 6, stroke: '#ffffff', strokeWidth: 2 }} />
+                  </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -169,7 +170,9 @@ const ManagerDashboard = () => {
         <div className="col-lg-8">
           <div className="card border-0 h-100 bg-card">
             <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Recent Requests</div>
-            <div className="table-responsive">
+            
+            {/* Table View (Desktop) */}
+            <div className="table-responsive d-none d-md-block">
               <table className="table table-hover align-middle mb-0">
                 <thead>
                   <tr>
@@ -193,6 +196,31 @@ const ManagerDashboard = () => {
                   })}
                 </tbody>
               </table>
+            </div>
+
+            {/* Card View (Mobile) */}
+            <div className="d-md-none p-3">
+              <div className="d-flex flex-column gap-3">
+                {services.slice(0, 5).map(s => {
+                  const v = mockVehicles.find(v => v.id === s.vehicleId);
+                  return (
+                    <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <h6 className="fw-bold manager-text-primary mb-0">{s.serviceType}</h6>
+                        <StatusBadge status={s.status} />
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span className="small text-muted-custom">Vehicle</span>
+                        <span className="small manager-text-secondary">{v ? `${v.make} ${v.model}` : '—'}</span>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <span className="small text-muted-custom">Priority</span>
+                        <StatusBadge status={s.priority} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -233,7 +261,9 @@ const ManagerDashboard = () => {
       </div>
       <div className="card border-0 bg-card">
         <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">All Service Requests</div>
-        <div className="table-responsive">
+        
+        {/* Table View (Desktop) */}
+        <div className="table-responsive d-none d-md-block">
           <table className="table table-hover align-middle mb-0">
             <thead>
               <tr>
@@ -259,6 +289,35 @@ const ManagerDashboard = () => {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Card View (Mobile) */}
+        <div className="d-md-none p-3">
+          <div className="d-flex flex-column gap-3">
+            {services.map(s => {
+              const vehicle = mockVehicles.find(v => v.id === s.vehicleId);
+              return (
+                <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
+                  <div className="d-flex justify-content-between align-items-start mb-2">
+                    <h6 className="fw-bold manager-text-primary mb-0">{s.serviceType}</h6>
+                    <StatusBadge status={s.status} />
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted-custom">Vehicle</span>
+                    <span className="small manager-text-secondary">{vehicle ? `${vehicle.make} ${vehicle.model}` : '—'}</span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted-custom">Priority</span>
+                    <StatusBadge status={s.priority} />
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center pt-2 border-top border-opacity-10">
+                    <span className="small text-muted-custom">Created</span>
+                    <span className="small manager-text-muted">{s.createdAt}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </>
@@ -363,7 +422,9 @@ const ManagerDashboard = () => {
       </div>
       <div className="card border-0 bg-card">
         <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Assignment Board</div>
-        <div className="table-responsive">
+        
+        {/* Table View (Desktop) */}
+        <div className="table-responsive d-none d-md-block">
           <table className="table table-hover align-middle mb-0">
             <thead>
               <tr>
@@ -399,6 +460,45 @@ const ManagerDashboard = () => {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Card View (Mobile) */}
+        <div className="d-md-none p-3">
+          <div className="d-flex flex-column gap-3">
+            {services.filter(s => s.status !== 'completed').map(s => {
+              const assignedMechanic = mechanics.find(m => m.id === s.mechanicId);
+              return (
+                <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <h6 className="fw-bold manager-text-primary mb-0">{s.serviceType}</h6>
+                    <StatusBadge status={s.status} />
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label className="small text-muted-custom mb-1 d-block">Assigned To</label>
+                    <div className="small manager-text-secondary fw-semibold">
+                      {assignedMechanic?.name || <span className="text-danger">UNASSIGNED</span>}
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-top border-opacity-10">
+                    <label className="small text-muted-custom mb-2 d-block">Reassign Mechanic</label>
+                    <div className="d-flex gap-2">
+                      <select 
+                        className="form-select form-select-sm" 
+                        value={assignments[s.id] || s.mechanicId || ''} 
+                        onChange={e => setAssignments(p => ({ ...p, [s.id]: e.target.value }))}
+                      >
+                        <option value="" disabled>Select mechanic...</option>
+                        {mechanics.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                      </select>
+                      <button className="btn btn-sm btn-primary px-3" onClick={() => handleAssign(s.id)}>Save</button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </>

@@ -188,11 +188,11 @@ const MechanicDashboard = () => {
             
             return (
               <div key={s.id} className="card border-0">
-                <div className="card-body p-4">
+                <div className="card-body p-3 p-md-4">
                   <div className="d-flex flex-column flex-sm-row align-items-sm-start justify-content-between gap-3">
                     <div>
                       <div className="d-flex align-items-center gap-2 mb-2">
-                        <h5 className="fw-bold mb-0 mechanic-text-primary">{s.serviceType}</h5>
+                        <h6 className="fw-bold mb-0 mechanic-text-primary" style={{ fontSize: '1rem' }}>{s.serviceType}</h6>
                         <StatusBadge status={isPending ? 'pending' : s.status} />
                         <StatusBadge status={s.priority} />
                       </div>
@@ -201,9 +201,9 @@ const MechanicDashboard = () => {
                       </p>
                       <p className="small mb-0 mechanic-text-muted">{s.description}</p>
                     </div>
-                    <div className="d-flex gap-2 mt-2 mt-sm-0">
-                      {isPending && <button className="btn btn-sm btn-warning d-flex align-items-center gap-1" onClick={() => handleValidatedUpdate(s.id, 'in-progress')} style={{ color: '#0f0e17' }}><Play size={14} /> Start Work</button>}
-                      {s.status === 'in-progress' && <button className="btn btn-sm btn-success d-flex align-items-center gap-1" onClick={() => handleValidatedUpdate(s.id, 'completed')}><CheckCircle2 size={14} /> Complete</button>}
+                    <div className="d-flex flex-column flex-sm-row gap-2 mt-2 mt-sm-0">
+                      {isPending && <button className="btn btn-sm btn-warning d-flex align-items-center justify-content-center gap-1" onClick={() => handleValidatedUpdate(s.id, 'in-progress')} style={{ color: '#0f0e17' }}><Play size={14} /> Start Work</button>}
+                      {s.status === 'in-progress' && <button className="btn btn-sm btn-success d-flex align-items-center justify-content-center gap-1" onClick={() => handleValidatedUpdate(s.id, 'completed')}><CheckCircle2 size={14} /> Complete</button>}
                     </div>
                   </div>
                 </div>
@@ -225,7 +225,9 @@ const MechanicDashboard = () => {
       </div>
       <div className="card border-0">
         <div className="card-header fw-bold py-3 mechanic-text-primary">Assigned Jobs Queue</div>
-        <div className="table-responsive">
+        
+        {/* Table View (Desktop/Tablet) */}
+        <div className="table-responsive d-none d-md-block">
           <table className="table table-hover align-middle mb-0">
             <thead>
               <tr>
@@ -237,21 +239,59 @@ const MechanicDashboard = () => {
               </tr>
             </thead>
             <tbody>
+              {services.length === 0 ? (
+                <tr><td colSpan="5" className="text-center py-5 text-muted-custom">No jobs currently in queue.</td></tr>
+              ) : (
+                services.map(s => {
+                  const vehicle = mockVehicles.find(v => v.id === s.vehicleId);
+                  const isPending = s.status !== 'in-progress' && s.status !== 'completed';
+                  return (
+                    <tr key={s.id}>
+                      <td className="ps-4 fw-medium mechanic-text-primary">{s.serviceType}</td>
+                      <td className="mechanic-text-secondary">{vehicle ? `${vehicle.make} ${vehicle.model}` : '—'}</td>
+                      <td><StatusBadge status={s.priority} /></td>
+                      <td><StatusBadge status={isPending ? 'pending' : s.status} /></td>
+                      <td className="pe-4 small mechanic-text-muted">{s.updatedAt}</td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Card View (Mobile) */}
+        <div className="d-md-none p-3">
+          {services.length === 0 ? (
+            <div className="text-center py-5 text-muted-custom">No jobs currently in queue.</div>
+          ) : (
+            <div className="d-flex flex-column gap-3">
               {services.map(s => {
                 const vehicle = mockVehicles.find(v => v.id === s.vehicleId);
                 const isPending = s.status !== 'in-progress' && s.status !== 'completed';
                 return (
-                  <tr key={s.id}>
-                    <td className="ps-4 fw-medium mechanic-text-primary">{s.serviceType}</td>
-                    <td className="mechanic-text-secondary">{vehicle ? `${vehicle.make} ${vehicle.model}` : '—'}</td>
-                    <td><StatusBadge status={s.priority} /></td>
-                    <td><StatusBadge status={isPending ? 'pending' : s.status} /></td>
-                    <td className="pe-4 small mechanic-text-muted">{s.updatedAt}</td>
-                  </tr>
+                  <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                       <h6 className="fw-bold mechanic-text-primary mb-1">{s.serviceType}</h6>
+                       <StatusBadge status={isPending ? 'pending' : s.status} />
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <span className="small text-muted-custom">Vehicle</span>
+                      <span className="small mechanic-text-secondary">{vehicle ? `${vehicle.make} ${vehicle.model}` : '—'}</span>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <span className="small text-muted-custom">Priority</span>
+                      <StatusBadge status={s.priority} />
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center pt-2 border-top border-opacity-10">
+                      <span className="small text-muted-custom">Last Updated</span>
+                      <span className="small mechanic-text-muted">{s.updatedAt}</span>
+                    </div>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -265,7 +305,7 @@ const MechanicDashboard = () => {
         <div className="col-sm-6 col-lg-4"><StatCard title="In Progress" value={inProgress.length} icon={<Play size={24} />} color="warning" /></div>
         <div className="col-sm-6 col-lg-4"><StatCard title="Completed" value={completedToday.length} icon={<CheckCircle2 size={24} />} color="success" /></div>
       </div>
-      <div className="d-flex flex-column gap-4 mt-4">
+      <div className="d-flex flex-column gap-3 gap-md-4 mt-4">
         {services.map(s => {
           const v = mockVehicles.find(v => v.id === s.vehicleId);
           const isCompleted = s.status === 'completed';
@@ -274,7 +314,7 @@ const MechanicDashboard = () => {
 
           return (
             <div key={s.id} className="card border-0">
-              <div className="card-body p-4">
+              <div className="card-body p-3 p-md-4">
                 
                 {/* Header Information */}
                 <div className="d-flex justify-content-between align-items-start mb-3">
@@ -287,8 +327,8 @@ const MechanicDashboard = () => {
                   </div>
                   
                   {isCompleted && (
-                    <button className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" onClick={() => deleteJob(s.id)}>
-                      <Trash2 size={14} /> Delete Record
+                    <button className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center gap-1" onClick={() => deleteJob(s.id)} title="Delete Record">
+                      <Trash2 size={14} /> <span className="d-none d-sm-inline">Delete Record</span>
                     </button>
                   )}
                 </div>
@@ -305,12 +345,12 @@ const MechanicDashboard = () => {
                     </button>
 
                     {expandedWorkspace[s.id] && (
-                      <div className="mechanic-notes-wrapper p-3 mt-3">
+                      <div className="mechanic-notes-wrapper p-2 p-md-3 mt-3">
                         
                         {/* Hierarchical History Viewer */}
                         {s.notes.length > 0 && (
-                          <div className="mb-4 p-3 rounded" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)' }}>
-                            <p className="small fw-bold text-uppercase mb-3 text-muted" style={{fontSize: '0.65rem'}}>Job History & Milestones</p>
+                          <div className="mb-3 p-2 p-md-3 rounded" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)' }}>
+                            <p className="small fw-bold text-uppercase mb-2 text-muted" style={{fontSize: 'min(0.65rem, 3vw)'}}>Job History & Milestones</p>
                             {renderNotesHierarchy(s.notes)}
                           </div>
                         )}
@@ -318,41 +358,44 @@ const MechanicDashboard = () => {
                         <label className="small fw-bold text-uppercase mb-2 mechanic-table-header w-100 px-0">Log New Milestone</label>
                         <textarea
                           className="form-control form-control-sm mb-3"
-                          placeholder="What did you just complete? (e.g., 'Removed old transmission', 'Installed new pads')..."
+                          placeholder="What did you just complete?..."
                           value={milestoneInputs[s.id] || ''}
                           onChange={e => setMilestoneInputs(prev => ({ ...prev, [s.id]: e.target.value }))}
-                          rows={3}
+                          rows={window.innerWidth <= 480 ? 2 : 3}
                         ></textarea>
 
-                        <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+                        <div className="d-flex flex-column gap-3">
                           
-                          <div className="d-flex align-items-center gap-2">
-                            <input 
-                              type="file" 
-                              id={`file-${s.id}`} 
-                              className="d-none" 
-                              accept="image/*"
-                              onChange={(e) => handleFileUpload(s.id, e)} 
-                            />
-                            <label htmlFor={`file-${s.id}`} className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2 m-0 cursor-pointer">
-                              <Camera size={14} /> 
-                              {pictureAttached[s.id] ? 'Change Photo' : 'Attach Photo'}
-                            </label>
-                            
-                            {pictureAttached[s.id] && (
-                              <span className="small text-success d-flex align-items-center gap-1 fw-medium">
-                                <ImageIcon size={14} /> Attached
-                              </span>
-                            )}
-                          </div>
+                          <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                            <div className="d-flex align-items-center gap-2">
+                              <input 
+                                type="file" 
+                                id={`file-${s.id}`} 
+                                className="d-none" 
+                                accept="image/*"
+                                onChange={(e) => handleFileUpload(s.id, e)} 
+                              />
+                              <label htmlFor={`file-${s.id}`} className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2 m-0 cursor-pointer">
+                                <Camera size={14} /> 
+                                <span className="d-none d-sm-inline">{pictureAttached[s.id] ? 'Change Photo' : 'Attach Photo'}</span>
+                                <span className="d-inline d-sm-none">{pictureAttached[s.id] ? 'Change' : 'Photo'}</span>
+                              </label>
+                              
+                              {pictureAttached[s.id] && (
+                                <span className="small text-success d-flex align-items-center gap-1 fw-medium">
+                                  <ImageIcon size={14} /> <span className="d-none d-sm-inline">Attached</span>
+                                </span>
+                              )}
+                            </div>
 
-                          <div className="d-flex gap-2">
-                            <button className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1" onClick={() => handleMilestoneUpdate(s.id)}>
-                              <Save size={14} /> Log Milestone
-                            </button>
-                            <button className="btn btn-sm btn-success d-flex align-items-center gap-1" onClick={() => handleValidatedUpdate(s.id, 'completed')}>
-                              <CheckCircle2 size={14} /> Complete Job
-                            </button>
+                            <div className="d-flex flex-column flex-sm-row gap-2 flex-grow-1 flex-sm-grow-0">
+                              <button className="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center gap-1 flex-grow-1" onClick={() => handleMilestoneUpdate(s.id)}>
+                                <Save size={14} /> Log Milestone
+                              </button>
+                              <button className="btn btn-sm btn-success d-flex align-items-center justify-content-center gap-1 flex-grow-1" onClick={() => handleValidatedUpdate(s.id, 'completed')}>
+                                <CheckCircle2 size={14} /> Complete Job
+                              </button>
+                            </div>
                           </div>
 
                         </div>
@@ -365,7 +408,7 @@ const MechanicDashboard = () => {
                 {isPending && (
                   <div className="d-flex justify-content-end border-top border-opacity-10 pt-3 mt-2">
                     <button 
-                      className="btn btn-sm btn-warning d-flex align-items-center gap-1" 
+                      className="btn btn-sm btn-warning d-flex align-items-center justify-content-center gap-1 w-100-mobile" 
                       onClick={() => handleValidatedUpdate(s.id, 'in-progress')} 
                       style={{ color: '#0f0e17' }}
                     >
@@ -443,7 +486,7 @@ const MechanicDashboard = () => {
                   </div>
                   <span className="small text-muted">{v ? `${v.make} ${v.model}` : ''}</span>
                 </div>
-                <div className="card-body p-4">
+                <div className="card-body p-3 p-md-4">
                   
                   {/* Current Hierarchical Log Viewer */}
                   {s.notes.length > 0 && (

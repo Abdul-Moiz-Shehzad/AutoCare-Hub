@@ -67,22 +67,21 @@ const Login = () => {
 
               <form onSubmit={handleLogin}>
                 
-                {/* Role Selection Grid (3 columns for Login) */}
-                <div className="row g-2 g-sm-3 mb-4">
+                {/* Role Selection Grid */}
+                <div className="auth-role-grid mb-4">
                   {roles.map((r) => (
-                    <div className="col-4" key={r.value}>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRole(r.value)}
-                        className={`btn w-100 h-100 p-2 p-sm-3 text-center auth-role-btn ${selectedRole === r.value ? 'active' : ''}`}
-                      >
-                        <div className="mb-2 d-flex justify-content-center auth-role-icon">
-                          {r.icon}
-                        </div>
-                        <div className="fw-bold auth-role-label" style={{ fontSize: '0.85rem' }}>{r.label}</div>
-                        <div className="small auth-role-desc mt-1 opacity-75 d-none d-sm-block">{r.desc}</div>
-                      </button>
-                    </div>
+                    <button
+                      key={r.value}
+                      type="button"
+                      onClick={() => setSelectedRole(r.value)}
+                      className={`btn auth-role-btn ${selectedRole === r.value ? 'active' : ''}`}
+                    >
+                      <span className="auth-role-icon d-flex justify-content-center mb-1">
+                        {r.icon}
+                      </span>
+                      <span className="fw-bold auth-role-label d-block">{r.label}</span>
+                      <span className="auth-role-desc d-none d-sm-block mt-1 opacity-75">{r.desc}</span>
+                    </button>
                   ))}
                 </div>
 

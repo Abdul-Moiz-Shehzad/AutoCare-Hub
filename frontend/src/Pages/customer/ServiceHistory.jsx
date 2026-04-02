@@ -95,8 +95,8 @@ const ServiceHistory = () => {
           </div>
         </div>
 
-        {/* Service History Table */}
-        <div className="table-responsive">
+        {/* Service History — Table View (Desktop/Tablet) */}
+        <div className="table-responsive d-none d-md-block">
           <table className="table table-hover align-middle mb-0">
             <thead>
               <tr>
@@ -137,6 +137,52 @@ const ServiceHistory = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Service History — Card View (Mobile) */}
+        <div className="d-md-none p-3">
+          {filtered.length === 0 ? (
+            <div className="text-center py-5 text-muted-custom">
+              No records found matching your search.
+            </div>
+          ) : (
+            <div className="d-flex flex-column gap-3">
+              {filtered.map(s => {
+                const v = mockVehicles.find(v => v.id === s.vehicleId);
+                return (
+                  <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <div>
+                        <h6 className="fw-bold text-primary-custom mb-1">{s.serviceType}</h6>
+                        <span className="small text-secondary-custom">{v ? `${v.make} ${v.model}` : '—'}</span>
+                      </div>
+                      <StatusBadge status={s.status} />
+                    </div>
+                    
+                    <div className="d-flex justify-content-between align-items-center py-2 border-bottom border-opacity-10 mb-2">
+                      <span className="small text-muted-custom">Date</span>
+                      <span className="small text-secondary-custom">{s.createdAt}</span>
+                    </div>
+                    
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <span className="small text-muted-custom">Cost</span>
+                      <span className="fw-bold" style={{ color: 'var(--accent-primary)' }}>${s.cost}</span>
+                    </div>
+
+                    <div className="pt-2 border-top border-opacity-10 text-center">
+                      <p className="small text-muted-custom mb-2">How was your service?</p>
+                      <div className="d-flex justify-content-center">
+                        <RatingStars 
+                          currentRating={s.customerRating || 0} 
+                          onRate={(val) => handleRateService(s.id, val)} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
       </div>
