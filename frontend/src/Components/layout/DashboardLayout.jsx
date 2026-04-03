@@ -118,7 +118,7 @@ export const DashboardLayout = ({ children, menuItems, sectionLabel }) => {
   };
 
   return (
-    <div className="d-flex min-vh-100 dashboard-layout-bg">
+    <div className="d-flex vh-100 dashboard-layout-bg">
 
       {/* Left Sidebar */}
       <SidebarNav
