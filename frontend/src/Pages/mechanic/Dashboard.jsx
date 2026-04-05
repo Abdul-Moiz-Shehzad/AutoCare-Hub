@@ -19,10 +19,10 @@ const menuItems = [
   { title: 'Notes', url: '/mechanic/notes', icon: <FileText size={18} /> },
 ];
 
-const MechanicDashboard = () => {
+export default function MechanicDashboard() {
   const { pathname } = useLocation();
 
-  // Initialize and normalize legacy mock data into hierarchical objects
+  
   const [services, setServices] = useState(() => 
     mockServices.filter(s => s.mechanicId === 'u2').map(s => ({
       ...s,
@@ -30,7 +30,7 @@ const MechanicDashboard = () => {
     }))
   );
 
-  // Split input states for Updates (Milestones) vs Notes (Technical)
+  
   const [milestoneInputs, setMilestoneInputs] = useState({});
   const [techInputs, setTechInputs] = useState({});
   const [pictureAttached, setPictureAttached] = useState({});
@@ -38,13 +38,13 @@ const MechanicDashboard = () => {
   const [expandedLog, setExpandedLog] = useState(null); 
   const [expandedWorkspace, setExpandedWorkspace] = useState({}); 
 
-  // Derived states
+  
   const activeJobs = services.filter(s => !['completed', 'cancelled'].includes(s.status));
   const inProgress = services.filter(s => s.status === 'in-progress');
   const completedToday = services.filter(s => s.status === 'completed');
   const pendingJobs = services.filter(s => s.status !== 'in-progress' && s.status !== 'completed' && s.status !== 'cancelled');
 
-  // Core update functions
+  
   const updateStatus = (id, status) => {
     setServices(prev => prev.map(s => s.id === id ? { ...s, status } : s));
   };
@@ -61,9 +61,9 @@ const MechanicDashboard = () => {
     }
   };
 
-  // --- HIERARCHICAL NOTE LOGIC ---
+  
 
-  // 1. Adds a Parent Milestone (from Updates Tab)
+  
   const addMilestone = (id, text) => {
     setServices(prev => prev.map(s => s.id === id ? { 
       ...s, 
@@ -71,16 +71,16 @@ const MechanicDashboard = () => {
     } : s));
   };
 
-  // 2. Adds a Child Technical Note to the LATEST Milestone (from Notes Tab)
+  
   const addTechnicalNote = (id, text) => {
     setServices(prev => prev.map(s => {
       if (s.id === id) {
         const newNotes = [...s.notes];
-        // If they add a tech note before logging any milestones, create a default bucket
+        
         if (newNotes.length === 0) {
           newNotes.push({ id: Date.now().toString(), milestone: 'Initial Workspace Setup', technicalNotes: [text] });
         } else {
-          // Attach to the most recent milestone
+          
           const lastIdx = newNotes.length - 1;
           newNotes[lastIdx] = { ...newNotes[lastIdx], technicalNotes: [...newNotes[lastIdx].technicalNotes, text] };
         }
@@ -90,7 +90,7 @@ const MechanicDashboard = () => {
     }));
   };
 
-  // --- TAB ACTION HANDLERS ---
+  
 
   const handleMilestoneUpdate = (id) => {
     const note = milestoneInputs[id]?.trim();
@@ -113,7 +113,6 @@ const MechanicDashboard = () => {
   };
 
   const handleValidatedUpdate = (id, targetStatus) => {
-    // ENFORCEMENT: Block starting work if another job is already in progress
     if (targetStatus === 'in-progress') {
       const currentlyActiveJob = services.find(s => s.status === 'in-progress');
       if (currentlyActiveJob && currentlyActiveJob.id !== id) {
@@ -147,17 +146,17 @@ const MechanicDashboard = () => {
     }
   };
 
-  // Helper function to render the hierarchy UI cleanly
+  
   const renderNotesHierarchy = (notes) => (
     <ul className="mb-0 small ps-1 mechanic-text-secondary list-unstyled">
       {notes.map((n) => (
         <li key={n.id} className="mb-3">
-          {/* Main Milestone Heading */}
+          {}
           <div className="fw-bold mechanic-text-primary d-flex align-items-center gap-2">
             <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--accent-primary)' }}></div>
             {n.milestone}
           </div>
-          {/* Nested Technical Children */}
+          {}
           {n.technicalNotes && n.technicalNotes.length > 0 && (
             <ul className="mt-2 ps-4 text-muted" style={{ listStyleType: 'circle' }}>
               {n.technicalNotes.map((tn, i) => (
@@ -170,7 +169,7 @@ const MechanicDashboard = () => {
     </ul>
   );
 
-  // View 1: Main Dashboard
+  
   const renderDashboard = () => (
     <>
       <div className="row g-4 mb-4">
@@ -215,7 +214,7 @@ const MechanicDashboard = () => {
     </>
   );
 
-  // View 2: Assigned Jobs Table
+  
   const renderAssignedJobs = () => (
     <>
       <div className="row g-4 mb-4">
@@ -226,7 +225,7 @@ const MechanicDashboard = () => {
       <div className="card border-0">
         <div className="card-header fw-bold py-3 mechanic-text-primary">Assigned Jobs Queue</div>
         
-        {/* Table View (Desktop/Tablet) */}
+        {}
         <div className="table-responsive d-none d-md-block">
           <table className="table table-hover align-middle mb-0">
             <thead>
@@ -260,7 +259,7 @@ const MechanicDashboard = () => {
           </table>
         </div>
 
-        {/* Card View (Mobile) */}
+        {}
         <div className="d-md-none p-3">
           {services.length === 0 ? (
             <div className="text-center py-5 text-muted-custom">No jobs currently in queue.</div>
@@ -297,7 +296,7 @@ const MechanicDashboard = () => {
     </>
   );
 
-  // View 3: Updates View
+  
   const renderUpdates = () => (
     <>
       <div className="row g-4 mb-4">
@@ -316,7 +315,7 @@ const MechanicDashboard = () => {
             <div key={s.id} className="card border-0">
               <div className="card-body p-3 p-md-4">
                 
-                {/* Header Information */}
+                {}
                 <div className="d-flex justify-content-between align-items-start mb-3">
                   <div>
                     <h6 className="fw-bold mb-1 mechanic-text-primary d-flex align-items-center gap-2">
@@ -333,7 +332,7 @@ const MechanicDashboard = () => {
                   )}
                 </div>
 
-                {/* --- IN PROGRESS: Minimizable Workspace --- */}
+                {}
                 {isInProgress && (
                   <div className="mt-3 pt-3 border-top border-opacity-10">
                     <button 
@@ -347,7 +346,7 @@ const MechanicDashboard = () => {
                     {expandedWorkspace[s.id] && (
                       <div className="mechanic-notes-wrapper p-2 p-md-3 mt-3">
                         
-                        {/* Hierarchical History Viewer */}
+                        {}
                         {s.notes.length > 0 && (
                           <div className="mb-3 p-2 p-md-3 rounded" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)' }}>
                             <p className="small fw-bold text-uppercase mb-2 text-muted" style={{fontSize: 'min(0.65rem, 3vw)'}}>Job History & Milestones</p>
@@ -404,7 +403,7 @@ const MechanicDashboard = () => {
                   </div>
                 )}
 
-                {/* Status Progression Button */}
+                {}
                 {isPending && (
                   <div className="d-flex justify-content-end border-top border-opacity-10 pt-3 mt-2">
                     <button 
@@ -417,7 +416,7 @@ const MechanicDashboard = () => {
                   </div>
                 )}
 
-                {/* --- COMPLETED: Expandable Logs --- */}
+                {}
                 {isCompleted && (
                   <div className="mt-3 pt-3 border-top border-opacity-10">
                     <button 
@@ -464,7 +463,7 @@ const MechanicDashboard = () => {
     </>
   );
 
-  // View 4: Notes (Technical Details Attached to Milestones)
+  
   const renderNotes = () => (
     <>
       <div className="row g-4 mb-4">
@@ -488,7 +487,7 @@ const MechanicDashboard = () => {
                 </div>
                 <div className="card-body p-3 p-md-4">
                   
-                  {/* Current Hierarchical Log Viewer */}
+                  
                   {s.notes.length > 0 && (
                     <div className="p-3 mb-4 mechanic-notes-wrapper">
                       <p className="small fw-bold text-uppercase mb-3 mechanic-table-header">Current Job History</p>
@@ -550,4 +549,3 @@ const MechanicDashboard = () => {
   );
 };
 
-export default MechanicDashboard;

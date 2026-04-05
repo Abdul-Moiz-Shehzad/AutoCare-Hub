@@ -17,7 +17,7 @@ const menuItems = [
   { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
 ];
 
-// Interactive Star Rating Component
+
 const RatingStars = ({ currentRating, onRate }) => {
   const [hoverRating, setHoverRating] = useState(0);
   
@@ -46,10 +46,9 @@ const RatingStars = ({ currentRating, onRate }) => {
   );
 };
 
-const ServiceHistory = () => {
+export default function ServiceHistory() {
   const [search, setSearch] = useState('');
   
-  // Bring services into local state so we can dynamically update the ratings
   const [services, setServices] = useState(mockServices);
   
   const completed = services.filter(s => s.status === 'completed');
@@ -61,7 +60,7 @@ const ServiceHistory = () => {
     setServices(prev => prev.map(s => 
       s.id === serviceId ? { ...s, customerRating: ratingValue } : s
     ));
-    // In a real app, this would fire an API call to save the rating to the backend
+    
   };
 
   return (
@@ -72,10 +71,10 @@ const ServiceHistory = () => {
         breadcrumbs={[{ label: 'Dashboard', href: '/customer/dashboard' }, { label: 'History' }]}
       />
 
-      {/* Main Unified Card Container */}
+      {}
       <div className="card border-0 bg-card overflow-hidden">
         
-        {/* Card Header with Integrated Search Bar */}
+        {}
         <div className="card-header border-bottom border-opacity-10 py-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 bg-transparent">
           <h6 className="fw-bold mb-0 text-primary-custom text-uppercase" style={{ letterSpacing: '0.5px' }}>
             Past Services
@@ -95,7 +94,7 @@ const ServiceHistory = () => {
           </div>
         </div>
 
-        {/* Service History — Table View (Desktop/Tablet) */}
+        {}
         <div className="table-responsive d-none d-md-block">
           <table className="table table-hover align-middle mb-0">
             <thead>
@@ -139,7 +138,7 @@ const ServiceHistory = () => {
           </table>
         </div>
 
-        {/* Service History — Card View (Mobile) */}
+        {}
         <div className="d-md-none p-3">
           {filtered.length === 0 ? (
             <div className="text-center py-5 text-muted-custom">
@@ -190,4 +189,3 @@ const ServiceHistory = () => {
   );
 };
 
-export default ServiceHistory;

@@ -2,7 +2,7 @@ import React from 'react';
 
 import '../../Styles/Components.css';
 
-// Map status strings to theme-consistent styles
+
 const statusStyles = {
   'pending': 'status-badge-pending',
   'received': 'status-badge-received',
@@ -18,7 +18,7 @@ const statusStyles = {
 
 const defaultStyle = 'status-badge-default';
 
-export const StatusBadge = ({ status, className = '' }) => {
+export default function StatusBadge({ status, className = '' }) {
   const styleClass = statusStyles[status] || defaultStyle;
 
   return (
@@ -29,5 +29,3 @@ export const StatusBadge = ({ status, className = '' }) => {
     </span>
   );
 };
-
-export default StatusBadge;

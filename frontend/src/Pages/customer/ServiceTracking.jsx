@@ -20,7 +20,7 @@ const menuItems = [
 const steps = ['pending', 'in-progress', 'completed'];
 const stepLabels = ['Pending', 'In Progress', 'Completed'];
 
-const ServiceTracking = () => {
+export default function ServiceTracking() {
   const activeServices = mockServices.filter(s => !['completed', 'cancelled'].includes(s.status));
   const [expandedLogs, setExpandedLogs] = useState({});
 
@@ -50,7 +50,7 @@ const ServiceTracking = () => {
             const v = mockVehicles.find(v => v.id === s.vehicleId);
             const m = mockMechanics.find(m => m.id === s.mechanicId);
             
-            // Normalize status to the 3-step flow
+            
             const normalizedStatus = ['in-progress', 'completed'].includes(s.status) ? s.status : 'pending';
             const currentIdx = steps.indexOf(normalizedStatus);
             const progressPercentage = (currentIdx / (steps.length - 1)) * 100;
@@ -59,7 +59,7 @@ const ServiceTracking = () => {
               <div key={s.id} className="card border-0">
                 <div className="card-body p-4 p-md-5">
                   
-                  {/* Top Header Row */}
+                  {}
                   <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-start gap-3 mb-4">
                     <div>
                       <div className="d-flex align-items-center gap-3 mb-1">
@@ -84,7 +84,7 @@ const ServiceTracking = () => {
                     </div>
                   </div>
 
-                  {/* Refined Progress Stepper UI */}
+                  {}
                   <div className="position-relative mt-5 mb-2 px-2">
                     <div className="position-absolute top-50 start-0 translate-middle-y w-100 px-4" style={{ zIndex: 1 }}>
                       <div className="progress tracking-progress-bg">
@@ -98,7 +98,7 @@ const ServiceTracking = () => {
 
                     <div className="d-flex justify-content-between position-relative" style={{ zIndex: 2 }}>
                       {stepLabels.map((label, i) => {
-                        // Correct logic for determining node states
+                        
                         const isCompleted = i < currentIdx || (normalizedStatus === 'completed' && i === currentIdx);
                         const isActive = i === currentIdx && normalizedStatus !== 'completed';
                         
@@ -120,7 +120,7 @@ const ServiceTracking = () => {
                     </div>
                   </div>
 
-                  {/* Expandable Customer-Facing Notes Section */}
+                  {}
                   {s.notes && s.notes.length > 0 && (
                     <div className="mt-5 pt-3 border-top border-opacity-10">
                       <button 
@@ -138,7 +138,7 @@ const ServiceTracking = () => {
                           </p>
                           <ul className="mb-0 small ps-0 list-unstyled text-secondary-custom">
                             {s.notes.map((n, i) => {
-                              // Extract ONLY the milestone text
+                              
                               const milestoneText = typeof n === 'object' ? n.milestone : n;
                               return milestoneText ? (
                                 <li key={i} className="mb-3 d-flex align-items-start gap-3">
@@ -163,4 +163,3 @@ const ServiceTracking = () => {
   );
 };
 
-export default ServiceTracking;

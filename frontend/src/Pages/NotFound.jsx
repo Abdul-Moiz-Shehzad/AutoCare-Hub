@@ -3,10 +3,10 @@ import '../Styles/NotFound.css';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, SearchX } from 'lucide-react';
 
-const NotFound = () => {
+export default function NotFound() {
   return (
     <div className="d-flex min-vh-100 flex-column align-items-center justify-content-center px-4 text-center notfound-page">
-      {/* Decorative orb */}
+      {}
       <div className="notfound-orb" />
       
       <div className="position-relative z-1">
@@ -24,4 +24,3 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;

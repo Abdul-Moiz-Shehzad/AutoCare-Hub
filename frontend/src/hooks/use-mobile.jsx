@@ -12,13 +12,13 @@ export function useIsMobile() {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
     
-    // Set initial value
+    
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     
-    // Add event listener
+    
     mql.addEventListener("change", onChange);
     
-    // Cleanup on unmount
+    
     return () => mql.removeEventListener("change", onChange);
   }, []);
 

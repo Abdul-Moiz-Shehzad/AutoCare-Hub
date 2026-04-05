@@ -9,7 +9,7 @@ const roleConfig = [
   { value: 'manager', label: 'Manager', desc: 'Run the workshop', icon: <ShieldCheck size={24} /> },
 ];
 
-const Signup = () => {
+export default function Signup() {
   const [selectedRole, setSelectedRole] = useState('customer');
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const Signup = () => {
     <div className="container-fluid p-0 min-vh-100 d-flex auth-page">
       <div className="row g-0 w-100 flex-grow-1">
         
-        {/* Left Side: Hero */}
+        {}
         <div className="col-lg-6 d-none d-lg-flex flex-column align-items-center justify-content-center p-5 auth-hero">
           <div className="auth-hero-orb auth-hero-orb-top" />
           <div className="auth-hero-orb auth-hero-orb-bottom" />
@@ -50,7 +50,7 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Right Side: Signup Form */}
+        {}
         <div className="col-lg-6 d-flex align-items-center justify-content-center p-4 auth-page">
           <div className="w-100 auth-form-card">
             <div className="p-4 p-sm-5">
@@ -65,7 +65,7 @@ const Signup = () => {
 
               <form onSubmit={handleSignup}>
                 
-                {/* Role Selection Grid (2 roles for Signup) */}
+                {}
                 <div className="auth-role-grid auth-role-grid--two mb-4">
                   {roleConfig.map((r) => (
                     <button
@@ -83,7 +83,7 @@ const Signup = () => {
                   ))}
                 </div>
 
-                {/* Full Name Input */}
+                {}
                 <div className="mb-4">
                   <label htmlFor="name" className="form-label fw-medium small text-muted text-uppercase" style={{ letterSpacing: '0.5px' }}>Full Name</label>
                   <div className="input-group">
@@ -94,7 +94,7 @@ const Signup = () => {
                   </div>
                 </div>
 
-                {/* Email Input */}
+                {}
                 <div className="mb-4">
                   <label htmlFor="email" className="form-label fw-medium small text-muted text-uppercase" style={{ letterSpacing: '0.5px' }}>Email Address</label>
                   <div className="input-group">
@@ -105,7 +105,7 @@ const Signup = () => {
                   </div>
                 </div>
 
-                {/* Password Input */}
+                {}
                 <div className="mb-5">
                   <label htmlFor="password" className="form-label fw-medium small text-muted text-uppercase" style={{ letterSpacing: '0.5px' }}>Password</label>
                   <div className="input-group">
@@ -116,13 +116,13 @@ const Signup = () => {
                   </div>
                 </div>
 
-                {/* Submit Button */}
+                {}
                 <button type="submit" className="btn btn-primary w-100 fw-bold py-3 mb-4 d-flex align-items-center justify-content-center gap-2" style={{ fontSize: '1.05rem' }}>
                   Create Account
                   <ArrowRight size={18} />
                 </button>
 
-                {/* Sign In Link */}
+                {}
                 <p className="text-center small mb-0 text-muted">
                   Already have an account?{' '}
                   <Link to="/login" className="fw-bold text-decoration-none" style={{ color: 'var(--accent-primary)' }}>
@@ -140,4 +140,3 @@ const Signup = () => {
   );
 };
 
-export default Signup;

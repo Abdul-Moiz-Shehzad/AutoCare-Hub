@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import '../../Styles/Components.css';
 
 
-export const PageHeader = ({ title, description, breadcrumbs, action }) => {
+export default function PageHeader({ title, description, breadcrumbs, action }) {
   return (
     <div className="mb-4">
-      {/* Breadcrumb */}
+      {}
       {breadcrumbs && breadcrumbs.length > 0 && (
         <nav aria-label="breadcrumb" className="mb-2">
           <ol className="breadcrumb small mb-1 page-header-breadcrumb">
@@ -32,7 +32,7 @@ export const PageHeader = ({ title, description, breadcrumbs, action }) => {
         </nav>
       )}
 
-      {/* Header Title and Action Area */}
+      {}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <div className="flex-grow-1">
           <h1 className="h3 fw-bold mb-0 page-header-title">{title}</h1>
@@ -41,7 +41,7 @@ export const PageHeader = ({ title, description, breadcrumbs, action }) => {
           )}
         </div>
         
-        {/* Action Button Container */}
+        {}
         {action && (
           <div className="flex-shrink-0">
             {action}
@@ -52,4 +52,3 @@ export const PageHeader = ({ title, description, breadcrumbs, action }) => {
   );
 };
 
-export default PageHeader;

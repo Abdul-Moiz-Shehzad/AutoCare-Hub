@@ -46,7 +46,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const ManagerDashboard = () => {
+export default function ManagerDashboard() {
   const { pathname } = useLocation();
   
   const [mechanics, setMechanics] = useState(mockMechanics);
@@ -61,7 +61,6 @@ const ManagerDashboard = () => {
   const [showAddMechanic, setShowAddMechanic] = useState(false);
   const [newMechanic, setNewMechanic] = useState({ name: '', email: '', specialization: '' });
 
-  // 3-Stage Derived States
   const pendingRequests = services.filter(s => s.status === 'pending');
   const inProgressRequests = services.filter(s => s.status === 'in-progress');
   const completedRequests = services.filter(s => s.status === 'completed');
@@ -103,7 +102,7 @@ const ManagerDashboard = () => {
     fill: ['#4E4FEB', '#34d399', '#fbbf24', '#6A6BFF', '#f87171', '#A1A1AA'][i] || '#4E4FEB',
   }));
 
-  // View 1: Main Dashboard
+  
   const renderDashboard = () => (
     <>
       <div className="row g-4 mb-4">
@@ -132,7 +131,7 @@ const ManagerDashboard = () => {
           </div>
   
           <div className="col-lg-4">
-            {/* Same logic for Pie Chart label sizing if needed, but labels are already 10px */}
+            {}
             <div className="card border-0 h-100 bg-card">
               <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Services by Type</div>
               <div className="card-body">
@@ -171,7 +170,7 @@ const ManagerDashboard = () => {
           <div className="card border-0 h-100 bg-card">
             <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Recent Requests</div>
             
-            {/* Table View (Desktop) */}
+            {}
             <div className="table-responsive d-none d-md-block">
               <table className="table table-hover align-middle mb-0">
                 <thead>
@@ -198,7 +197,7 @@ const ManagerDashboard = () => {
               </table>
             </div>
 
-            {/* Card View (Mobile) */}
+            {}
             <div className="d-md-none p-3">
               <div className="d-flex flex-column gap-3">
                 {services.slice(0, 5).map(s => {
@@ -250,7 +249,7 @@ const ManagerDashboard = () => {
     </>
   );
 
-  // View 2: Requests
+  
   const renderRequests = () => (
     <>
       <div className="row g-4 mb-4">
@@ -262,7 +261,7 @@ const ManagerDashboard = () => {
       <div className="card border-0 bg-card">
         <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">All Service Requests</div>
         
-        {/* Table View (Desktop) */}
+        {}
         <div className="table-responsive d-none d-md-block">
           <table className="table table-hover align-middle mb-0">
             <thead>
@@ -291,7 +290,7 @@ const ManagerDashboard = () => {
           </table>
         </div>
 
-        {/* Card View (Mobile) */}
+        {}
         <div className="d-md-none p-3">
           <div className="d-flex flex-column gap-3">
             {services.map(s => {
@@ -323,7 +322,7 @@ const ManagerDashboard = () => {
     </>
   );
 
-  // View 3: Mechanics
+  
   const renderMechanics = () => (
     <>
       <div className="row g-4 mb-4">
@@ -333,7 +332,7 @@ const ManagerDashboard = () => {
         <div className="col-sm-6 col-lg-3"><StatCard title="Avg Rating" value={Number((mechanics.reduce((sum, m) => sum + m.rating, 0) / mechanics.length).toFixed(1)) || 0} icon={<Star size={24} />} color="info" /></div>
       </div>
       
-      {/* Create Mechanic Form */}
+      {}
       <div className="card border-0 bg-card mb-4">
         <div className="card-header border-bottom border-opacity-10 d-flex justify-content-between align-items-center">
           <span className="fw-bold manager-text-primary">Team Roster</span>
@@ -383,7 +382,7 @@ const ManagerDashboard = () => {
                 />
               </div>
               <div className="col-md-2">
-                {/* CHANGED FROM btn-success TO btn-primary */}
+                {}
                 <button type="submit" className="btn btn-primary w-100 fw-bold py-2">Create Account</button>
               </div>
             </form>
@@ -411,7 +410,7 @@ const ManagerDashboard = () => {
     </>
   );
 
-  // View 4: Assignments
+  
   const renderAssignments = () => (
     <>
       <div className="row g-4 mb-4">
@@ -423,7 +422,7 @@ const ManagerDashboard = () => {
       <div className="card border-0 bg-card">
         <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Assignment Board</div>
         
-        {/* Table View (Desktop) */}
+        {}
         <div className="table-responsive d-none d-md-block">
           <table className="table table-hover align-middle mb-0">
             <thead>
@@ -462,7 +461,7 @@ const ManagerDashboard = () => {
           </table>
         </div>
 
-        {/* Card View (Mobile) */}
+        
         <div className="d-md-none p-3">
           <div className="d-flex flex-column gap-3">
             {services.filter(s => s.status !== 'completed').map(s => {
@@ -504,7 +503,6 @@ const ManagerDashboard = () => {
     </>
   );
 
-  // View 5: Workflow (Kanban Board)
   const renderWorkflow = () => (
     <>
       <div className="row g-4 mb-4">
@@ -596,4 +594,3 @@ const ManagerDashboard = () => {
   );
 };
 
-export default ManagerDashboard;

@@ -29,18 +29,17 @@ const getServiceIcon = (name) => {
   return <Settings size={24} />;
 };
 
-const BookService = () => {
-  // Changed to an array to handle multiple selections
+export default function BookService() {
+  
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState('');
   const [booked, setBooked] = useState(false);
 
-  // Toggle function for multi-select
   const toggleService = (id) => {
     setSelectedServices(prev => 
       prev.includes(id) 
-        ? prev.filter(serviceId => serviceId !== id) // Remove if already selected
-        : [...prev, id] // Add if not selected
+        ? prev.filter(serviceId => serviceId !== id)
+        : [...prev, id]
     );
   };
 
@@ -49,7 +48,6 @@ const BookService = () => {
     setBooked(true);
   };
 
-  // Success Screen
   if (booked) {
     return (
       <DashboardLayout menuItems={menuItems} sectionLabel="Customer">
@@ -62,7 +60,7 @@ const BookService = () => {
           <button 
             onClick={() => {
               setBooked(false);
-              setSelectedServices([]); // Reset selections on book again
+              setSelectedServices([]); 
             }} 
             className="btn btn-primary px-4 py-2 fw-medium d-flex align-items-center gap-2"
           >
@@ -83,10 +81,10 @@ const BookService = () => {
       />
 
       <div className="row g-4">
-        {/* Left Column */}
+        {}
         <div className="col-lg-8">
           
-          {/* Step 1: Select Service Types (Multi-Select) */}
+          {}
           <div className="mb-5"> 
             <h5 className="fw-bold mb-4 text-secondary text-uppercase" style={{fontSize: '0.8rem', letterSpacing: '1px'}}>
               01. Choose Services (Select Multiple)
@@ -103,7 +101,7 @@ const BookService = () => {
                       >
                         <div className="d-flex justify-content-between align-items-start mb-3">
                           <div className="service-icon">{getServiceIcon(s.name)}</div>
-                          {/* Shows a checkmark in the corner when active */}
+                          {}
                           {isSelected && <CheckCircle2 size={20} className="text-white" />}
                         </div>
                         <div className="fw-bold fs-5 service-title">{s.name}</div>
@@ -120,7 +118,7 @@ const BookService = () => {
             </div>
           </div>
 
-          {/* Step 2: Booking Details */}
+          {}
           <div className="card border-0 mt-5">
             <div className="card-body p-4">
               <form onSubmit={handleBook}>
@@ -162,7 +160,7 @@ const BookService = () => {
                   ></textarea>
                 </div>
 
-                {/* Disabled if no services are selected */}
+                {}
                 <button 
                   type="submit" 
                   className="btn btn-primary w-100 fw-bold py-3 mt-2"
@@ -175,7 +173,7 @@ const BookService = () => {
           </div>
         </div>
 
-        {/* Right Column: Order Summary */}
+        {}
         <div className="col-lg-4">
           <div className="card border-0 position-sticky book-summary-sticky">
             <div className="card-body p-4">
@@ -183,14 +181,14 @@ const BookService = () => {
               
               {selectedServices.length > 0 ? (
                 (() => {
-                  // Get full objects for selected services
+                  
                   const selectedTypes = selectedServices
                     .map(id => serviceTypes.find(s => s.id === id))
                     .filter(Boolean);
                   
                   const veh = mockVehicles.find(v => v.id === selectedVehicle);
                   
-                  // Calculate total price
+                  
                   const totalPrice = selectedTypes.reduce((sum, st) => sum + Number(st.price), 0);
 
                   return (
@@ -241,4 +239,3 @@ const BookService = () => {
   );
 };
 
-export default BookService;

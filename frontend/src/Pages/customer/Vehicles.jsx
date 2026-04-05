@@ -16,7 +16,7 @@ const menuItems = [
   { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
 ];
 
-const Vehicles = () => {
+export default function Vehicles() {
   const [vehicles] = useState(mockVehicles);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -37,7 +37,7 @@ const Vehicles = () => {
         }
       />
 
-      {/* Vehicles Grid */}
+      {}
       <div className="row g-4">
         {vehicles.map((v) => (
           <div className="col-sm-6 col-lg-4" key={v.id}>
@@ -71,7 +71,7 @@ const Vehicles = () => {
         ))}
       </div>
 
-      {/* Modal for Adding Vehicles */}
+      {}
       {dialogOpen && (
         <>
           <div className="modal-backdrop fade show vehicle-modal-backdrop"></div>
@@ -135,4 +135,3 @@ const Vehicles = () => {
   );
 };
 
-export default Vehicles;

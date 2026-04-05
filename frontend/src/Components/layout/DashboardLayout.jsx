@@ -5,11 +5,11 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Wrench, PanelLeftClose, PanelLeftOpen, User, LogOut, ChevronDown, X } from 'lucide-react';
 
-// The Sidebar Component
+
 const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose }) => {
   return (
     <>
-      {/* Mobile overlay backdrop */}
+      {}
       {mobileOpen && (
         <div
           className="sidebar-overlay"
@@ -25,7 +25,7 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
           width: collapsed ? '80px' : '260px',
         }}
       >
-        {/* Sidebar Header */}
+        {}
         <div className="d-flex align-items-center gap-3 p-3 sidebar-header">
           <div className="sidebar-logo">
             <Wrench size={18} strokeWidth={2.5} />
@@ -36,7 +36,7 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
               <span className="sidebar-section-label lh-1 m-0">PRECISION HUB</span>
             </div>
           )}
-          {/* Mobile close button inside sidebar */}
+          {}
           {mobileOpen && (
             <button
               className="btn p-0 ms-auto d-flex align-items-center justify-content-center dashboard-toggle-btn"
@@ -48,7 +48,7 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
           )}
         </div>
 
-        {/* Sidebar Menu */}
+        {}
         <div className="p-3 flex-grow-1">
           {!collapsed && (
             <div className="text-uppercase small fw-bold mb-3 mt-2 sidebar-section-label">
@@ -80,20 +80,20 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
   );
 };
 
-// The Main Layout Component
-export const DashboardLayout = ({ children, menuItems, sectionLabel }) => {
+
+export default function DashboardLayout({ children, menuItems, sectionLabel }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Track viewport size
+  
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      if (!mobile) setMobileOpen(false); // close overlay when resizing up
+      if (!mobile) setMobileOpen(false); 
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -120,7 +120,7 @@ export const DashboardLayout = ({ children, menuItems, sectionLabel }) => {
   return (
     <div className="d-flex vh-100 dashboard-layout-bg">
 
-      {/* Left Sidebar */}
+      
       <SidebarNav
         menuItems={menuItems}
         sectionLabel={sectionLabel}
@@ -129,13 +129,13 @@ export const DashboardLayout = ({ children, menuItems, sectionLabel }) => {
         onClose={() => setMobileOpen(false)}
       />
 
-      {/* Right Content Area */}
+      
       <div className="d-flex flex-column flex-grow-1 w-100" style={{ minWidth: 0 }}>
 
-        {/* Top Navbar */}
+        
         <header className="d-flex align-items-center justify-content-between px-4 dashboard-header">
 
-          {/* Toggle Button */}
+          
           <button
             className="btn btn-sm d-flex align-items-center justify-content-center dashboard-toggle-btn"
             onClick={handleToggle}
@@ -144,7 +144,7 @@ export const DashboardLayout = ({ children, menuItems, sectionLabel }) => {
             {collapsed && !isMobile ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
           </button>
 
-          {/* User Profile Dropdown */}
+          
           <div className="dropdown">
             <button
               className="btn d-flex align-items-center gap-2 px-3 py-1 user-profile-dropdown"
@@ -175,7 +175,7 @@ export const DashboardLayout = ({ children, menuItems, sectionLabel }) => {
           </div>
         </header>
 
-        {/* Main Page Content */}
+        {}
         <main className="p-4 flex-grow-1 overflow-auto dashboard-main-content">
           {children}
         </main>
@@ -184,5 +184,3 @@ export const DashboardLayout = ({ children, menuItems, sectionLabel }) => {
     </div>
   );
 };
-
-export default DashboardLayout;

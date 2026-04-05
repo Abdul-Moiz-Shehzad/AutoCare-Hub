@@ -7,9 +7,7 @@ const NavLink = forwardRef(
       <RouterNavLink
         ref={ref}
         to={to}
-        // React Router provides isActive and isPending automatically
         className={({ isActive, isPending }) => {
-          // Build the class string using standard JavaScript logic instead of the 'cn' utility
           let finalClassName = className;
           
           if (isActive && activeClassName) {

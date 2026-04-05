@@ -10,7 +10,7 @@ const roles = [
   { value: 'manager', label: 'Manager', desc: 'Run workshop', icon: <ShieldCheck size={22} /> },
 ];
 
-const Login = () => {
+export default function Login() {
   const [selectedRole, setSelectedRole] = useState('customer');
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const Login = () => {
     <div className="container-fluid p-0 min-vh-100 d-flex auth-page">
       <div className="row g-0 w-100 flex-grow-1">
         
-        {/* Left Side: Hero */}
+        {}
         <div className="col-lg-6 d-none d-lg-flex flex-column align-items-center justify-content-center p-5 auth-hero">
           <div className="auth-hero-orb auth-hero-orb-top" />
           <div className="auth-hero-orb auth-hero-orb-bottom" />
@@ -52,7 +52,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Right Side: Login Form */}
+        {}
         <div className="col-lg-6 d-flex align-items-center justify-content-center p-4 auth-page">
           <div className="w-100 auth-form-card">
             <div className="p-4 p-sm-5">
@@ -67,7 +67,7 @@ const Login = () => {
 
               <form onSubmit={handleLogin}>
                 
-                {/* Role Selection Grid */}
+                {}
                 <div className="auth-role-grid mb-4">
                   {roles.map((r) => (
                     <button
@@ -85,7 +85,7 @@ const Login = () => {
                   ))}
                 </div>
 
-                {/* Email Input */}
+                {}
                 <div className="mb-4">
                   <label htmlFor="email" className="form-label fw-medium small text-muted text-uppercase" style={{ letterSpacing: '0.5px' }}>Email Address</label>
                   <div className="input-group">
@@ -103,7 +103,7 @@ const Login = () => {
                   </div>
                 </div>
 
-                {/* Password Input */}
+                {}
                 <div className="mb-5">
                   <label htmlFor="password" className="form-label fw-medium small text-muted text-uppercase" style={{ letterSpacing: '0.5px' }}>Password</label>
                   <div className="input-group">
@@ -121,13 +121,13 @@ const Login = () => {
                   </div>
                 </div>
 
-                {/* Submit Button */}
+                {}
                 <button type="submit" className="btn btn-primary w-100 fw-bold py-3 mb-4 d-flex align-items-center justify-content-center gap-2" style={{ fontSize: '1.05rem' }}>
                   Sign In
                   <ArrowRight size={18} />
                 </button>
 
-                {/* Sign Up Link */}
+                {}
                 <p className="text-center small mb-0 text-muted">
                   Don't have an account?{' '}
                   <Link to="/signup" className="fw-bold text-decoration-none" style={{ color: 'var(--accent-primary)' }}>
@@ -145,4 +145,3 @@ const Login = () => {
   );
 };
 
-export default Login;

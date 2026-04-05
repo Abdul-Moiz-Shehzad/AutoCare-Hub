@@ -2,7 +2,7 @@ import React from 'react';
 import { Wrench, Globe, ExternalLink, Mail } from 'lucide-react';
 import '../../Styles/Components.css';
 
-const Footer = () => {
+export default function Footer() {
   return (
     <footer className="footer-container">
       <div className="container">
@@ -35,4 +35,3 @@ const Footer = () => {
   );
 };
 
-export default Footer;

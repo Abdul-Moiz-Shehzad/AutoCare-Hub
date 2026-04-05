@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import '../../Styles/Components.css';
 import { Wrench, LogIn, UserPlus } from 'lucide-react';
 
-const PublicNavbar = () => {
+export default function PublicNavbar() {
   return (
     <nav className="navbar navbar-expand-lg public-navbar">
       <div className="container">
@@ -28,4 +28,3 @@ const PublicNavbar = () => {
   );
 };
 
-export default PublicNavbar;

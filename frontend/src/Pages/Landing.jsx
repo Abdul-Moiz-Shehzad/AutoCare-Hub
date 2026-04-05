@@ -18,12 +18,12 @@ const features = [
   { icon: <Camera size={28} />, title: 'Mechanic Workspaces', desc: 'Technicians get dedicated digital workspaces to log milestones, attach photos, and complete jobs.' },
 ];
 
-const Landing = () => {
+export default function Landing() {
   return (
     <div className="landing-page-container">
       <PublicNavbar />
 
-      {/* Hero Section */}
+      {}
       <section className="landing-hero-section">
         <div className="landing-decorative-orb-top" />
         <div className="landing-decorative-orb-bottom" />
@@ -71,7 +71,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {}
       <section id="features" className="landing-features-section">
         <div className="container">
           <div className="text-center mb-5 pb-3">
@@ -103,7 +103,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Services Section */}
+      {}
       <section id="services" className="landing-services-section">
         <div className="container">
           <div className="row align-items-end mb-5 pb-3">
@@ -142,7 +142,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Trust / Stats Section */}
+      {}
       <section id="about" className="landing-trust-section">
         <div className="container">
           <div className="row align-items-center g-5">
@@ -184,7 +184,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {}
       <section className="landing-cta-section text-center">
         <div className="landing-cta-orb" />
         <div className="container position-relative z-1 py-5">
@@ -209,4 +209,3 @@ const Landing = () => {
   );
 };
 
-export default Landing;

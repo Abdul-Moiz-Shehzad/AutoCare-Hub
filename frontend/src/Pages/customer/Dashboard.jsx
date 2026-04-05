@@ -17,7 +17,7 @@ const menuItems = [
   { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
 ];
 
-// Status badge for this page
+
 const StatusBadge = ({ status }) => {
   const styles = {
     'completed': 'status-badge-completed',
@@ -34,7 +34,7 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-const CustomerDashboard = () => {
+export default function CustomerDashboard() {
   const { user } = useAuth();
   const safeServices = mockServices || [];
   const safeVehicles = mockVehicles || [];
@@ -52,7 +52,7 @@ const CustomerDashboard = () => {
   return (
     <DashboardLayout menuItems={menuItems} sectionLabel="Customer">
       
-      {/* Page Header */}
+      {}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 section-header-border">
         <div>
           <h2 className="fw-bold mb-1 text-primary-custom">
@@ -68,7 +68,7 @@ const CustomerDashboard = () => {
         </div>
       </div>
 
-      {/* Stats Row */}
+      {}
       <div className="row g-4 g-lg-5 mb-5">
         {stats.map((stat, index) => (
           <div className="col-sm-6 col-lg-3" key={index}>
@@ -90,10 +90,10 @@ const CustomerDashboard = () => {
         ))}
       </div>
 
-      {/* Main Content Area */}
+      {}
       <div className="row g-4 g-lg-5">
         
-        {/* Recent Service Table */}
+        {}
         <div className="col-lg-8">
           <div className="card border-0 h-100">
             <div className="card-header py-4 px-4">
@@ -135,7 +135,7 @@ const CustomerDashboard = () => {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {}
         <div className="col-lg-4">
           <div className="card border-0 h-100">
             <div className="card-header py-4 px-4">
@@ -165,4 +165,3 @@ const CustomerDashboard = () => {
   );
 };
 
-export default CustomerDashboard;
