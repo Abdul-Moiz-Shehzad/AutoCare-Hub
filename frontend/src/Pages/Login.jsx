@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import '../Styles/Auth.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../store/authSlice';
+import api from '../lib/api';
 import { Wrench, User, Briefcase, ShieldCheck, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const roles = [
@@ -12,18 +14,32 @@ const roles = [
 
 export default function Login() {
   const [selectedRole, setSelectedRole] = useState('customer');
-  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    login(selectedRole);
-    const paths = {
-      customer: '/customer/dashboard',
-      mechanic: '/mechanic/dashboard',
-      manager: '/manager/dashboard',
-    };
-    navigate(paths[selectedRole]);
+    setError('');
+    try {
+      const { data } = await api.post('/auth/login', { email, password });
+      if (data.role !== selectedRole) {
+        setError(`You are not registered as a ${selectedRole}. Please select the correct role.`);
+        return;
+      }
+      dispatch(setCredentials(data));
+
+      const paths = {
+        customer: '/customer/dashboard',
+        mechanic: '/mechanic/dashboard',
+        manager: '/manager/dashboard',
+      };
+      navigate(paths[data.role]);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to login');
+    }
   };
 
   return (
@@ -66,6 +82,7 @@ export default function Login() {
               </div>
 
               <form onSubmit={handleLogin}>
+                {error && <div className="alert alert-danger py-2 small">{error}</div>}
                 
                 {}
                 <div className="auth-role-grid mb-4">
@@ -97,7 +114,8 @@ export default function Login() {
                       type="email" 
                       className="form-control" 
                       placeholder="you@example.com" 
-                      defaultValue="john@example.com" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
@@ -115,7 +133,8 @@ export default function Login() {
                       type="password" 
                       className="form-control" 
                       placeholder="••••••••" 
-                      defaultValue="password123" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required 
                     />
                   </div>

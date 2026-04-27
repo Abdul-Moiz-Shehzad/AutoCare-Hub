@@ -3,7 +3,7 @@ import '../../Styles/CustomerPages.css';
 import DashboardLayout from '../../Components/layout/DashboardLayout';
 import PageHeader from '../../Components/shared/PageHeader';
 import StatusBadge from '../../Components/shared/StatusBadge';
-import { mockServices, mockVehicles } from '../../data/mockData';
+import api from '../../lib/api';
 import { 
   LayoutDashboard, Car, CalendarPlus, Activity, Clock, 
   Search, Star
@@ -49,18 +49,34 @@ const RatingStars = ({ currentRating, onRate }) => {
 export default function ServiceHistory() {
   const [search, setSearch] = useState('');
   
-  const [services, setServices] = useState(mockServices);
+  const [services, setServices] = useState([]);
+
+  React.useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const { data } = await api.get('/customer/services');
+        setServices(data);
+      } catch(err) {
+        console.error('Failed to load services');
+      }
+    };
+    fetchServices();
+  }, []);
   
   const completed = services.filter(s => s.status === 'completed');
   const filtered = completed.filter(s =>
     s.serviceType.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleRateService = (serviceId, ratingValue) => {
-    setServices(prev => prev.map(s => 
-      s.id === serviceId ? { ...s, customerRating: ratingValue } : s
-    ));
-    
+  const handleRateService = async (serviceId, ratingValue) => {
+    try {
+      await api.put(`/customer/services/${serviceId}/rate`, { rating: ratingValue });
+      setServices(prev => prev.map(s => 
+        s._id === serviceId ? { ...s, customerRating: ratingValue } : s
+      ));
+    } catch(err) {
+      alert('Failed to rate service');
+    }
   };
 
   return (
@@ -116,17 +132,17 @@ export default function ServiceHistory() {
                 </tr>
               ) : (
                 filtered.map(s => {
-                  const v = mockVehicles.find(v => v.id === s.vehicleId);
+                  const v = s.vehicleId;
                   return (
-                    <tr key={s.id}>
+                    <tr key={s._id}>
                       <td className="ps-4 fw-medium text-primary-custom border-bottom border-opacity-10">{s.serviceType}</td>
                       <td className="text-secondary-custom border-bottom border-opacity-10">{v ? `${v.make} ${v.model}` : '—'}</td>
-                      <td className="text-secondary-custom border-bottom border-opacity-10">{s.createdAt}</td>
-                      <td className="fw-medium border-bottom border-opacity-10" style={{ color: 'var(--accent-primary)' }}>${s.cost}</td>
+                      <td className="text-secondary-custom border-bottom border-opacity-10">{new Date(s.createdAt).toLocaleDateString()}</td>
+                      <td className="fw-medium border-bottom border-opacity-10" style={{ color: 'var(--accent-primary)' }}>${s.cost || 'N/A'}</td>
                       <td className="border-bottom border-opacity-10">
                         <RatingStars 
                           currentRating={s.customerRating || 0} 
-                          onRate={(val) => handleRateService(s.id, val)} 
+                          onRate={(val) => handleRateService(s._id, val)} 
                         />
                       </td>
                       <td className="pe-4 border-bottom border-opacity-10 text-end"><StatusBadge status={s.status} /></td>
@@ -147,9 +163,9 @@ export default function ServiceHistory() {
           ) : (
             <div className="d-flex flex-column gap-3">
               {filtered.map(s => {
-                const v = mockVehicles.find(v => v.id === s.vehicleId);
+                const v = s.vehicleId;
                 return (
-                  <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
+                  <div key={s._id} className="card bg-secondary border-0 p-3 shadow-sm">
                     <div className="d-flex justify-content-between align-items-start mb-2">
                       <div>
                         <h6 className="fw-bold text-primary-custom mb-1">{s.serviceType}</h6>
@@ -160,12 +176,12 @@ export default function ServiceHistory() {
                     
                     <div className="d-flex justify-content-between align-items-center py-2 border-bottom border-opacity-10 mb-2">
                       <span className="small text-muted-custom">Date</span>
-                      <span className="small text-secondary-custom">{s.createdAt}</span>
+                      <span className="small text-secondary-custom">{new Date(s.createdAt).toLocaleDateString()}</span>
                     </div>
                     
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <span className="small text-muted-custom">Cost</span>
-                      <span className="fw-bold" style={{ color: 'var(--accent-primary)' }}>${s.cost}</span>
+                      <span className="fw-bold" style={{ color: 'var(--accent-primary)' }}>${s.cost || 'N/A'}</span>
                     </div>
 
                     <div className="pt-2 border-top border-opacity-10 text-center">
@@ -173,7 +189,7 @@ export default function ServiceHistory() {
                       <div className="d-flex justify-content-center">
                         <RatingStars 
                           currentRating={s.customerRating || 0} 
-                          onRate={(val) => handleRateService(s.id, val)} 
+                          onRate={(val) => handleRateService(s._id, val)} 
                         />
                       </div>
                     </div>

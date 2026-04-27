@@ -6,9 +6,9 @@ import StatCard from '../../Components/shared/StatCard';
 import PageHeader from '../../Components/shared/PageHeader';
 import StatusBadge from '../../Components/shared/StatusBadge';
 import { 
-  mockServices, mockVehicles, mockMechanics, 
   weeklyBookingsData, servicesByTypeData, revenueData 
 } from '../../data/mockData';
+import api from '../../lib/api';
 
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
@@ -49,17 +49,29 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function ManagerDashboard() {
   const { pathname } = useLocation();
   
-  const [mechanics, setMechanics] = useState(mockMechanics);
-  const [services, setServices] = useState(() => 
-    mockServices.map(s => ({
-      ...s,
-      status: ['in-progress', 'completed'].includes(s.status) ? s.status : 'pending'
-    }))
-  );
+  const [mechanics, setMechanics] = useState([]);
+  const [services, setServices] = useState([]);
   
   const [assignments, setAssignments] = useState({});
   const [showAddMechanic, setShowAddMechanic] = useState(false);
-  const [newMechanic, setNewMechanic] = useState({ name: '', email: '', specialization: '' });
+  const [newMechanic, setNewMechanic] = useState({ name: '', email: '', password: '', specialization: '' });
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [mechRes, reqRes] = await Promise.all([
+          api.get('/manager/mechanics'),
+          api.get('/manager/requests')
+        ]);
+        setMechanics(mechRes.data);
+        // Map _id to id to minimize other changes in UI
+        setServices(reqRes.data.map(s => ({...s, id: s._id})));
+      } catch (error) {
+        console.error('Error fetching manager data', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const pendingRequests = services.filter(s => s.status === 'pending');
   const inProgressRequests = services.filter(s => s.status === 'in-progress');
@@ -67,34 +79,34 @@ export default function ManagerDashboard() {
   const unassignedRequests = pendingRequests.filter(s => !s.mechanicId);
   const completionRate = Math.round((completedRequests.length / services.length) * 100) || 0;
 
-  const handleAssign = (serviceId) => {
+  const handleAssign = async (serviceId) => {
     const mechanicId = assignments[serviceId];
     if (!mechanicId) {
       alert("Please select a mechanic first.");
       return;
     }
-    setServices(prev => prev.map(s => s.id === serviceId ? { ...s, mechanicId } : s));
-    alert('Mechanic assigned successfully!');
+    try {
+      await api.put(`/manager/requests/${serviceId}/assign`, { mechanicId });
+      setServices(prev => prev.map(s => s.id === serviceId ? { ...s, mechanicId } : s));
+      alert('Mechanic assigned successfully!');
+    } catch(err) {
+      alert(err.response?.data?.message || 'Failed to assign mechanic');
+    }
   };
 
-  const handleAddMechanic = (e) => {
+  const handleAddMechanic = async (e) => {
     e.preventDefault();
-    if (!newMechanic.name || !newMechanic.email || !newMechanic.specialization) return;
+    if (!newMechanic.name || !newMechanic.email || !newMechanic.specialization || !newMechanic.password) return;
     
-    const newMech = {
-      id: `m${Date.now()}`,
-      name: newMechanic.name,
-      email: newMechanic.email,
-      specialization: newMechanic.specialization,
-      activeJobs: 0,
-      completedJobs: 0,
-      rating: 5.0 
-    };
-
-    setMechanics([...mechanics, newMech]);
-    setNewMechanic({ name: '', email: '', specialization: '' }); 
-    setShowAddMechanic(false);
-    alert(`Account created! Login details have been sent to ${newMech.email}.`);
+    try {
+      const { data } = await api.post('/manager/mechanics', newMechanic);
+      setMechanics([...mechanics, data]);
+      setNewMechanic({ name: '', email: '', password: '', specialization: '' }); 
+      setShowAddMechanic(false);
+      alert(`Account created successfully!`);
+    } catch(err) {
+      alert(err.response?.data?.message || 'Failed to create mechanic');
+    }
   };
 
   const purpleServicesByType = servicesByTypeData.map((item, i) => ({
@@ -183,7 +195,7 @@ export default function ManagerDashboard() {
                 </thead>
                 <tbody>
                   {services.slice(0, 5).map(s => {
-                    const v = mockVehicles.find(v => v.id === s.vehicleId);
+                    const v = s.vehicleId;
                     return (
                       <tr key={s.id}>
                         <td className="ps-4 fw-medium manager-text-primary border-bottom border-opacity-10">{s.serviceType}</td>
@@ -201,7 +213,7 @@ export default function ManagerDashboard() {
             <div className="d-md-none p-3">
               <div className="d-flex flex-column gap-3">
                 {services.slice(0, 5).map(s => {
-                  const v = mockVehicles.find(v => v.id === s.vehicleId);
+                  const v = s.vehicleId;
                   return (
                     <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
                       <div className="d-flex justify-content-between align-items-start mb-2">
@@ -275,7 +287,7 @@ export default function ManagerDashboard() {
             </thead>
             <tbody>
               {services.map(s => {
-                const vehicle = mockVehicles.find(v => v.id === s.vehicleId);
+                const vehicle = s.vehicleId;
                 return (
                   <tr key={s.id}>
                     <td className="ps-4 fw-medium manager-text-primary border-bottom border-opacity-10">{s.serviceType}</td>
@@ -294,7 +306,7 @@ export default function ManagerDashboard() {
         <div className="d-md-none p-3">
           <div className="d-flex flex-column gap-3">
             {services.map(s => {
-              const vehicle = mockVehicles.find(v => v.id === s.vehicleId);
+              const vehicle = s.vehicleId;
               return (
                 <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
                   <div className="d-flex justify-content-between align-items-start mb-2">
@@ -370,7 +382,18 @@ export default function ManagerDashboard() {
                   required 
                 />
               </div>
-              <div className="col-md-3">
+              <div className="col-md-2">
+                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.75rem' }}>Password</label>
+                <input 
+                  type="password" 
+                  className="form-control py-2" 
+                  placeholder="••••••••" 
+                  value={newMechanic.password}
+                  onChange={e => setNewMechanic({...newMechanic, password: e.target.value})}
+                  required 
+                />
+              </div>
+              <div className="col-md-2">
                 <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.75rem' }}>Role / Specialty</label>
                 <input 
                   type="text" 
@@ -529,8 +552,8 @@ export default function ManagerDashboard() {
               </div>
               <div className="card-body d-flex flex-column gap-3">
                 {services.filter(s => s.status === column.status).map(s => {
-                  const v = mockVehicles.find(v => v.id === s.vehicleId);
-                  const m = mechanics.find(m => m.id === s.mechanicId);
+                  const v = s.vehicleId;
+                  const m = mechanics.find(m => m._id === (s.mechanicId?._id || s.mechanicId));
                   
                   return (
                     <div key={s.id} className="p-3 manager-kanban-item-card transition-hover position-relative">

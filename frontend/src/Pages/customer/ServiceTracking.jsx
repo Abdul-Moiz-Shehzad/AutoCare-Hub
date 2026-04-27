@@ -3,7 +3,7 @@ import '../../Styles/CustomerPages.css';
 import DashboardLayout from '../../Components/layout/DashboardLayout';
 import PageHeader from '../../Components/shared/PageHeader';
 import StatusBadge from '../../Components/shared/StatusBadge';
-import { mockServices, mockVehicles, mockMechanics } from '../../data/mockData';
+import api from '../../lib/api';
 import { 
   LayoutDashboard, Car, CalendarPlus, Activity, Clock, 
   CheckCircle2, ChevronDown, ChevronUp, Circle
@@ -21,8 +21,22 @@ const steps = ['pending', 'in-progress', 'completed'];
 const stepLabels = ['Pending', 'In Progress', 'Completed'];
 
 export default function ServiceTracking() {
-  const activeServices = mockServices.filter(s => !['completed', 'cancelled'].includes(s.status));
+  const [services, setServices] = React.useState([]);
   const [expandedLogs, setExpandedLogs] = useState({});
+
+  React.useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const { data } = await api.get('/customer/services');
+        setServices(data);
+      } catch(err) {
+        console.error('Failed to load services');
+      }
+    };
+    fetchServices();
+  }, []);
+
+  const activeServices = services.filter(s => !['completed', 'cancelled'].includes(s.status));
 
   const toggleLog = (id) => {
     setExpandedLogs(prev => ({ ...prev, [id]: !prev[id] }));
@@ -47,8 +61,8 @@ export default function ServiceTracking() {
       ) : (
         <div className="d-flex flex-column gap-4">
           {activeServices.map(s => {
-            const v = mockVehicles.find(v => v.id === s.vehicleId);
-            const m = mockMechanics.find(m => m.id === s.mechanicId);
+            const v = s.vehicleId;
+            const m = s.mechanicId;
             
             
             const normalizedStatus = ['in-progress', 'completed'].includes(s.status) ? s.status : 'pending';
@@ -56,7 +70,7 @@ export default function ServiceTracking() {
             const progressPercentage = (currentIdx / (steps.length - 1)) * 100;
 
             return (
-              <div key={s.id} className="card border-0">
+              <div key={s._id} className="card border-0">
                 <div className="card-body p-4 p-md-5">
                   
                   {}
@@ -125,13 +139,13 @@ export default function ServiceTracking() {
                     <div className="mt-5 pt-3 border-top border-opacity-10">
                       <button 
                         className="btn btn-sm btn-link text-muted d-flex align-items-center gap-2 m-0 p-0 text-decoration-none transition-hover"
-                        onClick={() => toggleLog(s.id)}
+                        onClick={() => toggleLog(s._id)}
                       >
-                        {expandedLogs[s.id] ? <ChevronUp size={14} /> : <ChevronDown size={14} />} 
-                        {expandedLogs[s.id] ? 'Hide Service Log' : 'View Service Log & Milestones'}
+                        {expandedLogs[s._id] ? <ChevronUp size={14} /> : <ChevronDown size={14} />} 
+                        {expandedLogs[s._id] ? 'Hide Service Log' : 'View Service Log & Milestones'}
                       </button>
 
-                      {expandedLogs[s.id] && (
+                      {expandedLogs[s._id] && (
                         <div className="mt-4 p-4 notes-container rounded" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)' }}>
                           <p className="small fw-bold text-uppercase mb-3 stat-title-small text-muted-custom d-flex align-items-center gap-2">
                             <Activity size={14} /> Logged Milestones

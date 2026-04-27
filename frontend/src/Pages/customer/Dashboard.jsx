@@ -2,8 +2,8 @@ import React from 'react';
 import '../../Styles/CustomerPages.css';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../Components/layout/DashboardLayout';
-import { useAuth } from '../../contexts/AuthContext';
-import { mockServices, mockVehicles } from '../../data/mockData';
+import { useSelector } from 'react-redux';
+import api from '../../lib/api';
 import { 
   LayoutDashboard, Car, CalendarPlus, Activity, Clock, 
   TrendingUp, CalendarClock, ArrowRight
@@ -35,16 +35,32 @@ const StatusBadge = ({ status }) => {
 };
 
 export default function CustomerDashboard() {
-  const { user } = useAuth();
-  const safeServices = mockServices || [];
-  const safeVehicles = mockVehicles || [];
+  const user = useSelector((state) => state.auth.userInfo);
+  const [vehicles, setVehicles] = React.useState([]);
+  const [services, setServices] = React.useState([]);
 
-  const activeServices = safeServices.filter(s => !['completed', 'cancelled'].includes(s?.status));
-  const completedServices = safeServices.filter(s => s?.status === 'completed');
+  React.useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [vehRes, servRes] = await Promise.all([
+          api.get('/customer/vehicles'),
+          api.get('/customer/services')
+        ]);
+        setVehicles(vehRes.data);
+        setServices(servRes.data);
+      } catch (error) {
+        console.error('Failed to load customer dashboard data', error);
+      }
+    };
+    fetchDashboardData();
+  }, []);
+
+  const activeServices = services.filter(s => !['completed', 'cancelled'].includes(s?.status));
+  const completedServices = services.filter(s => s?.status === 'completed');
 
   const stats = [
     { title: "Active Services", value: activeServices.length, icon: <TrendingUp size={24} />, color: 'var(--accent-primary)', bg: 'var(--accent-glow)', borderColor: 'var(--accent-primary)' },
-    { title: "Vehicles", value: safeVehicles.length, icon: <Car size={24} />, color: 'var(--color-success)', bg: 'var(--color-success-bg)', borderColor: 'var(--color-success)' },
+    { title: "Vehicles", value: vehicles.length, icon: <Car size={24} />, color: 'var(--color-success)', bg: 'var(--color-success-bg)', borderColor: 'var(--color-success)' },
     { title: "Completed", value: completedServices.length, icon: <Clock size={24} />, color: 'var(--color-warning)', bg: 'var(--color-warning-bg)', borderColor: 'var(--color-warning)' },
     { title: "Upcoming", value: 1, icon: <CalendarClock size={24} />, color: 'var(--color-danger)', bg: 'var(--color-danger-bg)', borderColor: 'var(--color-danger)' },
   ];
@@ -111,9 +127,9 @@ export default function CustomerDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {safeServices.length > 0 ? (
-                      safeServices.slice(0, 5).map(s => {
-                        const v = safeVehicles.find(v => v.id === s.vehicleId);
+                    {services.length > 0 ? (
+                      services.slice(0, 5).map(s => {
+                        const v = s.vehicleId;
                         return (
                           <tr key={s.id}>
                             <td className="ps-4 fw-medium text-primary-custom">{s.serviceType}</td>

@@ -1,7 +1,5 @@
 import React from 'react';
 import { Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
-
 
 import Landing from "./Pages/Landing";
 import Login from "./Pages/Login";
@@ -19,7 +17,6 @@ import './App.css';
 
 export default function App() {
   return (
-    <AuthProvider>
       <div className="app-container">
         <Routes>
           {}
@@ -51,6 +48,5 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-    </AuthProvider>
   );
 };

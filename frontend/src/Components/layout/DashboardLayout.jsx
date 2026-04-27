@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import '../../Styles/Dashboard.css';
 import '../../Styles/Components.css';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../store/authSlice';
 import { Wrench, PanelLeftClose, PanelLeftOpen, User, LogOut, ChevronDown, X } from 'lucide-react';
 
 
@@ -82,7 +83,8 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
 
 
 export default function DashboardLayout({ children, menuItems, sectionLabel }) {
-  const { user, logout } = useAuth();
+  const user = useSelector((state) => state.auth.userInfo);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -100,7 +102,7 @@ export default function DashboardLayout({ children, menuItems, sectionLabel }) {
   }, []);
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     navigate('/');
   };
 

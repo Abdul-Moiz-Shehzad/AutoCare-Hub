@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import '../Styles/Auth.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../store/authSlice';
+import api from '../lib/api';
 import { Wrench, User, ShieldCheck, Mail, Lock, UserPlus, ArrowRight } from 'lucide-react';
 
 const roleConfig = [
@@ -11,17 +13,28 @@ const roleConfig = [
 
 export default function Signup() {
   const [selectedRole, setSelectedRole] = useState('customer');
-  const { login } = useAuth();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    login(selectedRole);
-    const paths = {
-      customer: '/customer/dashboard',
-      manager: '/manager/dashboard',
-    };
-    navigate(paths[selectedRole]);
+    setError('');
+    try {
+      const { data } = await api.post('/auth/signup', { name, email, password, role: selectedRole });
+      dispatch(setCredentials(data));
+
+      const paths = {
+        customer: '/customer/dashboard',
+        manager: '/manager/dashboard',
+      };
+      navigate(paths[data.role]);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to sign up');
+    }
   };
 
   return (
@@ -64,6 +77,7 @@ export default function Signup() {
               </div>
 
               <form onSubmit={handleSignup}>
+                {error && <div className="alert alert-danger py-2 small">{error}</div>}
                 
                 {}
                 <div className="auth-role-grid auth-role-grid--two mb-4">
@@ -90,7 +104,7 @@ export default function Signup() {
                     <span className="input-group-text">
                       <UserPlus size={16} />
                     </span>
-                    <input id="name" type="text" className="form-control" placeholder="John Doe" required />
+                    <input id="name" type="text" className="form-control" placeholder="John Doe" value={name} onChange={e => setName(e.target.value)} required />
                   </div>
                 </div>
 
@@ -101,7 +115,7 @@ export default function Signup() {
                     <span className="input-group-text">
                       <Mail size={16} />
                     </span>
-                    <input id="email" type="email" className="form-control" placeholder="you@example.com" required />
+                    <input id="email" type="email" className="form-control" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
                   </div>
                 </div>
 
@@ -112,7 +126,7 @@ export default function Signup() {
                     <span className="input-group-text">
                       <Lock size={16} />
                     </span>
-                    <input id="password" type="password" className="form-control" placeholder="••••••••" required />
+                    <input id="password" type="password" className="form-control" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
                   </div>
                 </div>
 

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import '../../Styles/CustomerPages.css';
 import DashboardLayout from '../../Components/layout/DashboardLayout';
 import PageHeader from '../../Components/shared/PageHeader';
-import { mockVehicles, serviceTypes } from '../../data/mockData';
+import { serviceTypes } from '../../data/mockData';
+import api from '../../lib/api';
 import { 
   LayoutDashboard, Car, CalendarPlus, Activity, Clock, 
   CheckCircle2, RotateCcw, Droplets, Disc, CircleDashed, 
@@ -34,6 +35,22 @@ export default function BookService() {
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState('');
   const [booked, setBooked] = useState(false);
+  const [vehicles, setVehicles] = useState([]);
+  const [preferredDate, setPreferredDate] = useState('');
+  const [preferredTime, setPreferredTime] = useState('');
+  const [description, setDescription] = useState('');
+
+  React.useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const { data } = await api.get('/customer/vehicles');
+        setVehicles(data);
+      } catch (err) {
+        console.error('Failed to load vehicles');
+      }
+    };
+    fetchVehicles();
+  }, []);
 
   const toggleService = (id) => {
     setSelectedServices(prev => 
@@ -43,9 +60,27 @@ export default function BookService() {
     );
   };
 
-  const handleBook = (e) => {
+  const handleBook = async (e) => {
     e.preventDefault();
-    setBooked(true);
+    if (!selectedVehicle || selectedServices.length === 0) return;
+
+    const types = selectedServices
+      .map(id => serviceTypes.find(s => s.id === id)?.name)
+      .filter(Boolean)
+      .join(', ');
+
+    try {
+      await api.post('/customer/services', {
+        vehicleId: selectedVehicle,
+        serviceType: types,
+        description,
+        preferredDate,
+        preferredTime
+      });
+      setBooked(true);
+    } catch(err) {
+      alert('Failed to book service');
+    }
   };
 
   if (booked) {
@@ -136,18 +171,18 @@ export default function BookService() {
                       required
                     >
                       <option value="" disabled>Select vehicle</option>
-                      {mockVehicles.map(v => (
-                        <option key={v.id} value={v.id}>{v.year} {v.make} {v.model}</option>
+                      {vehicles.map(v => (
+                        <option key={v._id} value={v._id}>{v.year} {v.make} {v.model}</option>
                       ))}
                     </select>
                   </div>
                   <div className="col-md-6">
                     <label className="form-label fw-medium small text-secondary-custom">Preferred Date</label>
-                    <input type="date" className="form-control p-3" required />
+                    <input type="date" className="form-control p-3" value={preferredDate} onChange={e => setPreferredDate(e.target.value)} required />
                   </div>
                   <div className="col-md-6">
                     <label className="form-label fw-medium small text-secondary-custom">Preferred Time</label>
-                    <input type="time" className="form-control p-3" required />
+                    <input type="time" className="form-control p-3" value={preferredTime} onChange={e => setPreferredTime(e.target.value)} required />
                   </div>
                 </div>
 
@@ -156,6 +191,8 @@ export default function BookService() {
                   <textarea 
                     className="form-control p-3" 
                     rows="3" 
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
                     placeholder="Specify any unusual noises or specific concerns..."
                   ></textarea>
                 </div>
@@ -186,7 +223,7 @@ export default function BookService() {
                     .map(id => serviceTypes.find(s => s.id === id))
                     .filter(Boolean);
                   
-                  const veh = mockVehicles.find(v => v.id === selectedVehicle);
+                  const veh = vehicles.find(v => v._id === selectedVehicle);
                   
                   
                   const totalPrice = selectedTypes.reduce((sum, st) => sum + Number(st.price), 0);
