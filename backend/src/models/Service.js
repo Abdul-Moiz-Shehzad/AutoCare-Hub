@@ -19,14 +19,32 @@ const serviceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  status: { type: String, enum: ['pending', 'in-progress', 'completed', 'cancelled'], default: 'pending' },
+  status: { type: String, enum: ['pending', 'received', 'in-progress', 'review-pending', 'completed', 'picked-up', 'cancelled'], default: 'pending' },
   priority: { type: String, enum: ['low', 'medium', 'high', 'critical'], default: 'medium' },
   customerRating: { type: Number, default: 0 },
   description: {
     type: String,
   },
   notes: [{
-    type: String,
+    text: { type: String, required: true },
+    authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    timestamp: { type: Date, default: Date.now },
+  }],
+  logs: [{
+    milestone: { type: String, required: true },
+    notes: [{
+      text: { type: String, required: true },
+      authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      timestamp: { type: Date, default: Date.now },
+    }],
+    technicianId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    image: { type: String },
+    timestamp: { type: Date, default: Date.now },
+  }],
+  pendingNotes: [{
+    text: { type: String, required: true },
+    authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    timestamp: { type: Date, default: Date.now },
   }],
   cost: {
     type: Number,
@@ -34,6 +52,12 @@ const serviceSchema = new mongoose.Schema({
   },
   estimatedCompletion: {
     type: Date,
+  },
+  scheduledDate: {
+    type: String, // Storing as YYYY-MM-DD for easier querying/matching
+  },
+  scheduledTime: {
+    type: String, // HH:mm
   }
 }, {
   timestamps: true,

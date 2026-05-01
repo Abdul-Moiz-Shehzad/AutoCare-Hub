@@ -1,5 +1,6 @@
 const Vehicle = require('../models/Vehicle');
 const Service = require('../models/Service');
+const User = require('../models/User');
 
 // @desc    Get all vehicles for current customer
 // @route   GET /api/customer/vehicles
@@ -130,14 +131,41 @@ const bookService = async (req, res) => {
   }
 
   try {
+    // Basic price mapping for services
+    const priceList = {
+      'Oil Change': 50,
+      'Brake Repair': 150,
+      'Tire Rotation': 40,
+      'Engine Diagnostic': 80,
+      'Battery Replacement': 120,
+      'AC Service': 100,
+      'Wheel Alignment': 90,
+      'Suspension Work': 200,
+      'Transmission Flush': 180,
+      'General Maintenance': 75
+    };
+
+    // Calculate total cost based on comma-separated serviceType
+    const selectedTypes = serviceType.split(',').map(t => t.trim());
+    let totalCost = 0;
+    selectedTypes.forEach(type => {
+      totalCost += priceList[type] || 60; // Default $60 if not in list
+    });
+
     const service = await Service.create({
       customerId: req.user._id,
       vehicleId,
       serviceType,
       description,
-      notes: [`Customer requested on ${preferredDate} at ${preferredTime}`],
+      notes: [{ 
+        text: `Customer requested service on ${preferredDate || 'unscheduled date'} at ${preferredTime || 'unscheduled time'}`,
+        authorId: req.user._id
+      }],
       status: 'pending',
       priority: 'medium',
+      cost: totalCost,
+      scheduledDate: preferredDate,
+      scheduledTime: preferredTime
     });
 
     const populatedService = await Service.findById(service._id).populate('vehicleId');
@@ -167,12 +195,38 @@ const rateService = async (req, res) => {
       return res.status(401).json({ message: 'Not authorized' });
     }
     
-    if (service.status !== 'completed') {
-      return res.status(400).json({ message: 'Can only rate completed services' });
+    if (!['completed', 'picked-up'].includes(service.status)) {
+      return res.status(400).json({ message: 'Can only rate finished services' });
     }
 
+    // Update service rating
     service.customerRating = numRating;
     await service.save();
+
+    // Find all unique technicians who worked on this service (from logs)
+    const technicianIds = [...new Set(service.logs.map(log => log.technicianId?.toString()).filter(id => id))];
+    
+    // Also include the primary mechanic if assigned and not in logs
+    if (service.mechanicId) {
+      const primaryId = service.mechanicId.toString();
+      if (!technicianIds.includes(primaryId)) {
+        technicianIds.push(primaryId);
+      }
+    }
+
+    for (const techId of technicianIds) {
+      const mechanic = await User.findById(techId);
+      if (mechanic && mechanic.role === 'mechanic') {
+        // Calculate new average rating
+        const currentTotal = (mechanic.rating || 5) * (mechanic.ratingCount || 0);
+        const newCount = (mechanic.ratingCount || 0) + 1;
+        const newRating = (currentTotal + numRating) / newCount;
+        
+        mechanic.rating = Number(newRating.toFixed(1));
+        mechanic.ratingCount = newCount;
+        await mechanic.save();
+      }
+    }
 
     res.json(service);
   } catch (error) {

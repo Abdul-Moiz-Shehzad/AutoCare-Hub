@@ -12,10 +12,10 @@ const generateToken = (id) => {
 // @route   POST /api/auth/signup
 // @access  Public
 const registerUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, phone } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Please provide name, email and password' });
+  if (!name || !email || !password || !phone) {
+    return res.status(400).json({ message: 'Please provide name, email, password and phone number' });
   }
   if (password.length < 6) {
     return res.status(400).json({ message: 'Password must be at least 6 characters' });
@@ -34,6 +34,7 @@ const registerUser = async (req, res) => {
     const user = await User.create({
       name,
       email,
+      phone,
       password,
       role: userRole,
     });
@@ -43,6 +44,7 @@ const registerUser = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
         role: user.role,
         token: generateToken(user._id),
       });
@@ -72,6 +74,7 @@ const loginUser = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
         role: user.role,
         token: generateToken(user._id),
       });
@@ -95,6 +98,7 @@ const getUserProfile = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
         role: user.role,
       });
     } else {
@@ -105,8 +109,113 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+// @desc    Change the current user's password
+// @route   PUT /api/auth/change-password
+// @access  Private
+const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ message: 'Current password and new password are required' });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: 'New password must be at least 6 characters' });
+  }
+
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Your password has been changed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const changePhone = async (req, res) => {
+  const { currentPassword, newPhone } = req.body;
+
+  if (!currentPassword || !newPhone) {
+    return res.status(400).json({ message: 'Current password and new phone number are required' });
+  }
+
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    user.phone = newPhone;
+    await user.save();
+
+    res.json({ message: 'Your phone number has been updated.', phone: user.phone });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.role === 'mechanic') {
+      return res.status(403).json({ message: 'Mechanics are not allowed to delete their own accounts.' });
+    }
+
+    if (user.role === 'manager') {
+      // Delete all mechanics created by this manager
+      const mechanics = await User.find({ managerId: user._id, role: 'mechanic' });
+      const mechanicIds = mechanics.map(m => m._id);
+
+      // Unassign services linked to these mechanics
+      await Service.updateMany(
+        { mechanicId: { $in: mechanicIds } },
+        { $set: { mechanicId: null, status: 'pending' } }
+      );
+
+      // Delete the mechanics
+      await User.deleteMany({ _id: { $in: mechanicIds } });
+    }
+
+    // If customer, their vehicles and services might stay for history, or be deleted.
+    // The requirement didn't specify, but usually we delete them if the account is deleted.
+    // For now, we follow "customer can delete his own account".
+
+    await User.findByIdAndDelete(user._id);
+
+    res.json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
+  changePassword,
+  changePhone,
+  deleteAccount,
 };
