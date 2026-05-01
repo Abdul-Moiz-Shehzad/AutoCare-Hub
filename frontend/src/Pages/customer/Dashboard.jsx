@@ -55,8 +55,8 @@ export default function CustomerDashboard() {
     fetchDashboardData();
   }, []);
 
-  const activeServices = services.filter(s => !['completed', 'cancelled'].includes(s?.status));
-  const completedServices = services.filter(s => s?.status === 'completed');
+  const activeServices = services.filter(s => !['picked-up', 'cancelled'].includes(s?.status));
+  const completedServices = services.filter(s => ['completed', 'picked-up'].includes(s?.status));
 
   const stats = [
     { title: "Active Services", value: activeServices.length, icon: <TrendingUp size={24} />, color: 'var(--accent-primary)', bg: 'var(--accent-glow)', borderColor: 'var(--accent-primary)' },

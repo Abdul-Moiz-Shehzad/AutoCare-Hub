@@ -3,14 +3,14 @@ import '../../Styles/Dashboard.css';
 import '../../Styles/Components.css';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../store/authSlice';
-import { Wrench, PanelLeftClose, PanelLeftOpen, User, LogOut, ChevronDown, X } from 'lucide-react';
+import { logout, setCredentials } from '../../store/authSlice';
+import api from '../../lib/api';
+import { Wrench, PanelLeftClose, PanelLeftOpen, User, LogOut, ChevronDown, X, Settings as SettingsIcon } from 'lucide-react';
 
 
 const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose }) => {
   return (
     <>
-      {}
       {mobileOpen && (
         <div
           className="sidebar-overlay"
@@ -26,7 +26,6 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
           width: collapsed ? '80px' : '260px',
         }}
       >
-        {}
         <div className="d-flex align-items-center gap-3 p-3 sidebar-header">
           <div className="sidebar-logo">
             <Wrench size={18} strokeWidth={2.5} />
@@ -37,7 +36,6 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
               <span className="sidebar-section-label lh-1 m-0">PRECISION HUB</span>
             </div>
           )}
-          {}
           {mobileOpen && (
             <button
               className="btn p-0 ms-auto d-flex align-items-center justify-content-center dashboard-toggle-btn"
@@ -49,7 +47,6 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
           )}
         </div>
 
-        {}
         <div className="p-3 flex-grow-1">
           {!collapsed && (
             <div className="text-uppercase small fw-bold mb-3 mt-2 sidebar-section-label">
@@ -89,7 +86,6 @@ export default function DashboardLayout({ children, menuItems, sectionLabel }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
   
   useEffect(() => {
     const handleResize = () => {
@@ -122,7 +118,6 @@ export default function DashboardLayout({ children, menuItems, sectionLabel }) {
   return (
     <div className="d-flex vh-100 dashboard-layout-bg">
 
-      
       <SidebarNav
         menuItems={menuItems}
         sectionLabel={sectionLabel}
@@ -131,13 +126,10 @@ export default function DashboardLayout({ children, menuItems, sectionLabel }) {
         onClose={() => setMobileOpen(false)}
       />
 
-      
       <div className="d-flex flex-column flex-grow-1 w-100" style={{ minWidth: 0 }}>
 
-        
         <header className="d-flex align-items-center justify-content-between px-4 dashboard-header">
 
-          
           <button
             className="btn btn-sm d-flex align-items-center justify-content-center dashboard-toggle-btn"
             onClick={handleToggle}
@@ -146,7 +138,6 @@ export default function DashboardLayout({ children, menuItems, sectionLabel }) {
             {collapsed && !isMobile ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
           </button>
 
-          
           <div className="dropdown">
             <button
               className="btn d-flex align-items-center gap-2 px-3 py-1 user-profile-dropdown"
@@ -161,23 +152,25 @@ export default function DashboardLayout({ children, menuItems, sectionLabel }) {
               <ChevronDown size={14} className="user-profile-icon" />
             </button>
 
-            <ul className="dropdown-menu dropdown-menu-end mt-2 dropdown-menu-custom">
-              <li className="px-3 py-2 d-flex align-items-center gap-2">
-                <User size={14} className="user-profile-icon" />
-                <span className="small user-email-text">{user?.email || 'user@example.com'}</span>
-              </li>
-              <li><hr className="dropdown-divider" /></li>
-              <li>
-                <button className="dropdown-item d-flex align-items-center gap-2 py-2 logout-btn-text" onClick={handleLogout}>
-                  <LogOut size={14} />
-                  Logout
-                </button>
-              </li>
-            </ul>
+            <div className="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2 dropdown-menu-custom" style={{ borderRadius: 'var(--radius)', minWidth: '200px' }}>
+              <div className="px-3 py-2 border-bottom border-opacity-10 mb-2">
+                <p className="small fw-bold mb-0 text-primary">{user?.name}</p>
+                <p className="small text-muted mb-0" style={{ fontSize: '0.75rem' }}>{user?.role?.toUpperCase()}</p>
+              </div>
+              
+              <button className="dropdown-item d-flex align-items-center gap-2 py-2 rounded mb-1" onClick={() => navigate('/settings')}>
+                <SettingsIcon size={16} />
+                Settings
+              </button>
+              
+              <button className="dropdown-item d-flex align-items-center gap-2 py-2 rounded text-danger" onClick={handleLogout}>
+                <LogOut size={16} />
+                Logout
+              </button>
+            </div>
           </div>
         </header>
 
-        {}
         <main className="p-4 flex-grow-1 overflow-auto dashboard-main-content">
           {children}
         </main>

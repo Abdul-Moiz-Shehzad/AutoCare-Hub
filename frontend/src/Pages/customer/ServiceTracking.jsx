@@ -17,8 +17,8 @@ const menuItems = [
   { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
 ];
 
-const steps = ['pending', 'in-progress', 'completed'];
-const stepLabels = ['Pending', 'In Progress', 'Completed'];
+const steps = ['pending', 'in-progress', 'review-pending', 'completed'];
+const stepLabels = ['Pending', 'In Progress', 'In Review', 'Finished'];
 
 export default function ServiceTracking() {
   const [services, setServices] = React.useState([]);
@@ -36,7 +36,7 @@ export default function ServiceTracking() {
     fetchServices();
   }, []);
 
-  const activeServices = services.filter(s => !['completed', 'cancelled'].includes(s.status));
+  const activeServices = services.filter(s => !['picked-up', 'cancelled'].includes(s.status));
 
   const toggleLog = (id) => {
     setExpandedLogs(prev => ({ ...prev, [id]: !prev[id] }));
@@ -56,7 +56,7 @@ export default function ServiceTracking() {
             <Activity size={32} className="tracking-activity-icon" />
           </div>
           <h4 className="fw-bold text-primary-custom">No Active Services</h4>
-          <p className="text-secondary-custom">All your services have been completed or you haven't booked one yet.</p>
+          <p className="text-secondary-custom">All your services have been picked up or you haven't booked one yet.</p>
         </div>
       ) : (
         <div className="d-flex flex-column gap-4">
@@ -64,10 +64,8 @@ export default function ServiceTracking() {
             const v = s.vehicleId;
             const m = s.mechanicId;
             
-            
-            const normalizedStatus = ['in-progress', 'completed'].includes(s.status) ? s.status : 'pending';
-            const currentIdx = steps.indexOf(normalizedStatus);
-            const progressPercentage = (currentIdx / (steps.length - 1)) * 100;
+            const currentIdx = steps.indexOf(s.status);
+            const progressPercentage = currentIdx === -1 ? 0 : (currentIdx / (steps.length - 1)) * 100;
 
             return (
               <div key={s._id} className="card border-0">
@@ -78,7 +76,7 @@ export default function ServiceTracking() {
                     <div>
                       <div className="d-flex align-items-center gap-3 mb-1">
                         <h4 className="fw-bold mb-0 text-primary-custom">{s.serviceType}</h4>
-                        <StatusBadge status={normalizedStatus} />
+                        <StatusBadge status={s.status} />
                       </div>
                       <p className="small mb-0 text-secondary-custom">
                         {v ? `${v.year} ${v.make} ${v.model} · ${v.plate}` : '—'}
@@ -113,8 +111,8 @@ export default function ServiceTracking() {
                     <div className="d-flex justify-content-between position-relative" style={{ zIndex: 2 }}>
                       {stepLabels.map((label, i) => {
                         
-                        const isCompleted = i < currentIdx || (normalizedStatus === 'completed' && i === currentIdx);
-                        const isActive = i === currentIdx && normalizedStatus !== 'completed';
+                        const isCompleted = i < currentIdx || (s.status === 'completed' && i === currentIdx);
+                        const isActive = i === currentIdx && s.status !== 'completed';
                         
                         let nodeClass = 'stepper-node-inactive';
                         if (isCompleted) nodeClass = 'stepper-node-completed';
@@ -135,7 +133,7 @@ export default function ServiceTracking() {
                   </div>
 
                   {}
-                  {s.notes && s.notes.length > 0 && (
+                  {(s.logs?.length > 0 || s.pendingNotes?.length > 0) && (
                     <div className="mt-5 pt-3 border-top border-opacity-10">
                       <button 
                         className="btn btn-sm btn-link text-muted d-flex align-items-center gap-2 m-0 p-0 text-decoration-none transition-hover"
@@ -150,18 +148,24 @@ export default function ServiceTracking() {
                           <p className="small fw-bold text-uppercase mb-3 stat-title-small text-muted-custom d-flex align-items-center gap-2">
                             <Activity size={14} /> Logged Milestones
                           </p>
-                          <ul className="mb-0 small ps-0 list-unstyled text-secondary-custom">
-                            {s.notes.map((n, i) => {
-                              
-                              const milestoneText = typeof n === 'object' ? n.milestone : n;
-                              return milestoneText ? (
-                                <li key={i} className="mb-3 d-flex align-items-start gap-3">
-                                  <div className="mt-1"><Circle size={10} className="text-primary-custom" /></div>
-                                  <span className="text-primary-custom fw-medium lh-base">{milestoneText}</span>
-                                </li>
-                              ) : null;
-                            })}
-                          </ul>
+                          <div className="d-flex flex-column gap-4">
+                            {s.logs && s.logs.length > 0 && s.logs.map((log, i) => (
+                              <div key={i} className="d-flex align-items-start gap-3">
+                                <div className="mt-1 flex-shrink-0"><Circle size={10} className="text-primary-custom" /></div>
+                                <div className="flex-grow-1">
+                                  <div className="d-flex justify-content-between align-items-center gap-2">
+                                    <span className="text-primary-custom fw-bold lh-base">{log.milestone}</span>
+                                    <span className="text-muted-custom" style={{ fontSize: '0.7rem' }}>{new Date(log.timestamp).toLocaleDateString()}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {s.pendingNotes && s.pendingNotes.length > 0 && (
+                              <div className="p-3 rounded border border-warning border-opacity-25 bg-warning bg-opacity-5">
+                                <p className="small fw-bold text-warning mb-0 text-uppercase" style={{ fontSize: '0.65rem' }}>Update in progress...</p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>

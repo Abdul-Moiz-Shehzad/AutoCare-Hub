@@ -63,7 +63,7 @@ export default function ServiceHistory() {
     fetchServices();
   }, []);
   
-  const completed = services.filter(s => s.status === 'completed');
+  const completed = services.filter(s => ['completed', 'picked-up'].includes(s.status));
   const filtered = completed.filter(s =>
     s.serviceType.toLowerCase().includes(search.toLowerCase())
   );

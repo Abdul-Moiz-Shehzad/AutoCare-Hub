@@ -30,6 +30,9 @@ export default function MechanicDashboard() {
   const [expandedLog, setExpandedLog] = useState(null);
   const [expandedWorkspace, setExpandedWorkspace] = useState({});
 
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+  const currentUserId = userInfo._id || userInfo.id;
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -44,10 +47,11 @@ export default function MechanicDashboard() {
     fetchJobs();
   }, []);
 
-  const activeJobs = services.filter(s => !['completed', 'cancelled'].includes(s.status));
+  const activeJobs = services.filter(s => !['completed', 'picked-up', 'cancelled'].includes(s.status));
   const inProgress = services.filter(s => s.status === 'in-progress');
-  const completedJobs = services.filter(s => s.status === 'completed');
-  const pendingJobs = services.filter(s => s.status !== 'in-progress' && s.status !== 'completed' && s.status !== 'cancelled');
+  const reviewPending = services.filter(s => s.status === 'review-pending');
+  const completedJobs = services.filter(s => s.status === 'completed' || s.status === 'picked-up');
+  const pendingJobs = services.filter(s => s.status === 'pending');
 
   const deleteJob = (id) => {
     if (window.confirm("Remove this completed record from your view?")) {
@@ -62,13 +66,13 @@ export default function MechanicDashboard() {
   };
 
   const handleMilestoneUpdate = async (id) => {
-    const note = milestoneInputs[id]?.trim();
-    if (!note) {
-      alert("Please write a note to log a milestone update.");
+    const milestone = milestoneInputs[id]?.trim();
+    if (!milestone) {
+      alert("Please write a milestone note to log an update.");
       return;
     }
     try {
-      const { data } = await api.put(`/mechanic/jobs/${id}/notes`, { note });
+      const { data } = await api.put(`/mechanic/jobs/${id}/milestones`, { milestone });
       setServices(prev => prev.map(s => s._id === id ? data : s));
       setMilestoneInputs(prev => ({ ...prev, [id]: '' }));
       setPictureAttached(prev => ({ ...prev, [id]: null }));
@@ -85,6 +89,7 @@ export default function MechanicDashboard() {
       const { data } = await api.put(`/mechanic/jobs/${id}/notes`, { note });
       setServices(prev => prev.map(s => s._id === id ? data : s));
       setTechInputs(prev => ({ ...prev, [id]: '' }));
+      alert("Note added to pending milestone!");
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to save technical detail');
     }
@@ -108,12 +113,15 @@ export default function MechanicDashboard() {
     }
 
     try {
-      if (note) {
-        await api.put(`/mechanic/jobs/${id}/notes`, { note });
-        setMilestoneInputs(prev => ({ ...prev, [id]: '' }));
-      }
-      const { data } = await api.put(`/mechanic/jobs/${id}/status`, { status: targetStatus });
+      // Send the status update along with the milestone and picture filename
+      const { data } = await api.put(`/mechanic/jobs/${id}/status`, { 
+        status: targetStatus,
+        milestone: note || null, // Final milestone heading
+        completionImage: pictureAttached[id] || null 
+      });
+      
       setServices(prev => prev.map(s => s._id === id ? data : s));
+      setMilestoneInputs(prev => ({ ...prev, [id]: '' }));
 
       if (targetStatus === 'in-progress') {
         setExpandedWorkspace(prev => ({ ...prev, [id]: true }));
@@ -128,16 +136,112 @@ export default function MechanicDashboard() {
     }
   };
 
-  const renderNotesList = (notes) => (
-    <ul className="mb-0 small ps-1 mechanic-text-secondary list-unstyled">
-      {notes.map((note, i) => (
-        <li key={i} className="mb-2 d-flex align-items-start gap-2">
-          <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--accent-primary)', marginTop: '6px', flexShrink: 0 }}></div>
-          <span className="mechanic-text-primary">{note}</span>
-        </li>
-      ))}
-    </ul>
-  );
+  const [editingLog, setEditingLog] = useState({ id: null, index: null, text: '' });
+
+  const handleEditLog = (serviceId, logIndex, currentText) => {
+    setEditingLog({ id: serviceId, index: logIndex, text: currentText });
+  };
+
+  const saveLogEdit = async (serviceId) => {
+    const service = services.find(s => s._id === serviceId);
+    const newLogs = [...service.logs];
+    newLogs[editingLog.index] = { ...newLogs[editingLog.index], milestone: editingLog.text };
+
+    try {
+      const { data } = await api.put(`/mechanic/jobs/${serviceId}/logs`, { logs: newLogs });
+      setServices(prev => prev.map(s => s._id === serviceId ? data : s));
+      setEditingLog({ id: null, index: null, text: '' });
+    } catch (err) {
+      alert("Failed to save edit");
+    }
+  };
+
+  const renderNotesList = (service) => {
+    const { logs, pendingNotes, _id: serviceId } = service;
+    
+    // Get current user ID from localStorage
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const currentUserId = user._id;
+
+    // Filter logs to only show those where technicianId matches current user
+    const filteredLogs = logs?.filter(log => log.technicianId === currentUserId) || [];
+
+    return (
+      <div className="d-flex flex-column gap-3">
+        {filteredLogs.length > 0 && filteredLogs.map((log, i) => (
+          <div key={i} className="mechanic-log-entry">
+            <div className="d-flex align-items-start justify-content-between gap-2">
+              <div className="d-flex align-items-start gap-2 flex-grow-1">
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-primary)', marginTop: '6px', flexShrink: 0 }}></div>
+                <div className="flex-grow-1">
+                  {editingLog.id === serviceId && editingLog.index === i ? (
+                    <div className="d-flex gap-2">
+                      <input
+                        className="form-control form-control-sm"
+                        value={editingLog.text}
+                        onChange={e => setEditingLog({ ...editingLog, text: e.target.value })}
+                      />
+                      <button className="btn btn-sm btn-success" onClick={() => saveLogEdit(serviceId)}><Save size={12} /></button>
+                    </div>
+                  ) : (
+                    <span className="fw-bold mechanic-text-primary" onDoubleClick={() => handleEditLog(serviceId, i, log.milestone)}>{log.milestone}</span>
+                  )}
+                  {log.notes && log.notes.length > 0 && (
+                    <ul className="list-unstyled mt-1 mb-0 ps-3">
+                      {log.notes.map((n, ni) => (
+                        <li key={ni} className="small text-muted d-flex flex-column gap-0 mb-1">
+                          <div className="d-flex align-items-center gap-2">
+                            <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.3)' }}></span>
+                            <span>{n.text}</span>
+                          </div>
+                          {n.authorId && n.authorId._id !== currentUserId && (
+                            <span className="ms-3" style={{ fontSize: '0.6rem', opacity: 0.6 }}>— {n.authorId.name}</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {log.image && (
+                    <div className="mt-2">
+                      <button 
+                        className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2 py-0 px-2"
+                        onClick={() => window.open(log.image)}
+                        style={{ fontSize: '0.65rem', height: '20px' }}
+                      >
+                        <Camera size={10} /> View Attached Photo
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <span className="text-muted" style={{ fontSize: '0.7rem' }}>{new Date(log.timestamp).toLocaleDateString()}</span>
+            </div>
+          </div>
+        ))}
+        {pendingNotes && pendingNotes.length > 0 && (
+          <div className="p-2 rounded border border-warning border-opacity-25 bg-warning bg-opacity-10">
+            <p className="small fw-bold text-warning mb-1 text-uppercase" style={{ fontSize: '0.6rem' }}>Current Drafts</p>
+            <ul className="list-unstyled mb-0 ps-2">
+              {pendingNotes.map((n, ni) => (
+                <li key={ni} className="small text-muted-custom d-flex flex-column gap-0 mb-1">
+                   <div className="d-flex align-items-center gap-2">
+                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'var(--warning)' }}></span>
+                    <span>{n.text}</span>
+                   </div>
+                   {n.authorId && n.authorId._id !== currentUserId && (
+                     <span className="ms-3" style={{ fontSize: '0.6rem', opacity: 0.6 }}>— {n.authorId.name}</span>
+                   )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {filteredLogs.length === 0 && (!pendingNotes || pendingNotes.length === 0) && (
+          <p className="small text-muted-custom text-center py-2 mb-0">No logs contributed by you yet.</p>
+        )}
+      </div>
+    );
+  };
 
   if (loading) {
     return (
@@ -154,9 +258,10 @@ export default function MechanicDashboard() {
   const renderDashboard = () => (
     <>
       <div className="row g-4 mb-4">
-        <div className="col-sm-6 col-lg-4"><StatCard title="Assigned Jobs" value={activeJobs.length} icon={<Briefcase size={24} />} color="accent" /></div>
-        <div className="col-sm-6 col-lg-4"><StatCard title="In Progress" value={inProgress.length} icon={<Play size={24} />} color="warning" /></div>
-        <div className="col-sm-6 col-lg-4"><StatCard title="Completed" value={completedJobs.length} icon={<CheckCircle2 size={24} />} color="success" /></div>
+        <div className="col-sm-6 col-lg-3"><StatCard title="Total Jobs" value={services.length} icon={<Briefcase size={24} />} color="accent" /></div>
+        <div className="col-sm-6 col-lg-3"><StatCard title="In Progress" value={inProgress.length} icon={<Play size={24} />} color="warning" /></div>
+        <div className="col-sm-6 col-lg-3"><StatCard title="For Review" value={reviewPending.length} icon={<RefreshCw size={24} />} color="info" /></div>
+        <div className="col-sm-6 col-lg-3"><StatCard title="Completed" value={completedJobs.length} icon={<CheckCircle2 size={24} />} color="success" /></div>
       </div>
 
       <div className="mt-4">
@@ -166,7 +271,7 @@ export default function MechanicDashboard() {
             <div className="text-center py-5 text-muted-custom">No active jobs assigned.</div>
           ) : activeJobs.map(s => {
             const v = s.vehicleId;
-            const isPending = s.status !== 'in-progress' && s.status !== 'completed';
+            const isPending = s.status === 'pending';
             return (
               <div key={s._id} className="card border-0">
                 <div className="card-body p-3 p-md-4">
@@ -184,7 +289,7 @@ export default function MechanicDashboard() {
                     </div>
                     <div className="d-flex flex-column flex-sm-row gap-2 mt-2 mt-sm-0">
                       {isPending && <button className="btn btn-sm btn-warning d-flex align-items-center justify-content-center gap-1" onClick={() => handleValidatedUpdate(s._id, 'in-progress')} style={{ color: '#0f0e17' }}><Play size={14} /> Start Work</button>}
-                      {s.status === 'in-progress' && <button className="btn btn-sm btn-success d-flex align-items-center justify-content-center gap-1" onClick={() => handleValidatedUpdate(s._id, 'completed')}><CheckCircle2 size={14} /> Complete</button>}
+                      {s.status === 'in-progress' && <button className="btn btn-sm btn-success d-flex align-items-center justify-content-center gap-1" onClick={() => handleValidatedUpdate(s._id, 'completed')} style={{ borderRadius: 'var(--radius)' }}><CheckCircle2 size={14} /> Complete</button>}
                     </div>
                   </div>
                 </div>
@@ -199,9 +304,10 @@ export default function MechanicDashboard() {
   const renderAssignedJobs = () => (
     <>
       <div className="row g-4 mb-4">
-        <div className="col-sm-6 col-lg-4"><StatCard title="Total Assigned" value={services.length} icon={<Briefcase size={24} />} color="accent" /></div>
-        <div className="col-sm-6 col-lg-4"><StatCard title="In Progress" value={inProgress.length} icon={<Play size={24} />} color="warning" /></div>
-        <div className="col-sm-6 col-lg-4"><StatCard title="Finished" value={completedJobs.length} icon={<CheckCircle2 size={24} />} color="success" /></div>
+        <div className="col-sm-6 col-lg-3"><StatCard title="Total Jobs" value={services.length} icon={<Briefcase size={24} />} color="accent" /></div>
+        <div className="col-sm-6 col-lg-3"><StatCard title="In Progress" value={inProgress.length} icon={<Play size={24} />} color="warning" /></div>
+        <div className="col-sm-6 col-lg-3"><StatCard title="For Review" value={reviewPending.length} icon={<RefreshCw size={24} />} color="info" /></div>
+        <div className="col-sm-6 col-lg-3"><StatCard title="Completed" value={completedJobs.length} icon={<CheckCircle2 size={24} />} color="success" /></div>
       </div>
       <div className="card border-0">
         <div className="card-header fw-bold py-3 mechanic-text-primary">Assigned Jobs Queue</div>
@@ -285,9 +391,11 @@ export default function MechanicDashboard() {
       <div className="d-flex flex-column gap-3 gap-md-4 mt-4">
         {services.map(s => {
           const v = s.vehicleId;
-          const isCompleted = s.status === 'completed';
+          const isCompleted = s.status === 'completed' || s.status === 'picked-up';
           const isInProgress = s.status === 'in-progress';
-          const isPending = !isCompleted && !isInProgress;
+          const isReviewPending = s.status === 'review-pending';
+          const isPending = s.status === 'pending' || s.status === 'received';
+          const isAssignedToMe = s.mechanicId === currentUserId || (s.mechanicId && s.mechanicId._id === currentUserId);
 
           return (
             <div key={s._id} className="card border-0">
@@ -297,18 +405,14 @@ export default function MechanicDashboard() {
                   <div>
                     <h6 className="fw-bold mb-1 mechanic-text-primary d-flex align-items-center gap-2">
                       {s.serviceType}
-                      <StatusBadge status={isPending ? 'pending' : s.status} />
+                      <StatusBadge status={(isInProgress && !isAssignedToMe) ? 'completed' : (isPending ? 'pending' : s.status)} />
                     </h6>
                     <p className="small mb-0 mechanic-text-secondary">{v ? `${v.year} ${v.make} ${v.model}` : '—'}</p>
                   </div>
-                  {isCompleted && (
-                    <button className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center gap-1" onClick={() => deleteJob(s._id)} title="Delete Record">
-                      <Trash2 size={14} /> <span className="d-none d-sm-inline">Delete Record</span>
-                    </button>
-                  )}
+
                 </div>
 
-                {isInProgress && (
+                {isInProgress && isAssignedToMe && (
                   <div className="mt-3 pt-3 border-top border-opacity-10">
                     <button
                       className="btn btn-sm btn-link text-muted d-flex align-items-center gap-2 m-0 p-0 text-decoration-none"
@@ -320,10 +424,10 @@ export default function MechanicDashboard() {
 
                     {expandedWorkspace[s._id] && (
                       <div className="mechanic-notes-wrapper p-2 p-md-3 mt-3">
-                        {s.notes.length > 0 && (
+                        {(s.logs?.length > 0 || s.pendingNotes?.length > 0) && (
                           <div className="mb-3 p-2 p-md-3 rounded" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)' }}>
                             <p className="small fw-bold text-uppercase mb-2 text-muted" style={{ fontSize: 'min(0.65rem, 3vw)' }}>Job History</p>
-                            {renderNotesList(s.notes)}
+                            {renderNotesList(s)}
                           </div>
                         )}
 
@@ -367,7 +471,57 @@ export default function MechanicDashboard() {
                   </div>
                 )}
 
-                {isPending && (
+                {isReviewPending && (
+                  <div className="mt-3 pt-3 border-top border-opacity-10">
+                    <div className="d-flex align-items-center gap-2 mb-3">
+                      <div className="spinner-grow spinner-grow-sm text-info" role="status"></div>
+                      <span className="small fw-bold text-info text-uppercase">Waiting for Manager Review</span>
+                    </div>
+                    <button
+                      className="btn btn-sm btn-link text-muted d-flex align-items-center gap-2 m-0 p-0 text-decoration-none"
+                      onClick={() => setExpandedLog(expandedLog === s._id ? null : s._id)}
+                    >
+                      {expandedLog === s._id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      {expandedLog === s._id ? 'Hide Job Log' : 'View Job Log'}
+                    </button>
+
+                    {expandedLog === s._id && (
+                      <div className="mechanic-notes-wrapper p-3 mt-3">
+                        <p className="small fw-bold text-uppercase mb-3 text-muted" style={{ fontSize: '0.65rem' }}>Current Progress Log</p>
+                        {(s.logs?.length > 0 || s.pendingNotes?.length > 0) ? renderNotesList(s) : (
+                          <p className="small text-muted mb-0">No notes were captured for this job.</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {isInProgress && !isAssignedToMe && (
+                  <div className="mt-3 pt-3 border-top border-opacity-10">
+                    <div className="d-flex align-items-center gap-2 mb-3">
+                      <AlertCircle size={14} className="text-muted" />
+                      <span className="small text-muted-custom">Currently handled by another technician</span>
+                    </div>
+                    <button
+                      className="btn btn-sm btn-link text-muted d-flex align-items-center gap-2 m-0 p-0 text-decoration-none"
+                      onClick={() => setExpandedLog(expandedLog === s._id ? null : s._id)}
+                    >
+                      {expandedLog === s._id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      {expandedLog === s._id ? 'View Job Log' : 'View Job Log'}
+                    </button>
+
+                    {expandedLog === s._id && (
+                      <div className="mechanic-notes-wrapper p-3 mt-3">
+                        <p className="small fw-bold text-uppercase mb-3 text-muted" style={{ fontSize: '0.65rem' }}>Collaborative Log</p>
+                        {(s.logs?.length > 0 || s.pendingNotes?.length > 0) ? renderNotesList(s) : (
+                          <p className="small text-muted mb-0">No notes yet.</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {isPending && isAssignedToMe && (
                   <div className="d-flex justify-content-end border-top border-opacity-10 pt-3 mt-2">
                     <button
                       className="btn btn-sm btn-warning d-flex align-items-center justify-content-center gap-1 w-100-mobile"
@@ -376,6 +530,12 @@ export default function MechanicDashboard() {
                     >
                       <Play size={14} /> Start Work
                     </button>
+                  </div>
+                )}
+
+                {isPending && !isAssignedToMe && (
+                  <div className="d-flex justify-content-end border-top border-opacity-10 pt-3 mt-2">
+                    <span className="small text-muted-custom">Assigned to another technician</span>
                   </div>
                 )}
 
@@ -392,7 +552,7 @@ export default function MechanicDashboard() {
                     {expandedLog === s._id && (
                       <div className="mechanic-notes-wrapper p-3 mt-3">
                         <p className="small fw-bold text-uppercase mb-3 text-muted" style={{ fontSize: '0.65rem' }}>Completion Log</p>
-                        {s.notes.length > 0 ? renderNotesList(s.notes) : (
+                        {(s.logs?.length > 0 || s.pendingNotes?.length > 0) ? renderNotesList(s) : (
                           <p className="small text-muted mb-0">No notes were captured for this job.</p>
                         )}
                       </div>
@@ -430,10 +590,10 @@ export default function MechanicDashboard() {
                   <span className="small text-muted">{v ? `${v.make} ${v.model}` : ''}</span>
                 </div>
                 <div className="card-body p-3 p-md-4">
-                  {s.notes.length > 0 && (
+                  {(s.logs?.length > 0 || s.pendingNotes?.length > 0) && (
                     <div className="p-3 mb-4 mechanic-notes-wrapper">
                       <p className="small fw-bold text-uppercase mb-3 mechanic-table-header">Current Job History</p>
-                      {renderNotesList(s.notes)}
+                      {renderNotesList(s)}
                     </div>
                   )}
 

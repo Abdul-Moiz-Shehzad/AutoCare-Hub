@@ -143,6 +143,10 @@ body {
 .btn-outline-primary:hover { background: var(--accent-primary) !important; color: #ffffff !important; }
 .btn-success { background: linear-gradient(135deg, #34d399, #10b981) !important; border: none !important; color: #1A1A1D !important; font-weight: 600 !important; }
 .btn-info { background: linear-gradient(135deg, #60a5fa, #3b82f6) !important; border: none !important; }
+.btn-outline-info { border-color: var(--color-info) !important; color: var(--color-info) !important; border-radius: var(--radius) !important; }
+.btn-outline-info:hover { background: var(--color-info) !important; color: #ffffff !important; }
+.btn-outline-danger { border-color: var(--color-danger) !important; color: var(--color-danger) !important; border-radius: var(--radius) !important; }
+.btn-outline-danger:hover { background: var(--color-danger) !important; color: #ffffff !important; }
 .btn-light { background: var(--bg-elevated) !important; border: 1px solid var(--border-color) !important; color: var(--text-primary) !important; }
 .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
 

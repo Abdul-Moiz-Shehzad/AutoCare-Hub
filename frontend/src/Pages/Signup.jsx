@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../store/authSlice';
 import api from '../lib/api';
-import { Wrench, User, ShieldCheck, Mail, Lock, UserPlus, ArrowRight } from 'lucide-react';
+import { Wrench, User, ShieldCheck, Mail, Lock, UserPlus, ArrowRight, Phone } from 'lucide-react';
 
 const roleConfig = [
   { value: 'customer', label: 'Customer', desc: 'Book & track services', icon: <User size={24} /> },
@@ -15,6 +15,7 @@ export default function Signup() {
   const [selectedRole, setSelectedRole] = useState('customer');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ export default function Signup() {
     e.preventDefault();
     setError('');
     try {
-      const { data } = await api.post('/auth/signup', { name, email, password, role: selectedRole });
+      const { data } = await api.post('/auth/signup', { name, email, phone, password, role: selectedRole });
       dispatch(setCredentials(data));
 
       const paths = {
@@ -116,6 +117,17 @@ export default function Signup() {
                       <Mail size={16} />
                     </span>
                     <input id="email" type="email" className="form-control" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
+                  </div>
+                </div>
+
+                {}
+                <div className="mb-4">
+                  <label htmlFor="phone" className="form-label fw-medium small text-muted text-uppercase" style={{ letterSpacing: '0.5px' }}>Phone Number</label>
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <Phone size={16} />
+                    </span>
+                    <input id="phone" type="tel" className="form-control" placeholder="+1 555 123 4567" value={phone} onChange={e => setPhone(e.target.value)} required />
                   </div>
                 </div>
 

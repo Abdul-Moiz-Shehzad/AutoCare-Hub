@@ -56,6 +56,34 @@
   transition: var(--transition);
 }
 
+.user-profile-dropdown {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  color: var(--text-primary);
+}
+
+.user-profile-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-primary);
+  color: #111827;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.user-email-text {
+  color: var(--text-secondary);
+}
+
+.dropdown-menu-custom {
+  min-width: 220px;
+}
+
 /* --- User Dropdown --- */
 .dashboard-user-btn {
   background: var(--bg-elevated);
