@@ -274,4 +274,11 @@
   -webkit-overflow-scrolling: touch !important;
   min-height: 0; /* Important for flex-grow with overflow */
 }
+.sidebar-brand-text {
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
 
+.dashboard-main-wrapper {
+  min-width: 0;
+}

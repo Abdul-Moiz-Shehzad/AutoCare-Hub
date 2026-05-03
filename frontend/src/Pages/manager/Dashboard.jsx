@@ -16,7 +16,7 @@ import {
 import { 
   LayoutDashboard, ClipboardList, Users, ArrowLeftRight, TrendingUp,
   Activity, Star, CheckCircle2, Play, X, UserPlus, Car, Trash2, FileText,
-  Camera, Briefcase, ArrowRightCircle
+  Camera, Briefcase, ArrowRightCircle, AlertCircle
 } from 'lucide-react';
 
 const menuItems = [
@@ -47,6 +47,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function ManagerDashboard() {
   const { pathname } = useLocation();
+  const [uiMessage, setUiMessage] = useState(null);
   
   const [mechanics, setMechanics] = useState([]);
   const [services, setServices] = useState([]);
@@ -94,7 +95,7 @@ export default function ManagerDashboard() {
   const handleAssign = async (serviceId) => {
     const mechanicId = assignments[serviceId];
     if (!mechanicId) {
-      alert("Please select a mechanic first.");
+      setUiMessage({ type: 'error', text: "Please select a mechanic first." });
       return;
     }
     try {
@@ -104,9 +105,10 @@ export default function ManagerDashboard() {
       });
       setServices(prev => prev.map(s => s.id === serviceId ? { ...s, mechanicId } : s));
       setAssignNotes(prev => ({ ...prev, [serviceId]: '' }));
-      alert('Mechanic assigned successfully!');
+      setUiMessage({ type: 'success', text: 'Mechanic assigned successfully!' });
+      setTimeout(() => setUiMessage(null), 3000);
     } catch(err) {
-      alert(err.response?.data?.message || 'Failed to assign mechanic');
+      setUiMessage({ type: 'error', text: err.response?.data?.message || 'Failed to assign mechanic' });
     }
   };
 
@@ -119,15 +121,15 @@ export default function ManagerDashboard() {
       setMechanics([...mechanics, data]);
       setNewMechanic({ name: '', email: '', phone: '', password: '', specialization: '' }); 
       setShowAddMechanic(false);
-      alert(`Account created successfully!`);
+      setUiMessage({ type: 'success', text: `Account created successfully!` });
+      setTimeout(() => setUiMessage(null), 3000);
     } catch(err) {
-      alert(err.response?.data?.message || 'Failed to create mechanic');
+      setUiMessage({ type: 'error', text: err.response?.data?.message || 'Failed to create mechanic' });
     }
   };
 
   const handleDeleteMechanic = async (id) => {
     if (!window.confirm('Delete this mechanic account? This action cannot be undone.')) return;
-
     try {
       await api.delete(`/manager/mechanics/${id}`);
       setMechanics(prev => prev.filter(m => m._id !== id));
@@ -140,9 +142,10 @@ export default function ManagerDashboard() {
           status: s.status === 'completed' ? s.status : 'pending',
         };
       }));
-      alert('Mechanic account deleted successfully.');
+      setUiMessage({ type: 'success', text: 'Mechanic account deleted successfully.' });
+      setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete mechanic');
+      setUiMessage({ type: 'error', text: err.response?.data?.message || 'Failed to delete mechanic' });
     }
   };
 
@@ -174,9 +177,10 @@ export default function ManagerDashboard() {
     try {
       const { data } = await api.put(`/manager/requests/${serviceId}/review`, { decision });
       setServices(prev => prev.map(s => s.id === serviceId ? { ...s, status: data.status } : s));
-      alert(decision === 'approve' ? 'Job marked as completed!' : 'Job sent back to mechanic.');
+      setUiMessage({ type: 'success', text: decision === 'approve' ? 'Job marked as completed!' : 'Job sent back to mechanic.' });
+      setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to submit review');
+      setUiMessage({ type: 'error', text: err.response?.data?.message || 'Failed to submit review' });
     }
   };
 
@@ -184,9 +188,10 @@ export default function ManagerDashboard() {
     try {
       await api.put(`/manager/requests/${serviceId}/pickup`);
       setServices(prev => prev.map(s => s.id === serviceId ? { ...s, status: 'picked-up' } : s));
-      alert('Vehicle marked as Picked Up! Revenue has been recorded.');
+      setUiMessage({ type: 'success', text: 'Vehicle marked as Picked Up! Revenue has been recorded.' });
+      setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to mark as picked up');
+      setUiMessage({ type: 'error', text: err.response?.data?.message || 'Failed to mark as picked up' });
     }
   };
 
@@ -194,9 +199,10 @@ export default function ManagerDashboard() {
     try {
       await api.put(`/manager/requests/${serviceId}/receive`);
       setServices(prev => prev.map(s => s.id === serviceId ? { ...s, status: 'received' } : s));
-      alert('Vehicle marked as Received!');
+      setUiMessage({ type: 'success', text: 'Vehicle marked as Received!' });
+      setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to mark as received');
+      setUiMessage({ type: 'error', text: err.response?.data?.message || 'Failed to mark as received' });
     }
   };
 
@@ -317,7 +323,7 @@ export default function ManagerDashboard() {
                         <span className="small text-muted-custom">Priority</span>
                         <div className="d-flex flex-column align-items-end">
                           <StatusBadge status={s.priority} />
-                          <span className="manager-text-accent fw-bold small mt-1" style={{ fontSize: '0.75rem' }}>${s.cost || 0}</span>
+                          <span className="manager-text-accent fw-bold small mt-1 kanban-cost-text">${s.cost || 0}</span>
                         </div>
                       </div>
                     </div>
@@ -450,10 +456,10 @@ export default function ManagerDashboard() {
         </div>
         
         {showAddMechanic && (
-          <div className="card-body border-bottom border-opacity-10 pb-4" style={{ backgroundColor: 'var(--bg-elevated)' }}>
+          <div className="card-body border-bottom border-opacity-10 pb-4 bg-elevated">
             <form onSubmit={handleAddMechanic} className="row g-3 align-items-end">
               <div className="col-md-3">
-                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.75rem' }}>Full Name</label>
+                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2 ls-half kanban-cost-text">Full Name</label>
                 <input 
                   type="text" 
                   className="form-control py-2" 
@@ -464,7 +470,7 @@ export default function ManagerDashboard() {
                 />
               </div>
               <div className="col-md-3">
-                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.75rem' }}>Email Address</label>
+                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2 ls-half kanban-cost-text">Email Address</label>
                 <input 
                   type="email" 
                   className="form-control py-2" 
@@ -475,7 +481,7 @@ export default function ManagerDashboard() {
                 />
               </div>
               <div className="col-md-2">
-                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.75rem' }}>Phone</label>
+                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2 ls-half kanban-cost-text">Phone</label>
                 <input 
                   type="tel" 
                   className="form-control py-2" 
@@ -486,7 +492,7 @@ export default function ManagerDashboard() {
                 />
               </div>
               <div className="col-md-2">
-                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.75rem' }}>Password</label>
+                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2 ls-half kanban-cost-text">Password</label>
                 <input 
                   type="password" 
                   className="form-control py-2" 
@@ -497,7 +503,7 @@ export default function ManagerDashboard() {
                 />
               </div>
               <div className="col-md-2">
-                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2" style={{ letterSpacing: '0.5px', fontSize: '0.75rem' }}>Role / Specialty</label>
+                <label className="form-label small fw-bold manager-text-muted text-uppercase mb-2 ls-half kanban-cost-text">Role / Specialty</label>
                 <input 
                   type="text" 
                   className="form-control py-2" 
@@ -580,7 +586,7 @@ export default function ManagerDashboard() {
                     <tr key={s.id} className={s.status === 'review-pending' ? 'manager-row-review-pending' : ''}>
                       <td className="ps-4 fw-medium manager-text-primary border-bottom border-opacity-10">
                         {s.serviceType}
-                        {s.status === 'review-pending' && <span className="ms-2 badge bg-info text-dark" style={{ fontSize: '0.6rem' }}>NEEDS REVIEW</span>}
+                        {s.status === 'review-pending' && <span className="ms-2 badge bg-info text-dark notes-modal-meta">NEEDS REVIEW</span>}
                       </td>
                       <td className="manager-text-secondary border-bottom border-opacity-10">
                         {vehicle ? `${vehicle.make} ${vehicle.model}` : 'Unknown Vehicle'}
@@ -639,7 +645,7 @@ export default function ManagerDashboard() {
                             <Briefcase size={14} className="me-1" /> Owner Took Car
                           </button>
                         ) : (
-                          <div className="d-flex flex-column gap-2" style={{ maxWidth: '260px' }}>
+                          <div className="d-flex flex-column gap-2 manager-select-assign">
                             <div className="d-flex gap-2">
                               <select 
                                 className="form-select form-select-sm" 
@@ -790,9 +796,9 @@ export default function ManagerDashboard() {
             <div key={column.status} className="manager-workflow-section">
               <div className="d-flex align-items-center justify-content-between mb-3 px-1">
                 <h5 className="fw-bold manager-text-primary mb-0 d-flex align-items-center gap-2">
-                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: column.color }}></div>
+                  <div className="kanban-col-dot bg-accent-glow-custom"></div>
                   {column.title}
-                  <span className="badge rounded-pill bg-secondary bg-opacity-25 ms-2 small" style={{ fontSize: '0.7rem' }}>
+                  <span className="badge rounded-pill bg-secondary bg-opacity-25 ms-2 small notes-modal-accent">
                     {columnServices.length}
                   </span>
                 </h5>
@@ -808,10 +814,10 @@ export default function ManagerDashboard() {
                     const m = mechanics.find(m => m._id === (s.mechanicId?._id || s.mechanicId));
                     
                     return (
-                      <div key={s.id} className="manager-kanban-item-card transition-hover flex-shrink-0" style={{ width: '280px' }}>
+                      <div key={s.id} className="manager-kanban-item-card transition-hover flex-shrink-0 min-w-300">
                         <div className="p-3">
                           <div className="d-flex justify-content-between align-items-start mb-2">
-                            <p className="fw-bold mb-0 manager-text-primary text-truncate pe-2" style={{ maxWidth: '180px' }} title={s.serviceType}>
+                            <p className="fw-bold mb-0 manager-text-primary text-truncate pe-2 manager-select-assign" title={s.serviceType}>
                               {s.serviceType}
                             </p>
                             <StatusBadge status={s.priority} />
@@ -824,10 +830,10 @@ export default function ManagerDashboard() {
                           
                           <div className="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-opacity-10">
                             <div className="d-flex align-items-center gap-2">
-                              <div className="user-profile-avatar" style={{ width: '20px', height: '20px', fontSize: '9px' }}>
+                              <div className="user-profile-avatar avatar-xs">
                                 {m ? m.name.charAt(0) : '?'}
                               </div>
-                              <span className={`small ${m ? 'manager-text-secondary' : 'text-danger'}`} style={{ fontSize: '0.75rem' }}>
+                              <span className={`small ${m ? 'manager-text-secondary' : 'text-danger'} kanban-cost-text`}>
                                 {m ? m.name.split(' ')[0] : 'Unassigned'}
                               </span>
                             </div>
@@ -836,8 +842,7 @@ export default function ManagerDashboard() {
 
                           {column.status === 'completed' && (
                             <button
-                              className="btn btn-sm btn-primary w-100 mt-3 fw-bold py-1"
-                              style={{ fontSize: '0.7rem' }}
+                              className="btn btn-sm btn-primary w-100 mt-3 fw-bold py-1 notes-modal-accent"
                               onClick={() => handlePickup(s.id)}
                             >
                               Hand Over
@@ -848,7 +853,7 @@ export default function ManagerDashboard() {
                     );
                   })
                 ) : (
-                  <div className="text-center py-4 w-100 rounded border border-dashed border-opacity-10" style={{ background: 'rgba(255,255,255,0.01)' }}>
+                  <div className="text-center py-4 w-100 rounded border border-dashed border-opacity-10 bg-elevated-transparent">
                     <p className="small mb-0 manager-text-muted">No jobs in this stage.</p>
                   </div>
                 )}
@@ -878,6 +883,12 @@ export default function ManagerDashboard() {
           description={page.description}
           breadcrumbs={[{ label: 'Dashboard' }]}
         />
+        {uiMessage && (
+          <div className={`alert ${uiMessage.type === 'success' ? 'alert-success' : 'alert-danger'} d-flex align-items-center gap-2 mb-4 border-0 shadow-sm mx-3 inline-alert`}>
+            {uiMessage.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+            {uiMessage.text}
+          </div>
+        )}
         {page.render()}
       </DashboardLayout>
 
@@ -885,28 +896,19 @@ export default function ManagerDashboard() {
       {showNotesModal && selectedServiceNotes && (
         <>
           <div
-            className="modal-backdrop show"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)' }}
+            className="modal-backdrop show manager-modal-backdrop"
             onClick={handleCloseNotesModal}
           />
           <div
-            className="modal show d-block"
+            className="modal show d-block manager-modal-dialog"
             tabIndex="-1"
-            style={{ zIndex: 1055 }}
           >
             <div className="modal-dialog modal-lg">
               <div
-                className="modal-content border-0 shadow-lg"
-                style={{
-                  background: 'var(--bg-card)',
-                  borderRadius: 'var(--radius-lg)',
-                  boxShadow: 'var(--shadow-glow-strong)',
-                  border: '1px solid var(--border-color)'
-                }}
+                className="manager-modal-content-custom"
               >
                 <div
-                  className="modal-header border-bottom border-opacity-10"
-                  style={{ background: 'var(--bg-elevated)' }}
+                  className="modal-header border-bottom border-opacity-10 bg-elevated"
                 >
                   <h5 className="modal-title fw-bold manager-text-primary d-flex align-items-center gap-2">
                     <FileText size={20} className="text-info" />
@@ -914,21 +916,20 @@ export default function ManagerDashboard() {
                   </h5>
                   <button
                     type="button"
-                    className="btn-close btn-close-white opacity-75"
+                    className="btn-close btn-close-white opacity-75 icon-invert"
                     onClick={handleCloseNotesModal}
-                    style={{ filter: 'invert(1) brightness(1.2)' }}
                   />
                 </div>
                 <div className="modal-body p-4">
                   {/* Customer & Vehicle Info */}
                   <div className="row g-4 mb-4">
                     <div className="col-md-6">
-                      <div className="small text-muted-custom fw-semibold text-uppercase mb-2" style={{ letterSpacing: '0.5px' }}>
+                      <div className="small text-muted-custom fw-semibold text-uppercase mb-2 ls-half">
                         Customer Details
                       </div>
-                      <div className="p-3 rounded" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                      <div className="p-3 rounded bg-secondary-box">
                         <div className="d-flex align-items-center gap-3 mb-3">
-                          <div className="user-profile-avatar" style={{ width: '40px', height: '40px', fontSize: '16px', background: 'var(--accent-primary)' }}>
+                          <div className="user-profile-avatar avatar-md bg-accent-primary-custom">
                             {selectedServiceNotes.customerId?.name?.charAt(0)?.toUpperCase() || '?'}
                           </div>
                           <div>
@@ -944,12 +945,12 @@ export default function ManagerDashboard() {
                       </div>
                     </div>
                     <div className="col-md-6">
-                      <div className="small text-muted-custom fw-semibold text-uppercase mb-2" style={{ letterSpacing: '0.5px' }}>
+                      <div className="small text-muted-custom fw-semibold text-uppercase mb-2 ls-half">
                         Assigned Mechanic
                       </div>
-                      <div className="p-3 rounded" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                      <div className="p-3 rounded bg-secondary-box">
                         <div className="d-flex align-items-center gap-3 mb-3">
-                          <div className="user-profile-avatar" style={{ width: '40px', height: '40px', fontSize: '16px', background: 'var(--accent-glow)' }}>
+                          <div className="user-profile-avatar avatar-md bg-accent-glow-custom">
                             {selectedServiceNotes.mechanicId?.name?.charAt(0)?.toUpperCase() || '?'}
                           </div>
                           <div>
@@ -964,12 +965,12 @@ export default function ManagerDashboard() {
                       </div>
                     </div>
                     <div className="col-md-6">
-                      <div className="small text-muted-custom fw-semibold text-uppercase mb-2" style={{ letterSpacing: '0.5px' }}>
+                      <div className="small text-muted-custom fw-semibold text-uppercase mb-2 ls-half">
                         Vehicle Details
                       </div>
-                      <div className="p-3 rounded" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                      <div className="p-3 rounded bg-secondary-box">
                         <div className="d-flex align-items-center gap-3 mb-3">
-                          <div className="d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', background: 'var(--accent-glow)', borderRadius: 'var(--radius)' }}>
+                          <div className="d-flex align-items-center justify-content-center avatar-md bg-accent-glow-custom border-radius-custom">
                             <Car size={20} className="text-primary" />
                           </div>
                           <div>
@@ -995,10 +996,10 @@ export default function ManagerDashboard() {
 
                   {/* Service Description */}
                   <div className="mb-4">
-                    <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block" style={{ letterSpacing: '0.5px' }}>
+                    <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block ls-half">
                       Service Description
                     </label>
-                    <div className="p-4 rounded" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                    <div className="p-4 rounded bg-secondary-box">
                       <p className="mb-0 manager-text-primary lh-base">
                         {selectedServiceNotes.description || 'No description provided for this service.'}
                       </p>
@@ -1008,24 +1009,24 @@ export default function ManagerDashboard() {
                   {/* Job History / Logs */}
                   {(selectedServiceNotes.logs?.length > 0 || selectedServiceNotes.pendingNotes?.length > 0 || selectedServiceNotes.notes?.length > 0) && (
                     <div className="mb-4">
-                      <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block" style={{ letterSpacing: '0.5px' }}>
+                      <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block ls-half">
                         Service History & Progress
                       </label>
-                      <div className="p-4 rounded" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                      <div className="p-4 rounded bg-secondary-box">
                         
                         {/* General Notes */}
                         {selectedServiceNotes.notes?.length > 0 && (
                           <div className="mb-3">
-                            <p className="small fw-bold text-muted text-uppercase mb-2" style={{ fontSize: '0.65rem' }}>General Notes</p>
+                            <p className="small fw-bold text-muted text-uppercase mb-2 notes-modal-section-header">General Notes</p>
                             <ul className="list-unstyled mb-0">
                               {selectedServiceNotes.notes.map((note, index) => (
                                 <li key={index} className="mb-2 d-flex flex-column gap-0">
                                   <div className="d-flex align-items-start gap-3">
-                                    <span className="text-secondary mt-1" style={{ fontSize: '0.5rem' }}>●</span>
+                                    <span className="text-secondary mt-1 notes-modal-dot-small">●</span>
                                     <span className="manager-text-primary small">{note.text || note}</span>
                                   </div>
                                   {note.authorId && (
-                                    <span className="ms-4 text-muted" style={{ fontSize: '0.6rem' }}>— {note.authorId.name}</span>
+                                    <span className="ms-4 text-muted notes-modal-meta">— {note.authorId.name}</span>
                                   )}
                                 </li>
                               ))}
@@ -1037,14 +1038,14 @@ export default function ManagerDashboard() {
                         {selectedServiceNotes.logs?.length > 0 && (
                           <div className="d-flex flex-column gap-3 mb-3">
                             {selectedServiceNotes.logs.map((log, i) => (
-                              <div key={i} className="p-3 rounded border border-opacity-10" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                              <div key={i} className="p-3 rounded border border-opacity-10 bg-elevated-transparent">
                                 <div className="d-flex justify-content-between align-items-center mb-1">
                                   <span className="fw-bold manager-text-primary small">{log.milestone}</span>
-                                  <span className="text-muted small" style={{ fontSize: '0.65rem' }}>{new Date(log.timestamp).toLocaleDateString()}</span>
+                                  <span className="text-muted small notes-modal-timestamp">{new Date(log.timestamp).toLocaleDateString()}</span>
                                 </div>
                                 
                                 {log.technicianId && (
-                                  <p className="small text-accent fw-bold mb-2" style={{ fontSize: '0.7rem' }}>
+                                  <p className="small text-accent fw-bold mb-2 notes-modal-accent">
                                     Logged by: {log.technicianId.name} ({log.technicianId.role})
                                   </p>
                                 )}
@@ -1054,11 +1055,11 @@ export default function ManagerDashboard() {
                                     {log.notes.map((n, ni) => (
                                       <li key={ni} className="text-muted small d-flex flex-column gap-0 mb-1">
                                         <div className="d-flex align-items-center gap-2">
-                                          <div style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'var(--text-muted)' }}></div>
+                                          <div className="notes-modal-dot-tiny"></div>
                                           <span>{n.text || n}</span>
                                         </div>
                                         {n.authorId && (
-                                          <span className="ms-3 text-muted" style={{ fontSize: '0.6rem', opacity: 0.6 }}>— {n.authorId.name}</span>
+                                          <span className="ms-3 text-muted notes-modal-meta">— {n.authorId.name}</span>
                                         )}
                                       </li>
                                     ))}
@@ -1068,9 +1069,8 @@ export default function ManagerDashboard() {
                                 {log.image && (
                                   <div className="mt-2 pt-2 border-top border-opacity-10">
                                     <button 
-                                      className="btn btn-sm btn-outline-success d-flex align-items-center gap-2"
+                                      className="btn btn-sm btn-outline-success d-flex align-items-center gap-2 notes-modal-btn-compact"
                                       onClick={() => window.open(log.image)}
-                                      style={{ fontSize: '0.75rem' }}
                                     >
                                       <Camera size={12} /> View Completion Photo
                                     </button>
@@ -1083,17 +1083,17 @@ export default function ManagerDashboard() {
 
                         {/* Pending Notes */}
                         {selectedServiceNotes.pendingNotes?.length > 0 && (
-                          <div className="p-3 rounded border border-warning border-opacity-25" style={{ background: 'rgba(251, 191, 36, 0.05)' }}>
-                            <p className="small fw-bold text-warning mb-2 text-uppercase" style={{ fontSize: '0.65rem' }}>Pending Updates</p>
+                          <div className="p-3 rounded border border-warning border-opacity-25 notes-modal-warning-bg">
+                            <p className="small fw-bold text-warning mb-2 text-uppercase notes-modal-section-header">Pending Updates</p>
                             <ul className="list-unstyled mb-0 ps-2">
                               {selectedServiceNotes.pendingNotes.map((n, ni) => (
                                 <li key={ni} className="text-muted-custom small d-flex flex-column gap-0 mb-1">
                                   <div className="d-flex align-items-center gap-2">
-                                    <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'var(--warning)' }}></div>
+                                    <div className="notes-modal-warning-dot"></div>
                                     <span>{n.text || n}</span>
                                   </div>
                                   {n.authorId && (
-                                    <span className="ms-3 text-muted" style={{ fontSize: '0.6rem', opacity: 0.6 }}>— {n.authorId.name}</span>
+                                    <span className="ms-3 text-muted notes-modal-meta">— {n.authorId.name}</span>
                                   )}
                                 </li>
                               ))}
@@ -1107,20 +1107,12 @@ export default function ManagerDashboard() {
                   {/* Priority & Status */}
                   <div className="row g-4">
                     <div className="col-md-6">
-                      <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block" style={{ letterSpacing: '0.5px' }}>
+                      <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block ls-half">
                         Priority Level
                       </label>
                       <div className="d-flex gap-3 align-items-center">
                         <select
-                          className="form-select flex-grow-1"
-                          style={{
-                            background: 'var(--bg-input)',
-                            border: '1px solid var(--border-color)',
-                            color: 'var(--text-input)',
-                            borderRadius: 'var(--radius)',
-                            padding: '0.5rem 0.75rem',
-                            fontSize: '0.9rem'
-                          }}
+                          className="form-select flex-grow-1 form-select-custom"
                           value={newPriority}
                           onChange={(e) => setNewPriority(e.target.value)}
                         >
@@ -1131,21 +1123,16 @@ export default function ManagerDashboard() {
                         </select>
                         <button
                           type="button"
-                          className="btn btn-primary px-4 py-2 fw-bold"
+                          className="btn btn-primary px-4 py-2 fw-bold btn-save-compact"
                           onClick={handlePriorityChange}
                           disabled={newPriority === selectedServiceNotes.priority}
-                          style={{
-                            borderRadius: 'var(--radius)',
-                            fontSize: '0.9rem',
-                            minWidth: '80px'
-                          }}
                         >
                           Save
                         </button>
                       </div>
                     </div>
                     <div className="col-md-6">
-                      <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block" style={{ letterSpacing: '0.5px' }}>
+                      <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block ls-half">
                         Current Status
                       </label>
                       <div className="d-flex align-items-center">
@@ -1155,14 +1142,12 @@ export default function ManagerDashboard() {
                   </div>
                 </div>
                 <div
-                  className="modal-footer border-top border-opacity-10"
-                  style={{ background: 'var(--bg-elevated)' }}
+                  className="modal-footer border-top border-opacity-10 bg-elevated"
                 >
                   <button
                     type="button"
-                    className="btn btn-outline-secondary px-4"
+                    className="btn btn-outline-secondary px-4 btn-close-compact"
                     onClick={handleCloseNotesModal}
-                    style={{ borderRadius: 'var(--radius)' }}
                   >
                     Close
                   </button>

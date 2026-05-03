@@ -8,7 +8,7 @@ import StatusBadge from '../../Components/shared/StatusBadge';
 import api from '../../lib/api';
 import {
   LayoutDashboard, Briefcase, RefreshCw, FileText,
-  CheckCircle2, Play, Camera, Trash2, Image as ImageIcon, Save,
+  CheckCircle2, Play, Camera, Image as ImageIcon, Save,
   ChevronDown, ChevronUp, AlertCircle
 } from 'lucide-react';
 
@@ -53,11 +53,6 @@ export default function MechanicDashboard() {
   const completedJobs = services.filter(s => s.status === 'completed' || s.status === 'picked-up');
   const pendingJobs = services.filter(s => s.status === 'pending');
 
-  const deleteJob = (id) => {
-    if (window.confirm("Remove this completed record from your view?")) {
-      setServices(prev => prev.filter(s => s._id !== id));
-    }
-  };
 
   const handleFileUpload = async (id, e) => {
     if (e.target.files && e.target.files[0]) {
@@ -68,7 +63,8 @@ export default function MechanicDashboard() {
         const { data } = await api.post('/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        setPictureAttached(prev => ({ ...prev, [id]: `http://localhost:5000${data.imagePath}` }));
+        const baseUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api', '') : 'http://localhost:5000';
+        setPictureAttached(prev => ({ ...prev, [id]: `${baseUrl}${data.imagePath}` }));
       } catch (err) {
         alert('Failed to upload image');
       }

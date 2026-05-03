@@ -17,7 +17,7 @@ export default function Settings() {
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [phoneData, setPhoneData] = useState({ currentPassword: '', newPhone: user.phone || '' });
   const [deleteConfirm, setDeleteConfirm] = useState(false);
-  const [deletePassword, setDeletePassword] = useState('');
+
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -112,7 +112,7 @@ export default function Settings() {
 
       <div className="container-fluid px-0 mt-4">
         {message.text && (
-          <div className={`alert ${message.type === 'success' ? 'alert-success' : 'alert-danger'} d-flex align-items-center gap-2 mb-4 border-0 shadow-sm`} style={{ borderRadius: 'var(--radius)' }}>
+          <div className={`alert ${message.type === 'success' ? 'alert-success' : 'alert-danger'} d-flex align-items-center gap-2 mb-4 border-0 shadow-sm inline-alert`}>
             {message.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
             {message.text}
           </div>

@@ -185,3 +185,92 @@
     font-size: 0.8rem;
   }
 }
+
+/* --- Misc Modal & Kanban Utils --- */
+.kanban-cost-text {
+  font-size: 0.75rem;
+}
+
+.bg-accent-primary-custom {
+  background: var(--accent-primary) !important;
+}
+
+.bg-accent-glow-custom {
+  background: var(--accent-glow) !important;
+}
+
+.border-radius-custom {
+  border-radius: var(--radius) !important;
+}
+
+.notes-modal-section-header {
+  font-size: 0.65rem;
+}
+
+.notes-modal-dot-small {
+  font-size: 0.5rem;
+}
+
+.notes-modal-meta {
+  font-size: 0.6rem;
+  opacity: 0.6;
+}
+
+.notes-modal-timestamp {
+  font-size: 0.65rem;
+}
+
+.notes-modal-accent {
+  font-size: 0.7rem;
+}
+
+.notes-modal-dot-tiny {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: var(--text-muted);
+}
+
+.notes-modal-warning-bg {
+  background: rgba(251, 191, 36, 0.05);
+}
+
+.notes-modal-warning-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--warning);
+}
+
+.notes-modal-btn-compact {
+  font-size: 0.75rem;
+}
+
+.bg-elevated-transparent {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ls-half {
+  letter-spacing: 0.5px;
+}
+
+.bg-secondary-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.dropdown-menu-custom {
+  border-radius: var(--radius);
+  min-width: 200px;
+}
+
+.dropdown-role-text {
+  font-size: 0.75rem;
+}
+
+.manager-modal-content-custom {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-glow-strong);
+  border: 1px solid var(--border-color);
+}

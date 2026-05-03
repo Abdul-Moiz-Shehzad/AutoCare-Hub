@@ -144,7 +144,7 @@ export default function ServiceTracking() {
                       </button>
 
                       {expandedLogs[s._id] && (
-                        <div className="mt-4 p-4 notes-container rounded" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)' }}>
+                        <div className="mt-4 p-4 notes-container rounded bg-secondary-box">
                           <p className="small fw-bold text-uppercase mb-3 stat-title-small text-muted-custom d-flex align-items-center gap-2">
                             <Activity size={14} /> Logged Milestones
                           </p>
@@ -155,14 +155,14 @@ export default function ServiceTracking() {
                                 <div className="flex-grow-1">
                                   <div className="d-flex justify-content-between align-items-center gap-2">
                                     <span className="text-primary-custom fw-bold lh-base">{log.milestone}</span>
-                                    <span className="text-muted-custom" style={{ fontSize: '0.7rem' }}>{new Date(log.timestamp).toLocaleDateString()}</span>
+                                    <span className="text-muted-custom tracking-meta-text">{new Date(log.timestamp).toLocaleDateString()}</span>
                                   </div>
                                 </div>
                               </div>
                             ))}
                             {s.pendingNotes && s.pendingNotes.length > 0 && (
                               <div className="p-3 rounded border border-warning border-opacity-25 bg-warning bg-opacity-5">
-                                <p className="small fw-bold text-warning mb-0 text-uppercase" style={{ fontSize: '0.65rem' }}>Update in progress...</p>
+                                <p className="small fw-bold text-warning mb-0 text-uppercase tracking-warning-text">Update in progress...</p>
                               </div>
                             )}
                           </div>

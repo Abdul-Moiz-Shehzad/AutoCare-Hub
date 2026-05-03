@@ -8,7 +8,7 @@ import api from '../../lib/api';
 import { 
   LayoutDashboard, Car, CalendarPlus, Activity, Clock, 
   CheckCircle2, RotateCcw, Droplets, Disc, CircleDashed, 
-  Wind, Sparkles, Wrench, Settings, Zap
+  Wind, Sparkles, Wrench, Settings, Zap, AlertCircle
 } from 'lucide-react';
 
 const menuItems = [
@@ -41,6 +41,7 @@ export default function BookService() {
   const [preferredDate, setPreferredDate] = useState('');
   const [preferredTime, setPreferredTime] = useState('');
   const [description, setDescription] = useState('');
+  const [uiMessage, setUiMessage] = useState(null);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -85,7 +86,7 @@ export default function BookService() {
       });
       setBooked(true);
     } catch(err) {
-      alert('Failed to book service');
+      setUiMessage({ type: 'error', text: 'Failed to book service. Please try again.' });
     }
   };
 
@@ -94,7 +95,7 @@ export default function BookService() {
       <DashboardLayout menuItems={menuItems} sectionLabel="Customer">
         <div className="d-flex flex-column align-items-center justify-content-center text-center py-5 book-success-container">
           <div className="d-flex align-items-center justify-content-center mb-4 booking-success-icon">
-            <CheckCircle2 size={40} className="book-service-icon-success" style={{ color: 'var(--color-success)' }} />
+            <CheckCircle2 size={40} className="book-service-icon-success text-success" />
           </div>
           <h2 className="fw-bold mb-2 text-primary-custom">Service Booked!</h2>
           <p className="mb-4 text-secondary-custom">Your service request has been submitted. We'll notify you when it's confirmed.</p>
@@ -121,13 +122,20 @@ export default function BookService() {
         breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Book Service' }]}
       />
 
+      {uiMessage && (
+        <div className={`alert alert-${uiMessage.type === 'error' ? 'danger' : 'success'} d-flex align-items-center gap-2 mb-4 fade-in-up`}>
+          <AlertCircle size={18} />
+          <span>{uiMessage.text}</span>
+        </div>
+      )}
+
       <div className="row g-4">
-        {}
+        {/* Left Column: Form */}
         <div className="col-lg-8">
           
-          {}
+          {/* Step 1: Select Services */}
           <div className="mb-5"> 
-            <h5 className="fw-bold mb-4 text-secondary text-uppercase" style={{fontSize: '0.8rem', letterSpacing: '1px'}}>
+            <h5 className="fw-bold mb-4 text-secondary text-uppercase ls-half kanban-cost-text">
               01. Choose Services (Select Multiple)
             </h5>
             <div className="row g-3">
@@ -163,7 +171,7 @@ export default function BookService() {
           <div className="card border-0 mt-5">
             <div className="card-body p-4">
               <form onSubmit={handleBook}>
-                <h5 className="fw-bold mb-4 text-secondary text-uppercase" style={{fontSize: '0.8rem', letterSpacing: '1px'}}>
+                <h5 className="fw-bold mb-4 text-secondary text-uppercase ls-half kanban-cost-text">
                   02. Mechanic Instructions & Details
                 </h5>
                 
@@ -238,7 +246,7 @@ export default function BookService() {
                     <div className="d-flex flex-column gap-3 small">
                       
                       <div className="d-flex flex-column gap-2 mb-2">
-                        <span className="text-muted-custom mb-1 text-uppercase" style={{fontSize: '0.7rem', letterSpacing: '1px'}}>Selected Services</span>
+                        <span className="text-muted-custom mb-1 text-uppercase notes-modal-accent ls-half">Selected Services</span>
                         {selectedTypes.map(st => (
                           <div key={st.id} className="d-flex justify-content-between align-items-center">
                             <span className="fw-medium text-primary-custom d-flex align-items-center gap-2">

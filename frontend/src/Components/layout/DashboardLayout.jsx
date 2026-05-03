@@ -32,7 +32,7 @@ const SidebarNav = ({ menuItems, sectionLabel, collapsed, mobileOpen, onClose })
           </div>
           {!collapsed && (
             <div className="d-flex flex-column justify-content-center flex-grow-1">
-              <span className="fw-bold sidebar-title lh-1 mb-1" style={{ fontSize: '1rem', letterSpacing: '0.5px' }}>AUTOCARE</span>
+              <span className="fw-bold sidebar-title lh-1 mb-1 sidebar-brand-text">AUTOCARE</span>
               <span className="sidebar-section-label lh-1 m-0">PRECISION HUB</span>
             </div>
           )}
@@ -126,7 +126,7 @@ export default function DashboardLayout({ children, menuItems, sectionLabel }) {
         onClose={() => setMobileOpen(false)}
       />
 
-      <div className="d-flex flex-column flex-grow-1 w-100" style={{ minWidth: 0 }}>
+      <div className="d-flex flex-column flex-grow-1 w-100 dashboard-main-wrapper">
 
         <header className="d-flex align-items-center justify-content-between px-4 dashboard-header">
 
@@ -152,10 +152,10 @@ export default function DashboardLayout({ children, menuItems, sectionLabel }) {
               <ChevronDown size={14} className="user-profile-icon" />
             </button>
 
-            <div className="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2 dropdown-menu-custom" style={{ borderRadius: 'var(--radius)', minWidth: '200px' }}>
+            <div className="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2 dropdown-menu-custom">
               <div className="px-3 py-2 border-bottom border-opacity-10 mb-2">
                 <p className="small fw-bold mb-0 text-primary">{user?.name}</p>
-                <p className="small text-muted mb-0" style={{ fontSize: '0.75rem' }}>{user?.role?.toUpperCase()}</p>
+                <p className="small text-muted mb-0 dropdown-role-text">{user?.role?.toUpperCase()}</p>
               </div>
               
               <button className="dropdown-item d-flex align-items-center gap-2 py-2 rounded mb-1" onClick={() => navigate('/settings')}>

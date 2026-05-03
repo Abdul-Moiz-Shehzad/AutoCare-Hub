@@ -44,14 +44,14 @@ export default function Landing() {
               
               <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-hero-badge glass-effect">
                 <Sparkles size={16} className="text-accent" />
-                <span className="small fw-bold text-accent text-uppercase" style={{ letterSpacing: '0.5px' }}>Precision Shop Management</span>
+                <span className="small fw-bold text-accent text-uppercase ls-half">Precision Shop Management</span>
               </div>
               
-              <h1 className="display-4 fw-bold mb-4 text-white" style={{ lineHeight: 1.15, letterSpacing: '-1px' }}>
+              <h1 className="display-4 fw-bold mb-4 text-white lh-1-15 ls-tight">
                 The Operating System for <span className="text-accent">Modern Auto Shops.</span>
               </h1>
               
-              <p className="lead mb-5 text-muted-light" style={{ fontSize: '1.15rem' }}>
+              <p className="lead mb-5 text-muted-light landing-hero-badge">
                 AutoCare Hub bridges the gap between customers, mechanics, and managers. Book services, assign workloads, and track repairs—all in one high-performance platform.
               </p>
               
@@ -87,10 +87,10 @@ export default function Landing() {
           <div className="text-center mb-5 pb-3">
             <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-pill">
               <Zap size={14} className="text-accent" />
-              <span className="small fw-bold text-accent text-uppercase" style={{ letterSpacing: '0.5px' }}>Platform Capabilities</span>
+              <span className="small fw-bold text-accent text-uppercase ls-half">Platform Capabilities</span>
             </div>
-            <h2 className="fw-bold mb-4 text-white" style={{ fontSize: '2.5rem', letterSpacing: '-0.5px' }}>Built for the Entire Shop</h2>
-            <p className="lead text-muted-light mx-auto" style={{ maxWidth: '700px' }}>
+            <h2 className="fw-bold mb-4 text-white text-2-5rem ls-tight">Built for the Entire Shop</h2>
+            <p className="lead text-muted-light mx-auto max-w-700">
               Whether you are dropping off your car, turning a wrench, or balancing the books, AutoCare gives you the exact tools you need.
             </p>
           </div>
@@ -120,9 +120,9 @@ export default function Landing() {
             <div className="col-lg-8 mb-4 mb-lg-0">
               <div className="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 landing-pill">
                 <Wrench size={14} className="text-accent" />
-                <span className="small fw-bold text-accent text-uppercase" style={{ letterSpacing: '0.5px' }}>Service Catalog</span>
+                <span className="small fw-bold text-accent text-uppercase ls-half">Service Catalog</span>
               </div>
-              <h2 className="fw-bold text-white mb-3" style={{ fontSize: '2.5rem', letterSpacing: '-0.5px' }}>Standardized Repair Menus</h2>
+              <h2 className="fw-bold text-white mb-3 text-2-5rem ls-tight">Standardized Repair Menus</h2>
               <p className="lead text-muted-light mb-0">Pre-configured services to keep your bookings consistent and transparent.</p>
             </div>
             <div className="col-lg-4 text-lg-end">
@@ -166,7 +166,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="col-lg-7 ps-lg-5">
-              <h2 className="fw-bold mb-4 text-white" style={{ fontSize: '2.5rem', letterSpacing: '-0.5px' }}>Built for Scale and Reliability</h2>
+              <h2 className="fw-bold mb-4 text-white text-2-5rem ls-tight">Built for Scale and Reliability</h2>
               <p className="lead mb-5 text-muted-light">
                 AutoCare Hub removes the chaos of paper tickets and endless phone calls. Our system connects your technicians directly to your customers' dashboards.
               </p>
@@ -201,8 +201,8 @@ export default function Landing() {
           <div className="bg-accent-subtle text-accent d-inline-flex p-3 rounded-circle mb-4">
             <CheckCircle2 size={32} />
           </div>
-          <h2 className="fw-bold mb-4 text-white" style={{ fontSize: '3rem', letterSpacing: '-1px' }}>Ready to Modernize?</h2>
-          <p className="lead mb-5 text-muted-light mx-auto" style={{ maxWidth: '600px' }}>
+          <h2 className="fw-bold mb-4 text-white text-3rem ls-tight">Ready to Modernize?</h2>
+          <p className="lead mb-5 text-muted-light mx-auto max-w-600">
             Join the platform that is changing how auto repair shops communicate, organize, and grow.
           </p>
           <div className="d-flex justify-content-center gap-3">

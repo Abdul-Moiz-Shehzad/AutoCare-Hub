@@ -166,9 +166,9 @@ export default function CustomerDashboard() {
                   { to: '/history', icon: <Clock size={18} />, label: 'View History' },
                 ].map((action, i) => (
                   <Link key={i} to={action.to} className="btn text-start p-4 d-flex align-items-center gap-3 quick-action-link">
-                    <span style={{ color: 'var(--accent-primary)' }}>{action.icon}</span>
+                    <span className="manager-text-accent">{action.icon}</span>
                     <span className="fw-medium">{action.label}</span>
-                    <ArrowRight size={14} className="ms-auto" style={{ opacity: 0.5 }} />
+                    <ArrowRight size={14} className="ms-auto opacity-50" />
                   </Link>
                 ))}
               </div>

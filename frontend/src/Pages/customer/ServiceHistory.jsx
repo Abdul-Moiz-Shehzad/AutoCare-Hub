@@ -29,10 +29,8 @@ const RatingStars = ({ currentRating, onRate }) => {
           <Star
             key={star}
             size={18}
-            className="transition-hover"
+            className={`transition-hover cursor-pointer ${isActive ? 'text-warning' : 'text-muted'}`}
             style={{ 
-              cursor: 'pointer', 
-              color: isActive ? 'var(--color-warning)' : 'var(--text-muted)',
               opacity: isActive ? 1 : 0.3
             }}
             fill={isActive ? 'var(--color-warning)' : 'none'}
@@ -50,6 +48,7 @@ export default function ServiceHistory() {
   const [search, setSearch] = useState('');
   
   const [services, setServices] = useState([]);
+  const [uiMessage, setUiMessage] = useState(null);
 
   React.useEffect(() => {
     const fetchServices = async () => {
@@ -75,7 +74,8 @@ export default function ServiceHistory() {
         s._id === serviceId ? { ...s, customerRating: ratingValue } : s
       ));
     } catch(err) {
-      alert(err.response?.data?.message || 'Failed to rate service');
+      setUiMessage({ type: 'error', text: err.response?.data?.message || 'Failed to rate service' });
+      setTimeout(() => setUiMessage(null), 3000);
     }
   };
 
@@ -87,16 +87,22 @@ export default function ServiceHistory() {
         breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'History' }]}
       />
 
+      {uiMessage && (
+        <div className={`alert alert-${uiMessage.type === 'error' ? 'danger' : 'success'} mb-4 fade-in-up`}>
+          {uiMessage.text}
+        </div>
+      )}
+
       {}
       <div className="card border-0 bg-card overflow-hidden">
         
         {}
         <div className="card-header border-bottom border-opacity-10 py-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 bg-transparent">
-          <h6 className="fw-bold mb-0 text-primary-custom text-uppercase" style={{ letterSpacing: '0.5px' }}>
+          <h6 className="fw-bold mb-0 text-primary-custom text-uppercase ls-half">
             Past Services
           </h6>
           
-          <div className="input-group" style={{ maxWidth: '350px' }}>
+          <div className="input-group manager-select-assign">
             <span className="input-group-text search-input-group-text">
               <Search size={16} />
             </span>
@@ -138,7 +144,7 @@ export default function ServiceHistory() {
                       <td className="ps-4 fw-medium text-primary-custom border-bottom border-opacity-10">{s.serviceType}</td>
                       <td className="text-secondary-custom border-bottom border-opacity-10">{v ? `${v.make} ${v.model}` : '—'}</td>
                       <td className="text-secondary-custom border-bottom border-opacity-10">{new Date(s.createdAt).toLocaleDateString()}</td>
-                      <td className="fw-medium border-bottom border-opacity-10" style={{ color: 'var(--accent-primary)' }}>${s.cost || 'N/A'}</td>
+                      <td className="fw-medium border-bottom border-opacity-10 text-primary">${s.cost || 'N/A'}</td>
                       <td className="border-bottom border-opacity-10">
                         <RatingStars 
                           currentRating={s.customerRating || 0} 
@@ -181,7 +187,7 @@ export default function ServiceHistory() {
                     
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <span className="small text-muted-custom">Cost</span>
-                      <span className="fw-bold" style={{ color: 'var(--accent-primary)' }}>${s.cost || 'N/A'}</span>
+                      <span className="fw-bold text-primary">${s.cost || 'N/A'}</span>
                     </div>
 
                     <div className="pt-2 border-top border-opacity-10 text-center">

@@ -47,7 +47,8 @@ export default function Vehicles() {
         const fileData = new FormData();
         fileData.append('image', uploadFile);
         const { data } = await api.post('/upload', fileData, { headers: { 'Content-Type': 'multipart/form-data' }});
-        imageUrl = 'http://localhost:5000' + data.imagePath;
+        const baseUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api', '') : 'http://localhost:5000';
+        imageUrl = baseUrl + data.imagePath;
       } else if (!imageUrl && !editingId) {
         imageUrl = SLEEK_CAR_PLACEHOLDER;
       }
@@ -211,7 +212,7 @@ export default function Vehicles() {
                       <div className="col-12 col-md-6">
                         <label className="form-label small fw-medium text-secondary-custom">Vehicle Photo (Optional)</label>
                         <input type="file" className="form-control" onChange={e => setUploadFile(e.target.files[0])} accept="image/*" />
-                        <div className="form-text small" style={{fontSize: '0.7rem'}}>Leave blank to auto-generate based on Make</div>
+                        <div className="form-text small notes-modal-accent">Leave blank to auto-generate based on Make</div>
                       </div>
                     </div>
                     <button type="submit" className="btn btn-primary w-100 fw-bold py-2">
