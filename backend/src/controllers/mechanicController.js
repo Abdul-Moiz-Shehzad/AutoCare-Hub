@@ -37,6 +37,11 @@ const updateJobStatus = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
+    // ONLY the currently assigned mechanic can change status
+    if (!service.mechanicId || service.mechanicId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only the currently assigned mechanic can update this job status.' });
+    }
+
     // Mechanics set to review-pending when they finish, and provide a photo
     if (status === 'completed') {
       service.status = 'review-pending';
@@ -82,6 +87,11 @@ const addJobNote = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
+    // ONLY the currently assigned mechanic can add notes
+    if (!service.mechanicId || service.mechanicId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only the currently assigned mechanic can add notes to this job.' });
+    }
+
     // Allow any mechanic to add notes (accountability is handled by authorId)
     service.pendingNotes.push({
       text: note.trim(),
@@ -114,6 +124,11 @@ const addJobMilestone = async (req, res) => {
 
     if (!service) {
       return res.status(404).json({ message: 'Job not found' });
+    }
+
+    // ONLY the currently assigned mechanic can log milestones
+    if (!service.mechanicId || service.mechanicId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only the currently assigned mechanic can log milestones to this job.' });
     }
 
     // Move pending notes to the new log entry
