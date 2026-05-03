@@ -16,9 +16,9 @@
   --bg-card-hover: #22222a;
   --bg-elevated: #25252b;
   
-  /* Input Palette (Inverted based on mockup) */
-  --bg-input: #ffffff;
-  --text-input: #1A1A1D;
+  /* Input Palette (Dark Mode) */
+  --bg-input: #15151a;
+  --text-input: #ffffff;
 
   /* Kinetic Forge Accents */
   --accent-primary: #4E4FEB;  /* Primary Blue */
@@ -158,11 +158,17 @@ body {
     color: var(--text-input) !important; 
     border-radius: var(--radius) !important; 
     transition: var(--transition); 
+    color-scheme: dark; /* Ensures browser-native icons (date/time) are white */
 }
+.form-select option {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+}
+
 .form-control:focus, .form-select:focus { 
     border-color: var(--accent-primary) !important; 
     box-shadow: 0 0 0 3px var(--accent-glow) !important; 
-    background-color: #ffffff !important; 
+    background-color: var(--bg-input) !important; 
 }
 .form-control::placeholder { 
     color: var(--text-muted) !important; 
@@ -191,7 +197,11 @@ body {
 .input-group:focus-within {
     border-color: var(--accent-primary) !important;
     box-shadow: 0 0 0 3px var(--accent-glow) !important;
-    background-color: #ffffff !important;
+    background-color: var(--bg-input) !important;
+}
+
+.input-group > .input-group-text {
+    color: var(--text-secondary) !important;
 }
 
 /* Strips styling from children so the parent controls the shape */

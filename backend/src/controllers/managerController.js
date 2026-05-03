@@ -124,7 +124,7 @@ const getRequests = async (req, res) => {
 // @route   PUT /api/manager/requests/:id/assign
 // @access  Private/Manager
 const assignMechanic = async (req, res) => {
-  const { mechanicId } = req.body;
+  const { mechanicId, note } = req.body;
 
   if (!mechanicId) {
     return res.status(400).json({ message: 'Mechanic ID is required' });
@@ -153,6 +153,14 @@ const assignMechanic = async (req, res) => {
       if (['pending', 'review-pending'].includes(service.status)) {
          service.status = 'in-progress';
       }
+      // Add manager instruction note if provided
+      if (note && note.trim()) {
+        service.notes.push({
+          text: `[Manager Instruction] ${note.trim()}`,
+          authorId: req.user._id,
+          timestamp: new Date(),
+        });
+      }
       await service.save();
       await User.findByIdAndUpdate(mechanicId, { $inc: { activeJobs: 1 } });
     }
@@ -160,7 +168,8 @@ const assignMechanic = async (req, res) => {
     const updatedService = await Service.findById(req.params.id)
       .populate('customerId', 'name email phone')
       .populate('mechanicId', 'name phone')
-      .populate('vehicleId', 'make model year');
+      .populate('vehicleId', 'make model year')
+      .populate('notes.authorId', 'name role');
 
     res.json(updatedService);
   } catch (error) {

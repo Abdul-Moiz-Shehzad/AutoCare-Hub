@@ -55,6 +55,7 @@ export default function ManagerDashboard() {
   const [servicesByTypeData, setServicesByTypeData] = useState([]);
 
   const [assignments, setAssignments] = useState({});
+  const [assignNotes, setAssignNotes] = useState({});
   const [showAddMechanic, setShowAddMechanic] = useState(false);
   const [newMechanic, setNewMechanic] = useState({ name: '', email: '', phone: '', password: '', specialization: '' });
   const [showNotesModal, setShowNotesModal] = useState(false);
@@ -87,7 +88,8 @@ export default function ManagerDashboard() {
   const reviewPendingRequests = services.filter(s => s.status === 'review-pending');
   const completedRequests = services.filter(s => s.status === 'completed');
   const unassignedRequests = [...pendingRequests, ...receivedRequests].filter(s => !s.mechanicId);
-  const completionRate = Math.round((completedRequests.length / services.length) * 100) || 0;
+  const finishedRequests = services.filter(s => ['completed', 'picked-up'].includes(s.status));
+  const completionRate = Math.round((finishedRequests.length / services.length) * 100) || 0;
 
   const handleAssign = async (serviceId) => {
     const mechanicId = assignments[serviceId];
@@ -96,8 +98,12 @@ export default function ManagerDashboard() {
       return;
     }
     try {
-      await api.put(`/manager/requests/${serviceId}/assign`, { mechanicId });
+      await api.put(`/manager/requests/${serviceId}/assign`, { 
+        mechanicId,
+        note: assignNotes[serviceId] || ''
+      });
       setServices(prev => prev.map(s => s.id === serviceId ? { ...s, mechanicId } : s));
+      setAssignNotes(prev => ({ ...prev, [serviceId]: '' }));
       alert('Mechanic assigned successfully!');
     } catch(err) {
       alert(err.response?.data?.message || 'Failed to assign mechanic');
@@ -544,10 +550,9 @@ export default function ManagerDashboard() {
   const renderAssignments = () => (
     <>
       <div className="row g-4 mb-4">
-        <div className="col-sm-6 col-lg-3"><StatCard title="Unassigned" value={unassignedRequests.length} icon={<ArrowLeftRight size={24} />} color="danger" /></div>
-        <div className="col-sm-6 col-lg-3"><StatCard title="Needs Review" value={reviewPendingRequests.length} icon={<CheckCircle2 size={24} />} color="info" /></div>
-        <div className="col-sm-6 col-lg-3"><StatCard title="In Progress" value={inProgressRequests.length} icon={<Activity size={24} />} color="accent" /></div>
-        <div className="col-sm-6 col-lg-3"><StatCard title="Assigned Total" value={services.filter(s => s.mechanicId && s.status !== 'completed').length} icon={<Users size={24} />} color="success" /></div>
+        <div className="col-sm-6 col-lg-4"><StatCard title="Unassigned" value={unassignedRequests.length} icon={<ArrowLeftRight size={24} />} color="danger" /></div>
+        <div className="col-sm-6 col-lg-4"><StatCard title="Needs Review" value={reviewPendingRequests.length} icon={<CheckCircle2 size={24} />} color="info" /></div>
+        <div className="col-sm-6 col-lg-4"><StatCard title="In Progress" value={inProgressRequests.length} icon={<Activity size={24} />} color="accent" /></div>
       </div>
       <div className="card border-0 bg-card">
         <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Assignment Board</div>
@@ -634,16 +639,25 @@ export default function ManagerDashboard() {
                             <Briefcase size={14} className="me-1" /> Owner Took Car
                           </button>
                         ) : (
-                          <div className="d-flex gap-2" style={{ maxWidth: '240px' }}>
-                            <select 
-                              className="form-select form-select-sm" 
-                              value={assignments[s.id] || s.mechanicId?._id || s.mechanicId || ''} 
-                              onChange={e => setAssignments(p => ({ ...p, [s.id]: e.target.value }))}
-                            >
-                              <option value="" disabled>Select mechanic...</option>
-                              {mechanics.map(m => <option key={m._id} value={m._id}>{m.name}</option>)}
-                            </select>
-                            <button className="btn btn-sm btn-outline-primary fw-medium manager-btn-rounded" onClick={() => handleAssign(s.id)}>Save</button>
+                          <div className="d-flex flex-column gap-2" style={{ maxWidth: '260px' }}>
+                            <div className="d-flex gap-2">
+                              <select 
+                                className="form-select form-select-sm" 
+                                value={assignments[s.id] || s.mechanicId?._id || s.mechanicId || ''} 
+                                onChange={e => setAssignments(p => ({ ...p, [s.id]: e.target.value }))}
+                              >
+                                <option value="" disabled>Select mechanic...</option>
+                                {mechanics.map(m => <option key={m._id} value={m._id}>{m.name}</option>)}
+                              </select>
+                              <button className="btn btn-sm btn-outline-primary fw-medium manager-btn-rounded" onClick={() => handleAssign(s.id)}>Save</button>
+                            </div>
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              placeholder="Instruction for mechanic (optional)..."
+                              value={assignNotes[s.id] || ''}
+                              onChange={e => setAssignNotes(p => ({ ...p, [s.id]: e.target.value }))}
+                            />
                           </div>
                         )}
                       </td>
@@ -723,7 +737,7 @@ export default function ManagerDashboard() {
                     ) : (
                       <>
                         <label className="small text-muted-custom mb-2 d-block">{s.mechanicId ? 'Reassign Mechanic' : 'Assign Mechanic'}</label>
-                        <div className="d-flex gap-2">
+                        <div className="d-flex gap-2 mb-2">
                           <select 
                             className="form-select form-select-sm" 
                             value={assignments[s.id] || s.mechanicId?._id || s.mechanicId || ''} 
@@ -734,6 +748,13 @@ export default function ManagerDashboard() {
                           </select>
                           <button className="btn btn-sm btn-primary px-3" onClick={() => handleAssign(s.id)}>Save</button>
                         </div>
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          placeholder="Instruction for mechanic (optional)..."
+                          value={assignNotes[s.id] || ''}
+                          onChange={e => setAssignNotes(p => ({ ...p, [s.id]: e.target.value }))}
+                        />
                       </>
                     )}
                   </div>
@@ -748,83 +769,93 @@ export default function ManagerDashboard() {
 
   const renderWorkflow = () => (
     <>
-      <div className="row g-4 mb-4">
+      <div className="row g-4 mb-5">
         <div className="col-sm-6 col-lg-3"><StatCard title="Completion Rate" value={`${completionRate}%`} icon={<TrendingUp size={24} />} color="success" /></div>
         <div className="col-sm-6 col-lg-3"><StatCard title="Pending Arrival" value={pendingRequests.length} icon={<ClipboardList size={24} />} color="danger" /></div>
         <div className="col-sm-6 col-lg-3"><StatCard title="In Workshop" value={receivedRequests.length + inProgressRequests.length} icon={<Play size={24} />} color="warning" /></div>
         <div className="col-sm-6 col-lg-3"><StatCard title="Ready for Pickup" value={completedRequests.length} icon={<CheckCircle2 size={24} />} color="accent" /></div>
       </div>
       
-      <div className="row g-4">
+      <div className="d-flex flex-column gap-5">
         {[
           { title: 'Pending Arrival', status: 'pending', color: 'var(--color-danger)' },
-          { title: 'Received', status: 'received', color: 'var(--accent-primary)' },
-          { title: 'In Progress', status: 'in-progress', color: 'var(--color-warning)' },
-          { title: 'Completed', status: 'completed', color: 'var(--color-success)' },
+          { title: 'Vehicle Received', status: 'received', color: 'var(--accent-primary)' },
+          { title: 'Work In Progress', status: 'in-progress', color: 'var(--color-warning)' },
+          { title: 'Ready for Pickup', status: 'completed', color: 'var(--color-success)' },
           { title: 'Handed to Customer', status: 'picked-up', color: 'var(--color-info, #38bdf8)' },
-        ].map(column => (
-          <div className="col-12 col-md-6 col-xl" key={column.status}>
-            <div className="card border-0 h-100 manager-kanban-column-bg">
-              <div className="card-header fw-bold manager-kanban-column-hdr d-flex justify-content-between align-items-center border-bottom border-opacity-10 py-3">
-                <span className="d-flex align-items-center gap-2">
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: column.color }}></div>
+        ].map(column => {
+          const columnServices = services.filter(s => s.status === column.status);
+          
+          return (
+            <div key={column.status} className="manager-workflow-section">
+              <div className="d-flex align-items-center justify-content-between mb-3 px-1">
+                <h5 className="fw-bold manager-text-primary mb-0 d-flex align-items-center gap-2">
+                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: column.color }}></div>
                   {column.title}
-                </span>
-                <span className="badge bg-secondary text-white rounded-pill px-2">{services.filter(s => s.status === column.status).length}</span>
+                  <span className="badge rounded-pill bg-secondary bg-opacity-25 ms-2 small" style={{ fontSize: '0.7rem' }}>
+                    {columnServices.length}
+                  </span>
+                </h5>
+                {columnServices.length > 5 && (
+                  <span className="small text-muted-custom">Scroll to see more →</span>
+                )}
               </div>
-              <div className="card-body d-flex flex-column gap-3">
-                {services.filter(s => s.status === column.status).map(s => {
-                  const v = s.vehicleId;
-                  const m = mechanics.find(m => m._id === (s.mechanicId?._id || s.mechanicId));
-                  
-                  return (
-                    <div key={s.id} className="p-3 manager-kanban-item-card transition-hover position-relative">
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <p className="fw-bold mb-0 manager-text-primary lh-1">{s.serviceType}</p>
-                        <div className="d-flex flex-column align-items-end">
-                          <StatusBadge status={s.priority} />
-                          <span className="manager-text-accent fw-bold small mt-1" style={{ fontSize: '0.75rem' }}>${s.cost || 0}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="d-flex align-items-center gap-2 mt-3 text-secondary-custom small">
-                        <Car size={14} />
-                        <span className="fw-medium">{v ? `${v.make} ${v.model}` : 'Unknown Vehicle'}</span>
-                      </div>
-                      
-                      <hr className="my-2 border-opacity-10" />
-                      
-                      <div className="d-flex align-items-center justify-content-between mt-2">
-                        <div className="d-flex align-items-center gap-2">
-                          <div className="user-profile-avatar" style={{ width: '24px', height: '24px', fontSize: '10px' }}>
-                            {m ? m.name.charAt(0) : '?'}
+
+              <div className="manager-workflow-horizontal-scroll d-flex gap-3 pb-2">
+                {columnServices.length > 0 ? (
+                  columnServices.map(s => {
+                    const v = s.vehicleId;
+                    const m = mechanics.find(m => m._id === (s.mechanicId?._id || s.mechanicId));
+                    
+                    return (
+                      <div key={s.id} className="manager-kanban-item-card transition-hover flex-shrink-0" style={{ width: '280px' }}>
+                        <div className="p-3">
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <p className="fw-bold mb-0 manager-text-primary text-truncate pe-2" style={{ maxWidth: '180px' }} title={s.serviceType}>
+                              {s.serviceType}
+                            </p>
+                            <StatusBadge status={s.priority} />
                           </div>
-                          <span className={`small fw-medium ${m ? 'manager-text-primary' : 'text-danger'}`}>
-                            {m ? m.name : 'Unassigned'}
-                          </span>
+                          
+                          <div className="d-flex align-items-center gap-2 mb-2 text-secondary-custom small">
+                            <Car size={14} />
+                            <span className="text-truncate">{v ? `${v.make} ${v.model}` : 'Unknown'}</span>
+                          </div>
+                          
+                          <div className="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-opacity-10">
+                            <div className="d-flex align-items-center gap-2">
+                              <div className="user-profile-avatar" style={{ width: '20px', height: '20px', fontSize: '9px' }}>
+                                {m ? m.name.charAt(0) : '?'}
+                              </div>
+                              <span className={`small ${m ? 'manager-text-secondary' : 'text-danger'}`} style={{ fontSize: '0.75rem' }}>
+                                {m ? m.name.split(' ')[0] : 'Unassigned'}
+                              </span>
+                            </div>
+                            <span className="manager-text-accent fw-bold small">${s.cost || 0}</span>
+                          </div>
+
+                          {column.status === 'completed' && (
+                            <button
+                              className="btn btn-sm btn-primary w-100 mt-3 fw-bold py-1"
+                              style={{ fontSize: '0.7rem' }}
+                              onClick={() => handlePickup(s.id)}
+                            >
+                              Hand Over
+                            </button>
+                          )}
                         </div>
-                        {column.status === 'completed' && (
-                          <button
-                            className="btn btn-sm btn-primary fw-bold d-flex align-items-center gap-1"
-                            style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem' }}
-                            onClick={() => handlePickup(s.id)}
-                          >
-                            <Briefcase size={12} /> Hand Over
-                          </button>
-                        )}
                       </div>
-                    </div>
-                  );
-                })}
-                {services.filter(s => s.status === column.status).length === 0 && (
-                  <div className="text-center py-4 rounded" style={{ border: '1px dashed var(--border-color)' }}>
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-4 w-100 rounded border border-dashed border-opacity-10" style={{ background: 'rgba(255,255,255,0.01)' }}>
                     <p className="small mb-0 manager-text-muted">No jobs in this stage.</p>
                   </div>
                 )}
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </>
   );

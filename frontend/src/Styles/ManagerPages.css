@@ -58,6 +58,44 @@
   letter-spacing: 0.5px;
 }
 
+/* --- Workflow Horizontal Scroll --- */
+.manager-workflow-horizontal-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 4px 12px 4px;
+  margin: 0 -4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(78, 79, 235, 0.2) transparent;
+}
+
+.manager-workflow-horizontal-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.manager-workflow-horizontal-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+}
+
+.manager-workflow-horizontal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(78, 79, 235, 0.2);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.manager-workflow-horizontal-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(78, 79, 235, 0.4);
+}
+
+.manager-workflow-section {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .manager-kanban-item-card {
   background: var(--bg-card);
   border-radius: var(--radius);

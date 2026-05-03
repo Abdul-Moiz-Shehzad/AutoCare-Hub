@@ -436,6 +436,16 @@ export default function MechanicDashboard() {
 
                     {expandedWorkspace[s._id] && (
                       <div className="mechanic-notes-wrapper p-2 p-md-3 mt-3">
+                        {s.notes?.some(n => n.text?.startsWith('[Manager Instruction]')) && (
+                          <div className="mb-3 p-2 p-md-3 rounded" style={{ background: 'rgba(78,79,235,0.10)', border: '1px solid rgba(78,79,235,0.4)' }}>
+                            <p className="small fw-bold text-uppercase mb-2" style={{ fontSize: 'min(0.65rem, 3vw)', color: 'var(--accent-primary)' }}>?? Manager Instructions</p>
+                            {s.notes.filter(n => n.text?.startsWith('[Manager Instruction]')).map((n, i) => (
+                              <p key={i} className="small mb-0" style={{ color: 'var(--text-primary)' }}>
+                                {n.text.replace('[Manager Instruction] ', '')}
+                              </p>
+                            ))}
+                          </div>
+                        )}
                         {(s.logs?.length > 0 || s.pendingNotes?.length > 0) && (
                           <div className="mb-3 p-2 p-md-3 rounded" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)' }}>
                             <p className="small fw-bold text-uppercase mb-2 text-muted" style={{ fontSize: 'min(0.65rem, 3vw)' }}>Job History</p>
