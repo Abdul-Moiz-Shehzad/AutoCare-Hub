@@ -9,9 +9,18 @@
 }
 
 /* --- Shared Typography & Utilities --- */
-.text-accent { color: var(--accent-primary) !important; }
-.bg-accent-subtle { background-color: rgba(78, 79, 235, 0.1); }
-.text-muted-light { color: #A1A1AA; } /* Slightly brighter than standard muted for dark themes */
+.text-accent {
+  color: var(--accent-primary) !important;
+}
+
+.bg-accent-subtle {
+  background-color: rgba(78, 79, 235, 0.1);
+}
+
+.text-muted-light {
+  color: #A1A1AA;
+}
+
 .glass-effect {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
@@ -19,11 +28,25 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.lh-1-15 { line-height: 1.15; }
-.max-w-700 { max-width: 700px; }
-.max-w-600 { max-width: 600px; }
-.text-2-5rem { font-size: 2.5rem; }
-.text-3rem { font-size: 3rem; }
+.lh-1-15 {
+  line-height: 1.15;
+}
+
+.max-w-700 {
+  max-width: 700px;
+}
+
+.max-w-600 {
+  max-width: 600px;
+}
+
+.text-2-5rem {
+  font-size: 2.5rem;
+}
+
+.text-3rem {
+  font-size: 3rem;
+}
 
 /* --- Hero Section --- */
 .landing-hero-section {
@@ -201,6 +224,7 @@
 
 /* --- Large Tablets (≤1200px) --- */
 @media (max-width: 1200px) {
+
   .landing-hero-section,
   .landing-features-section,
   .landing-services-section,
@@ -212,6 +236,7 @@
 
 /* --- Landscape Tablets (≤992px) --- */
 @media (max-width: 992px) {
+
   .landing-hero-section,
   .landing-features-section,
   .landing-services-section,
@@ -226,13 +251,19 @@
     height: 350px;
   }
 
-  .landing-cta-orb { width: 400px; height: 400px; }
+  .landing-cta-orb {
+    width: 400px;
+    height: 400px;
+  }
 
-  .landing-feature-card:hover { transform: none; }
+  .landing-feature-card:hover {
+    transform: none;
+  }
 }
 
 /* --- Portrait Tablets / Large Phones (≤768px) --- */
 @media (max-width: 768px) {
+
   .landing-hero-section,
   .landing-features-section,
   .landing-services-section,
@@ -247,24 +278,40 @@
   }
 
   /* Hero image below content */
-  .landing-hero-image-wrapper { margin-top: 2.5rem; }
+  .landing-hero-image-wrapper {
+    margin-top: 2.5rem;
+  }
 
   /* Hide decorative orbs */
   .landing-decorative-orb-top,
-  .landing-decorative-orb-bottom { display: none; }
+  .landing-decorative-orb-bottom {
+    display: none;
+  }
 
-  .landing-cta-orb { width: 300px; height: 300px; }
+  .landing-cta-orb {
+    width: 300px;
+    height: 300px;
+  }
 
   /* Feature icon */
-  .landing-feature-icon { width: 56px; height: 56px; }
+  .landing-feature-icon {
+    width: 56px;
+    height: 56px;
+  }
 
   /* Stat cards: 2×2 grid */
-  .landing-stat-card { margin-bottom: 1rem; }
-  .landing-stat-card:hover { transform: none; }
+  .landing-stat-card {
+    margin-bottom: 1rem;
+  }
+
+  .landing-stat-card:hover {
+    transform: none;
+  }
 }
 
 /* --- Standard Phones (≤576px) --- */
 @media (max-width: 576px) {
+
   .landing-hero-section,
   .landing-features-section,
   .landing-services-section,
@@ -276,16 +323,31 @@
   /* Orbs fully hidden */
   .landing-decorative-orb-top,
   .landing-decorative-orb-bottom,
-  .landing-cta-orb { display: none; }
+  .landing-cta-orb {
+    display: none;
+  }
 
-  .landing-hero-image-wrapper { margin-top: 2rem; }
+  .landing-hero-image-wrapper {
+    margin-top: 2rem;
+  }
 
-  .landing-feature-card { border-radius: var(--radius); }
-  .landing-feature-card:hover { transform: none; box-shadow: none; }
+  .landing-feature-card {
+    border-radius: var(--radius);
+  }
 
-  .landing-service-card { border-radius: var(--radius); }
+  .landing-feature-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
 
-  .landing-feature-icon { width: 48px; height: 48px; }
+  .landing-service-card {
+    border-radius: var(--radius);
+  }
+
+  .landing-feature-icon {
+    width: 48px;
+    height: 48px;
+  }
 
   /* Trust stat cards stacked */
   .landing-stat-card {
@@ -294,14 +356,20 @@
   }
 
   /* hero badge smaller */
-  .landing-hero-badge { font-size: 0.8rem !important; padding: 0.35rem 0.75rem !important; }
+  .landing-hero-badge {
+    font-size: 0.8rem !important;
+    padding: 0.35rem 0.75rem !important;
+  }
 
   /* Landing pill smaller */
-  .landing-pill { font-size: 0.78rem !important; }
+  .landing-pill {
+    font-size: 0.78rem !important;
+  }
 }
 
 /* --- Small Phones (≤480px) --- */
 @media (max-width: 480px) {
+
   .landing-hero-section,
   .landing-features-section,
   .landing-services-section,
@@ -310,19 +378,30 @@
     padding: 2.5rem 0;
   }
 
-  .landing-hero-image-wrapper { margin-top: 1.5rem; }
+  .landing-hero-image-wrapper {
+    margin-top: 1.5rem;
+  }
 
-  .landing-feature-icon { width: 40px; height: 40px; border-radius: var(--radius); }
+  .landing-feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+  }
 
-  .landing-feature-card { padding: 1rem !important; }
+  .landing-feature-card {
+    padding: 1rem !important;
+  }
 
-  .landing-stat-card { padding: 0.75rem !important; }
+  .landing-stat-card {
+    padding: 0.75rem !important;
+  }
 
   /* CTA buttons stack on tiny phones */
   .landing-cta-section .d-flex.gap-3 {
     flex-direction: column;
     align-items: stretch !important;
   }
+
   .landing-cta-section .d-flex.gap-3 .btn {
     width: 100%;
     justify-content: center;
