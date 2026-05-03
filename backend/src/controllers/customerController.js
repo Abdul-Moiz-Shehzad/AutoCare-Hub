@@ -217,10 +217,11 @@ const rateService = async (req, res) => {
         const currentTotal = (mechanic.rating || 5) * (mechanic.ratingCount || 0);
         const newCount = (mechanic.ratingCount || 0) + 1;
         const newRating = (currentTotal + numRating) / newCount;
-        
-        mechanic.rating = Number(newRating.toFixed(1));
-        mechanic.ratingCount = newCount;
-        await mechanic.save();
+
+        await User.findByIdAndUpdate(techId, {
+          rating: Number(newRating.toFixed(1)),
+          ratingCount: newCount
+        });
       }
     }
 

@@ -16,7 +16,15 @@ const getMyJobs = async (req, res) => {
       .populate('pendingNotes.authorId', 'name role')
       .sort({ updatedAt: -1 });
 
-    res.json(jobs);
+    const mappedJobs = jobs.map(job => {
+      const jobObj = job.toObject();
+      if (jobObj.status === 'picked-up') {
+        jobObj.status = 'completed';
+      }
+      return jobObj;
+    });
+
+    res.json(mappedJobs);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

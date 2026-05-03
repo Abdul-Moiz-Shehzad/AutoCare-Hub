@@ -12,6 +12,7 @@ frontend/coverage
 # production
 frontend/build
 plan.md
+backend/uploads
 # misc
 frontend/.DS_Store
 frontend/.env.local

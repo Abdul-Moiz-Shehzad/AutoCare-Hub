@@ -172,12 +172,11 @@ export default function MechanicDashboard() {
   const renderNotesList = (service) => {
     const { logs, pendingNotes, _id: serviceId } = service;
     
-    // Get current user ID from localStorage
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const currentUserId = user._id;
-
     // Filter logs to only show those where technicianId matches current user
-    const filteredLogs = logs?.filter(log => log.technicianId === currentUserId) || [];
+    const filteredLogs = logs?.filter(log => {
+      const techId = log.technicianId?._id || log.technicianId;
+      return techId === currentUserId;
+    }) || [];
 
     return (
       <div className="d-flex flex-column gap-3">
