@@ -27,10 +27,17 @@ const menuItems = [
   { title: 'Workflow', url: '/workflow', icon: <TrendingUp size={18} /> },
 ];
 
-const CHART_PURPLE = '#4E4FEB'; 
+const CHART_PURPLE = '#4E4FEB';
 const CHART_GREEN = '#34d399';
 const CHART_GRID = 'rgba(255, 255, 255, 0.05)';
 const CHART_TEXT = '#A1A1AA';
+
+const API_ORIGIN = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
+const resolveImageUrl = (src) => {
+  if (!src) return '';
+  if (/^https?:\/\//i.test(src) || src.startsWith('data:')) return src;
+  return `${API_ORIGIN}${src.startsWith('/') ? '' : '/'}${src}`;
+};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -664,13 +671,15 @@ export default function ManagerDashboard() {
                             <FileText size={14} />
                           </button>
                           {s.completionImage && (
-                            <button
-                              className="btn btn-sm btn-outline-success manager-btn-rounded"
-                              onClick={() => window.open(s.completionImage)}
+                            <a
+                              className="btn btn-sm btn-outline-success manager-btn-rounded d-inline-flex align-items-center"
+                              href={resolveImageUrl(s.completionImage)}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               title="View completion photo"
                             >
                               <Camera size={14} />
-                            </button>
+                            </a>
                           )}
                         </div>
                       </td>
@@ -771,9 +780,14 @@ export default function ManagerDashboard() {
                       <div className="d-flex flex-column gap-2">
                         <p className="small text-info fw-bold mb-1 text-center">WAITING FOR YOUR REVIEW</p>
                         {s.completionImage && (
-                          <button className="btn btn-sm btn-outline-success w-100 mb-2" onClick={() => window.open(s.completionImage)}>
+                          <a
+                            className="btn btn-sm btn-outline-success w-100 mb-2 d-inline-flex align-items-center justify-content-center"
+                            href={resolveImageUrl(s.completionImage)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <Camera size={14} className="me-2" /> View Completion Photo
-                          </button>
+                          </a>
                         )}
                         <div className="d-flex gap-2">
                           <button className="btn btn-sm btn-success flex-grow-1 fw-bold" onClick={() => handleReview(s.id, 'approve')}>Approve Job</button>
@@ -942,10 +956,9 @@ export default function ManagerDashboard() {
           className="modal show d-block"
           tabIndex="-1"
           style={{ backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
-          onClick={handleCloseNotesModal}
         >
-          <div className="modal-dialog modal-lg" onClick={e => e.stopPropagation()}>
-            <div className="manager-modal-content-custom">
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content manager-modal-content-custom">
                 <div
                   className="modal-header border-bottom border-opacity-10 bg-elevated"
                 >
@@ -1107,12 +1120,20 @@ export default function ManagerDashboard() {
 
                                 {log.image && (
                                   <div className="mt-2 pt-2 border-top border-opacity-10">
-                                    <button 
-                                      className="btn btn-sm btn-outline-success d-flex align-items-center gap-2 notes-modal-btn-compact"
-                                      onClick={() => window.open(log.image)}
+                                    <a
+                                      href={resolveImageUrl(log.image)}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="d-block"
+                                      title="Open full-size in new tab"
                                     >
-                                      <Camera size={12} /> View Completion Photo
-                                    </button>
+                                      <img
+                                        src={resolveImageUrl(log.image)}
+                                        alt="Milestone attachment"
+                                        className="img-fluid rounded border border-opacity-10"
+                                        style={{ maxHeight: 240, objectFit: 'cover' }}
+                                      />
+                                    </a>
                                   </div>
                                 )}
                               </div>
@@ -1139,6 +1160,31 @@ export default function ManagerDashboard() {
                             </ul>
                           </div>
                         )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Completion Photo */}
+                  {selectedServiceNotes.completionImage && (
+                    <div className="mb-4">
+                      <label className="form-label small fw-bold text-uppercase text-muted mb-3 d-block ls-half">
+                        Completion Photo
+                      </label>
+                      <div className="p-3 rounded bg-secondary-box">
+                        <a
+                          href={resolveImageUrl(selectedServiceNotes.completionImage)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="d-block"
+                          title="Open full-size in new tab"
+                        >
+                          <img
+                            src={resolveImageUrl(selectedServiceNotes.completionImage)}
+                            alt="Completion"
+                            className="img-fluid rounded"
+                            style={{ maxHeight: 320, width: '100%', objectFit: 'contain' }}
+                          />
+                        </a>
                       </div>
                     </div>
                   )}
