@@ -44,6 +44,9 @@ const createMechanic = async (req, res) => {
         phone: mechanic.phone,
         role: mechanic.role,
         specialization: mechanic.specialization,
+        activeJobs: mechanic.activeJobs,
+        completedJobs: mechanic.completedJobs,
+        rating: mechanic.rating,
       });
     } else {
       res.status(400).json({ message: 'Invalid mechanic data' });
@@ -58,15 +61,7 @@ const createMechanic = async (req, res) => {
 // @access  Private/Manager
 const getMechanics = async (req, res) => {
   try {
-    // Find mechanics assigned to this manager OR mechanics with no manager assigned (legacy/unassigned)
-    const mechanics = await User.find({ 
-      role: 'mechanic', 
-      $or: [
-        { managerId: req.user._id },
-        { managerId: { $exists: false } },
-        { managerId: null }
-      ]
-    }).select('-password');
+    const mechanics = await User.find({ role: 'mechanic' }).select('-password');
     res.json(mechanics);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -168,8 +163,11 @@ const assignMechanic = async (req, res) => {
     const updatedService = await Service.findById(req.params.id)
       .populate('customerId', 'name email phone')
       .populate('mechanicId', 'name phone')
-      .populate('vehicleId', 'make model year')
-      .populate('notes.authorId', 'name role');
+      .populate('vehicleId', 'make model year plate color')
+      .populate('notes.authorId', 'name role')
+      .populate('logs.technicianId', 'name role')
+      .populate('logs.notes.authorId', 'name role')
+      .populate('pendingNotes.authorId', 'name role');
 
     res.json(updatedService);
   } catch (error) {
@@ -200,7 +198,11 @@ const updateServicePriority = async (req, res) => {
     const updatedService = await Service.findById(req.params.id)
       .populate('customerId', 'name email phone')
       .populate('mechanicId', 'name phone')
-      .populate('vehicleId', 'make model year');
+      .populate('vehicleId', 'make model year plate color')
+      .populate('notes.authorId', 'name role')
+      .populate('logs.technicianId', 'name role')
+      .populate('logs.notes.authorId', 'name role')
+      .populate('pendingNotes.authorId', 'name role');
 
     res.json(updatedService);
   } catch (error) {
@@ -329,7 +331,11 @@ const reviewServiceRequest = async (req, res) => {
     const updatedService = await Service.findById(req.params.id)
       .populate('customerId', 'name email phone')
       .populate('mechanicId', 'name phone')
-      .populate('vehicleId', 'make model year plate color');
+      .populate('vehicleId', 'make model year plate color')
+      .populate('notes.authorId', 'name role')
+      .populate('logs.technicianId', 'name role')
+      .populate('logs.notes.authorId', 'name role')
+      .populate('pendingNotes.authorId', 'name role');
 
     res.json(updatedService);
   } catch (error) {
@@ -358,7 +364,11 @@ const markAsPickedUp = async (req, res) => {
     const updatedService = await Service.findById(req.params.id)
       .populate('customerId', 'name email phone')
       .populate('mechanicId', 'name phone')
-      .populate('vehicleId', 'make model year plate color');
+      .populate('vehicleId', 'make model year plate color')
+      .populate('notes.authorId', 'name role')
+      .populate('logs.technicianId', 'name role')
+      .populate('logs.notes.authorId', 'name role')
+      .populate('pendingNotes.authorId', 'name role');
 
     res.json(updatedService);
   } catch (error) {
@@ -379,7 +389,16 @@ const markAsReceived = async (req, res) => {
     service.status = 'received';
     await service.save();
 
-    res.json(service);
+    const updatedService = await Service.findById(req.params.id)
+      .populate('customerId', 'name email phone')
+      .populate('mechanicId', 'name phone')
+      .populate('vehicleId', 'make model year plate color')
+      .populate('notes.authorId', 'name role')
+      .populate('logs.technicianId', 'name role')
+      .populate('logs.notes.authorId', 'name role')
+      .populate('pendingNotes.authorId', 'name role');
+
+    res.json(updatedService);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -46,14 +46,11 @@ export default function BookService() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const [vehiclesRes, typesRes] = await Promise.all([
-          api.get('/customer/vehicles'),
-          api.get('/customer/services/types'),
-        ]);
+        const vehiclesRes = await api.get('/customer/vehicles');
         setVehicles(vehiclesRes.data);
-        setServiceTypes(typesRes.data);
+        // serviceTypes is already initialized from defaultServiceTypes
       } catch (err) {
-        console.error('Failed to load data');
+        console.error('Failed to load vehicles:', err);
       }
     };
     fetchData();

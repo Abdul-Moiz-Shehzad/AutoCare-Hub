@@ -21,9 +21,14 @@ export default function Vehicles() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [uploadFile, setUploadFile] = useState(null);
+  const [uiMessage, setUiMessage] = useState(null);
   const [formData, setFormData] = useState({
     make: '', model: '', year: '', color: '', plate: '', mileage: '', vin: '', image: ''
   });
+  const showMsg = (type, text) => {
+    setUiMessage({ type, text });
+    setTimeout(() => setUiMessage(null), 4000);
+  };
 
   const SLEEK_CAR_PLACEHOLDER = 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80';
 
@@ -54,11 +59,13 @@ export default function Vehicles() {
       }
 
       if (editingId) {
-        const { data } = await api.put(`/vehicles/${editingId}`, { ...formData, image: imageUrl });
+        const { data } = await api.put(`/customer/vehicles/${editingId}`, { ...formData, image: imageUrl });
         setVehicles(vehicles.map(v => v._id === editingId ? data : v));
+        showMsg('success', 'Vehicle updated successfully!');
       } else {
         const { data } = await api.post('/customer/vehicles', { ...formData, image: imageUrl });
         setVehicles([...vehicles, data]);
+        showMsg('success', 'Vehicle added successfully!');
       }
 
       setDialogOpen(false);
@@ -67,7 +74,7 @@ export default function Vehicles() {
       setUploadFile(null);
     } catch(err) {
       console.error('Save vehicle error details:', err.response?.data || err);
-      alert(err.response?.data?.message || 'Failed to save vehicle');
+      showMsg('error', err.response?.data?.message || 'Failed to save vehicle');
     }
   };
 
@@ -84,10 +91,10 @@ export default function Vehicles() {
   const handleDeleteVehicle = async (id) => {
     if (!window.confirm("Are you sure you want to delete this vehicle?")) return;
     try {
-      await api.delete(`/vehicles/${id}`);
+      await api.delete(`/customer/vehicles/${id}`);
       setVehicles(vehicles.filter(v => v._id !== id));
     } catch (error) {
-      alert("Failed to delete vehicle");
+      showMsg('error', error.response?.data?.message || 'Failed to delete vehicle');
     }
   };
 
@@ -113,7 +120,11 @@ export default function Vehicles() {
         }
       />
 
-      {}
+      {uiMessage && (
+        <div className={`alert ${uiMessage.type === 'success' ? 'alert-success' : 'alert-danger'} d-flex align-items-center gap-2 mb-4 border-0 shadow-sm inline-alert`}>
+          {uiMessage.text}
+        </div>
+      )}
       <div className="row g-4">
         {vehicles.map((v) => (
           <div className="col-sm-6 col-lg-4" key={v._id}>
@@ -155,75 +166,73 @@ export default function Vehicles() {
         ))}
       </div>
 
-      {}
       {dialogOpen && (
-        <>
-          <div className="modal-backdrop fade show vehicle-modal-backdrop"></div>
-          <div className="modal fade show d-block vehicle-modal" tabIndex="-1">
-            <div className="modal-dialog modal-dialog-centered">
-              <div className="modal-content vehicle-modal-content">
-                <div className="modal-header border-bottom-0 pb-0">
-                  <h5 className="modal-title fw-bold text-primary-custom">{editingId ? 'Edit Vehicle' : 'Add New Vehicle'}</h5>
-                  <button 
-                    type="button" 
-                    className="btn btn-sm d-flex align-items-center justify-content-center modal-close-btn"
-                    onClick={() => {
-                      setDialogOpen(false);
-                      setEditingId(null);
-                    }}
-                  >
-                    <X size={16} />
+        <div
+          className="modal fade show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+          onClick={() => { setDialogOpen(false); setEditingId(null); }}
+        >
+          <div className="modal-dialog modal-dialog-centered" onClick={e => e.stopPropagation()}>
+            <div className="modal-content vehicle-modal-content">
+              <div className="modal-header border-bottom-0 pb-0">
+                <h5 className="modal-title fw-bold text-primary-custom">{editingId ? 'Edit Vehicle' : 'Add New Vehicle'}</h5>
+                <button 
+                  type="button" 
+                  className="btn btn-sm d-flex align-items-center justify-content-center modal-close-btn"
+                  onClick={() => { setDialogOpen(false); setEditingId(null); }}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              
+              <div className="modal-body p-4">
+                <form onSubmit={handleAddVehicle}>
+                  <div className="row g-3 mb-3">
+                    <div className="col-12 col-md-6">
+                      <label className="form-label small fw-medium text-secondary-custom">Make</label>
+                      <input type="text" className="form-control" placeholder="Changan" value={formData.make} onChange={e => setFormData({...formData, make: e.target.value})} required />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <label className="form-label small fw-medium text-secondary-custom">Model</label>
+                      <input type="text" className="form-control" placeholder="Alsvin" value={formData.model} onChange={e => setFormData({...formData, model: e.target.value})} required />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <label className="form-label small fw-medium text-secondary-custom">Year</label>
+                      <input type="number" className="form-control" placeholder="2023" value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} required />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <label className="form-label small fw-medium text-secondary-custom">Color</label>
+                      <input type="text" className="form-control" placeholder="White" value={formData.color} onChange={e => setFormData({...formData, color: e.target.value})} required />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <label className="form-label small fw-medium text-secondary-custom">License Plate</label>
+                      <input type="text" className="form-control" placeholder="ABC-1234" value={formData.plate} onChange={e => setFormData({...formData, plate: e.target.value})} required />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <label className="form-label small fw-medium text-secondary-custom">Mileage</label>
+                      <input type="number" className="form-control" placeholder="15000" value={formData.mileage} onChange={e => setFormData({...formData, mileage: e.target.value})} required />
+                    </div>
+                  </div>
+                  <div className="row g-3 mb-4">
+                    <div className="col-12 col-md-6">
+                      <label className="form-label small fw-medium text-secondary-custom">VIN</label>
+                      <input type="text" className="form-control" placeholder="1HGBH41JXMN109186" value={formData.vin} onChange={e => setFormData({...formData, vin: e.target.value})} />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <label className="form-label small fw-medium text-secondary-custom">Vehicle Photo (Optional)</label>
+                      <input type="file" className="form-control" onChange={e => setUploadFile(e.target.files[0])} accept="image/*" />
+                      <div className="form-text small notes-modal-accent">Leave blank to use default image</div>
+                    </div>
+                  </div>
+                  <button type="submit" className="btn btn-primary w-100 fw-bold py-2">
+                    {editingId ? 'Save Changes' : 'Add Vehicle'}
                   </button>
-                </div>
-                
-                <div className="modal-body p-4">
-                  <form onSubmit={handleAddVehicle}>
-                    <div className="row g-3 mb-3">
-                      <div className="col-12 col-md-6">
-                        <label className="form-label small fw-medium text-secondary-custom">Make</label>
-                        <input type="text" className="form-control" placeholder="Changan" value={formData.make} onChange={e => setFormData({...formData, make: e.target.value})} required />
-                      </div>
-                      <div className="col-12 col-md-6">
-                        <label className="form-label small fw-medium text-secondary-custom">Model</label>
-                        <input type="text" className="form-control" placeholder="Alsvin" value={formData.model} onChange={e => setFormData({...formData, model: e.target.value})} required />
-                      </div>
-                      <div className="col-12 col-md-6">
-                        <label className="form-label small fw-medium text-secondary-custom">Year</label>
-                        <input type="number" className="form-control" placeholder="2023" value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} required />
-                      </div>
-                      <div className="col-12 col-md-6">
-                        <label className="form-label small fw-medium text-secondary-custom">Color</label>
-                        <input type="text" className="form-control" placeholder="White" value={formData.color} onChange={e => setFormData({...formData, color: e.target.value})} required />
-                      </div>
-                      <div className="col-12 col-md-6">
-                        <label className="form-label small fw-medium text-secondary-custom">License Plate</label>
-                        <input type="text" className="form-control" placeholder="ABC-1234" value={formData.plate} onChange={e => setFormData({...formData, plate: e.target.value})} required />
-                      </div>
-                      <div className="col-12 col-md-6">
-                        <label className="form-label small fw-medium text-secondary-custom">Mileage</label>
-                        <input type="number" className="form-control" placeholder="15000" value={formData.mileage} onChange={e => setFormData({...formData, mileage: e.target.value})} required />
-                      </div>
-                    </div>
-                    <div className="row g-3 mb-4">
-                      <div className="col-12 col-md-6">
-                        <label className="form-label small fw-medium text-secondary-custom">VIN</label>
-                        <input type="text" className="form-control" placeholder="1HGBH41JXMN109186" value={formData.vin} onChange={e => setFormData({...formData, vin: e.target.value})} />
-                      </div>
-                      <div className="col-12 col-md-6">
-                        <label className="form-label small fw-medium text-secondary-custom">Vehicle Photo (Optional)</label>
-                        <input type="file" className="form-control" onChange={e => setUploadFile(e.target.files[0])} accept="image/*" />
-                        <div className="form-text small notes-modal-accent">Leave blank to auto-generate based on Make</div>
-                      </div>
-                    </div>
-                    <button type="submit" className="btn btn-primary w-100 fw-bold py-2">
-                      {editingId ? 'Save Changes' : 'Add Vehicle'}
-                    </button>
-                  </form>
-                </div>
+                </form>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </DashboardLayout>
   );

@@ -32,6 +32,11 @@ export default function MechanicDashboard() {
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
   const currentUserId = userInfo._id || userInfo.id;
+  const [uiMessage, setUiMessage] = useState(null);
+  const showMsg = (type, text) => {
+    setUiMessage({ type, text });
+    setTimeout(() => setUiMessage(null), 4000);
+  };
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -66,7 +71,7 @@ export default function MechanicDashboard() {
         const baseUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api', '') : 'http://localhost:5000';
         setPictureAttached(prev => ({ ...prev, [id]: `${baseUrl}${data.imagePath}` }));
       } catch (err) {
-        alert('Failed to upload image');
+        showMsg('error', 'Failed to upload image. Please try again.');
       }
     }
   };
@@ -74,7 +79,7 @@ export default function MechanicDashboard() {
   const handleMilestoneUpdate = async (id) => {
     const milestone = milestoneInputs[id]?.trim();
     if (!milestone) {
-      alert("Please write a milestone note to log an update.");
+      showMsg('error', 'Please write a milestone note to log an update.');
       return;
     }
     try {
@@ -85,9 +90,9 @@ export default function MechanicDashboard() {
       setServices(prev => prev.map(s => s._id === id ? data : s));
       setMilestoneInputs(prev => ({ ...prev, [id]: '' }));
       setPictureAttached(prev => ({ ...prev, [id]: null }));
-      alert("Milestone logged!");
+      showMsg('success', 'Milestone logged successfully!');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to log milestone');
+      showMsg('error', err.response?.data?.message || 'Failed to log milestone');
     }
   };
 
@@ -98,9 +103,9 @@ export default function MechanicDashboard() {
       const { data } = await api.put(`/mechanic/jobs/${id}/notes`, { note });
       setServices(prev => prev.map(s => s._id === id ? data : s));
       setTechInputs(prev => ({ ...prev, [id]: '' }));
-      alert("Note added to pending milestone!");
+      showMsg('success', 'Technical detail saved.');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to save technical detail');
+      showMsg('error', err.response?.data?.message || 'Failed to save technical detail');
     }
   };
 
@@ -108,7 +113,7 @@ export default function MechanicDashboard() {
     if (targetStatus === 'in-progress') {
       const currentlyActive = services.find(s => s.status === 'in-progress');
       if (currentlyActive && currentlyActive._id !== id) {
-        alert(`You are currently working on "${currentlyActive.serviceType}". Please complete it before starting a new job.`);
+        showMsg('error', `You are currently working on "${currentlyActive.serviceType}". Please complete it before starting a new job.`);
         return;
       }
     }
@@ -117,15 +122,14 @@ export default function MechanicDashboard() {
     const hasPicture = pictureAttached[id];
 
     if (targetStatus === 'completed' && (!note || !hasPicture)) {
-      alert("COMPULSORY: You must write a final milestone note AND attach a picture of the work to complete this job.");
+      showMsg('error', 'You must write a final milestone note AND attach a photo to complete this job.');
       return;
     }
 
     try {
-      // Send the status update along with the milestone and picture filename
       const { data } = await api.put(`/mechanic/jobs/${id}/status`, { 
         status: targetStatus,
-        milestone: note || null, // Final milestone heading
+        milestone: note || null,
         completionImage: pictureAttached[id] || null 
       });
       
@@ -136,12 +140,12 @@ export default function MechanicDashboard() {
         setExpandedWorkspace(prev => ({ ...prev, [id]: true }));
       }
       if (targetStatus === 'completed') {
-        alert('Job successfully marked as Completed!');
+        showMsg('success', 'Job successfully submitted for manager review!');
         setExpandedWorkspace(prev => ({ ...prev, [id]: false }));
         setPictureAttached(prev => ({ ...prev, [id]: null }));
       }
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update job');
+      showMsg('error', err.response?.data?.message || 'Failed to update job');
     }
   };
 
@@ -160,8 +164,9 @@ export default function MechanicDashboard() {
       const { data } = await api.put(`/mechanic/jobs/${serviceId}/logs`, { logs: newLogs });
       setServices(prev => prev.map(s => s._id === serviceId ? data : s));
       setEditingLog({ id: null, index: null, text: '' });
+      showMsg('success', 'Log entry updated.');
     } catch (err) {
-      alert("Failed to save edit");
+      showMsg('error', 'Failed to save edit. Please try again.');
     }
   };
 
@@ -664,6 +669,12 @@ export default function MechanicDashboard() {
         description={page.description}
         breadcrumbs={[{ label: 'Dashboard' }]}
       />
+      {uiMessage && (
+        <div className={`alert ${uiMessage.type === 'success' ? 'alert-success' : 'alert-danger'} d-flex align-items-center gap-2 mb-4 border-0 shadow-sm mx-3 inline-alert`}>
+          {uiMessage.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+          {uiMessage.text}
+        </div>
+      )}
       {page.render()}
     </DashboardLayout>
   );

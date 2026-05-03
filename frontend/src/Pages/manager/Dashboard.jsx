@@ -99,11 +99,11 @@ export default function ManagerDashboard() {
       return;
     }
     try {
-      await api.put(`/manager/requests/${serviceId}/assign`, { 
+      const { data } = await api.put(`/manager/requests/${serviceId}/assign`, { 
         mechanicId,
         note: assignNotes[serviceId] || ''
       });
-      setServices(prev => prev.map(s => s.id === serviceId ? { ...s, mechanicId } : s));
+      setServices(prev => prev.map(s => s.id === serviceId ? { ...data, id: data._id } : s));
       setAssignNotes(prev => ({ ...prev, [serviceId]: '' }));
       setUiMessage({ type: 'success', text: 'Mechanic assigned successfully!' });
       setTimeout(() => setUiMessage(null), 3000);
@@ -167,16 +167,19 @@ export default function ManagerDashboard() {
     try {
       await api.put(`/manager/requests/${selectedServiceNotes._id}/priority`, { priority: newPriority });
       setServices(prev => prev.map(s => s.id === selectedServiceNotes._id ? { ...s, priority: newPriority } : s));
+      // Keep selectedServiceNotes in sync so the Save button re-enables correctly
       setSelectedServiceNotes(prev => ({ ...prev, priority: newPriority }));
+      setUiMessage({ type: 'success', text: 'Priority updated successfully!' });
+      setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {
-      console.error(err.response?.data?.message || 'Failed to update priority');
+      setUiMessage({ type: 'error', text: err.response?.data?.message || 'Failed to update priority' });
     }
   };
 
   const handleReview = async (serviceId, decision) => {
     try {
       const { data } = await api.put(`/manager/requests/${serviceId}/review`, { decision });
-      setServices(prev => prev.map(s => s.id === serviceId ? { ...s, status: data.status } : s));
+      setServices(prev => prev.map(s => s.id === serviceId ? { ...data, id: data._id } : s));
       setUiMessage({ type: 'success', text: decision === 'approve' ? 'Job marked as completed!' : 'Job sent back to mechanic.' });
       setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {
@@ -186,8 +189,8 @@ export default function ManagerDashboard() {
 
   const handlePickup = async (serviceId) => {
     try {
-      await api.put(`/manager/requests/${serviceId}/pickup`);
-      setServices(prev => prev.map(s => s.id === serviceId ? { ...s, status: 'picked-up' } : s));
+      const { data } = await api.put(`/manager/requests/${serviceId}/pickup`);
+      setServices(prev => prev.map(s => s.id === serviceId ? { ...data, id: data._id } : s));
       setUiMessage({ type: 'success', text: 'Vehicle marked as Picked Up! Revenue has been recorded.' });
       setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {
@@ -197,8 +200,8 @@ export default function ManagerDashboard() {
 
   const handleReceive = async (serviceId) => {
     try {
-      await api.put(`/manager/requests/${serviceId}/receive`);
-      setServices(prev => prev.map(s => s.id === serviceId ? { ...s, status: 'received' } : s));
+      const { data } = await api.put(`/manager/requests/${serviceId}/receive`);
+      setServices(prev => prev.map(s => s.id === serviceId ? { ...data, id: data._id } : s));
       setUiMessage({ type: 'success', text: 'Vehicle marked as Received!' });
       setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {
@@ -225,15 +228,29 @@ export default function ManagerDashboard() {
           <div className="card border-0 h-100 bg-card">
             <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Weekly Bookings</div>
             <div className="card-body">
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={weeklyBookings}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                  <XAxis dataKey="day" tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-                  <Bar dataKey="bookings" fill={CHART_PURPLE} radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+              {weeklyBookings.length > 0 && weeklyBookings.some(d => d.bookings > 0) ? (
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={weeklyBookings}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                    <XAxis dataKey="day" tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+                    <Bar dataKey="bookings" fill={CHART_PURPLE} radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="d-flex flex-column align-items-center justify-content-center h-100 py-4">
+                  <ResponsiveContainer width="100%" height={220}>
+                    <BarChart data={weeklyBookings}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                      <XAxis dataKey="day" tick={{ fontSize: 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                      <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                      <Bar dataKey="bookings" fill={CHART_PURPLE} radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <p className="small manager-text-muted mt-2 mb-0">No scheduled bookings this week</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -338,20 +355,26 @@ export default function ManagerDashboard() {
           <div className="card border-0 h-100 bg-card">
             <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Mechanic Workload</div>
             <div className="card-body d-flex flex-column gap-3">
-              {mechanics.map(m => (
+              {mechanics.length > 0 ? mechanics.map(m => (
                 <div key={m._id} className="d-flex align-items-center justify-content-between p-3 manager-mechanic-card">
                   <div>
                     <p className="fw-bold mb-0 manager-text-primary">{m.name}</p>
                     <p className="small mb-0 manager-text-muted">{m.specialization}</p>
                   </div>
                   <div className="text-end">
-                    <p className="small fw-bold mb-0 manager-text-accent">{m.activeJobs} active</p>
+                    <p className="small fw-bold mb-0 manager-text-accent">{m.activeJobs ?? 0} active</p>
                     <p className="small mb-0 d-flex align-items-center justify-content-end gap-1 manager-text-muted">
-                      <Star size={12} className="manager-mechanic-rating text-warning" /> {m.rating}
+                      <Star size={12} className="manager-mechanic-rating text-warning" /> {m.rating ?? 5.0}
                     </p>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="d-flex flex-column align-items-center justify-content-center py-5 text-center">
+                  <Users size={32} className="manager-text-muted mb-2 opacity-50" />
+                  <p className="small manager-text-muted mb-0">No mechanics on the team yet.</p>
+                  <p className="small manager-text-muted">Go to the Mechanics tab to hire staff.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -581,7 +604,6 @@ export default function ManagerDashboard() {
                 {services.filter(s => s.status !== 'picked-up').map(s => {
                   const assignedMechanic = mechanics.find(m => m._id === (s.mechanicId?._id || s.mechanicId));
                   const vehicle = s.vehicleId;
-                  const hasNotes = s.description || (s.notes && s.notes.length > 0) || s.logs?.length > 0;
                   return (
                     <tr key={s.id} className={s.status === 'review-pending' ? 'manager-row-review-pending' : ''}>
                       <td className="ps-4 fw-medium manager-text-primary border-bottom border-opacity-10">
@@ -607,15 +629,13 @@ export default function ManagerDashboard() {
                       </td>
                       <td className="border-bottom border-opacity-10">
                         <div className="d-flex gap-2">
-                          {hasNotes && (
-                            <button
-                              className="btn btn-sm btn-outline-info manager-btn-rounded"
-                              onClick={() => handleViewNotes(s)}
-                              title="View job history/notes"
-                            >
-                              <FileText size={14} />
-                            </button>
-                          )}
+                          <button
+                            className="btn btn-sm btn-outline-info manager-btn-rounded"
+                            onClick={() => handleViewNotes(s)}
+                            title="View job details & notes"
+                          >
+                            <FileText size={14} />
+                          </button>
                           {s.completionImage && (
                             <button
                               className="btn btn-sm btn-outline-success manager-btn-rounded"
@@ -677,10 +697,9 @@ export default function ManagerDashboard() {
         
         <div className="d-md-none p-3">
           <div className="d-flex flex-column gap-3">
-            {services.filter(s => s.status !== 'completed').map(s => {
+            {services.filter(s => s.status !== 'picked-up').map(s => {
               const assignedMechanic = mechanics.find(m => m._id === (s.mechanicId?._id || s.mechanicId));
               const vehicle = s.vehicleId;
-              const hasNotes = s.description || (s.notes && s.notes.length > 0);
               return (
                 <div key={s.id} className="card bg-secondary border-0 p-3 shadow-sm">
                   <div className="d-flex justify-content-between align-items-start mb-3">
@@ -703,17 +722,15 @@ export default function ManagerDashboard() {
                     </div>
                   </div>
 
-                  {hasNotes && (
-                    <div className="mb-3">
-                      <button
-                        className="btn btn-sm btn-outline-info w-100 manager-btn-rounded"
-                        onClick={() => handleViewNotes(s)}
-                      >
-                        <FileText size={14} className="me-1" />
-                        View Client Notes
-                      </button>
-                    </div>
-                  )}
+                  <div className="mb-3">
+                    <button
+                      className="btn btn-sm btn-outline-info w-100 manager-btn-rounded"
+                      onClick={() => handleViewNotes(s)}
+                    >
+                      <FileText size={14} className="me-1" />
+                      View Details & Notes
+                    </button>
+                  </div>
 
                   <div className="pt-3 border-top border-opacity-10">
                     {s.status === 'pending' ? (
@@ -894,19 +911,14 @@ export default function ManagerDashboard() {
 
       {/* Notes Modal */}
       {showNotesModal && selectedServiceNotes && (
-        <>
-          <div
-            className="modal-backdrop show manager-modal-backdrop"
-            onClick={handleCloseNotesModal}
-          />
-          <div
-            className="modal show d-block manager-modal-dialog"
-            tabIndex="-1"
-          >
-            <div className="modal-dialog modal-lg">
-              <div
-                className="manager-modal-content-custom"
-              >
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+          onClick={handleCloseNotesModal}
+        >
+          <div className="modal-dialog modal-lg" onClick={e => e.stopPropagation()}>
+            <div className="manager-modal-content-custom">
                 <div
                   className="modal-header border-bottom border-opacity-10 bg-elevated"
                 >
@@ -1155,7 +1167,6 @@ export default function ManagerDashboard() {
               </div>
             </div>
           </div>
-        </>
       )}
     </>
   );
