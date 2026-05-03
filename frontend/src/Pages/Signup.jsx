@@ -29,8 +29,8 @@ export default function Signup() {
       dispatch(setCredentials(data));
 
       const paths = {
-        customer: '/customer/dashboard',
-        manager: '/manager/dashboard',
+        customer: '/dashboard',
+        manager: '/dashboard',
       };
       navigate(paths[data.role]);
     } catch (err) {

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   User, Lock, Phone, Trash2, Save, AlertCircle, CheckCircle2, 
   LayoutDashboard, Briefcase, RefreshCw, FileText, Settings as SettingsIcon,
-  Car, History, Activity, Star
+  Car, History, Activity, Star, CalendarPlus
 } from 'lucide-react';
 import '../Styles/Pages.css';
 
@@ -27,24 +27,24 @@ export default function Settings() {
     switch (user.role) {
       case 'manager':
         return [
-          { title: 'Dashboard', url: '/manager/dashboard', icon: <LayoutDashboard size={18} /> },
-          { title: 'Service Requests', url: '/manager/requests', icon: <Briefcase size={18} /> },
-          { title: 'Mechanics', url: '/manager/mechanics', icon: <User size={18} /> },
+          { title: 'Dashboard', url: '/dashboard', icon: <LayoutDashboard size={18} /> },
+          { title: 'Service Requests', url: '/requests', icon: <Briefcase size={18} /> },
+          { title: 'Mechanics', url: '/mechanics', icon: <User size={18} /> },
         ];
       case 'mechanic':
         return [
-          { title: 'Dashboard', url: '/mechanic/dashboard', icon: <LayoutDashboard size={18} /> },
-          { title: 'Assigned Jobs', url: '/mechanic/assigned-jobs', icon: <Briefcase size={18} /> },
-          { title: 'Updates', url: '/mechanic/updates', icon: <RefreshCw size={18} /> },
-          { title: 'Notes', url: '/mechanic/notes', icon: <FileText size={18} /> },
+          { title: 'Dashboard', url: '/dashboard', icon: <LayoutDashboard size={18} /> },
+          { title: 'Assigned Jobs', url: '/assigned-jobs', icon: <Briefcase size={18} /> },
+          { title: 'Updates', url: '/updates', icon: <RefreshCw size={18} /> },
+          { title: 'Notes', url: '/notes', icon: <FileText size={18} /> },
         ];
       case 'customer':
       default:
         return [
-          { title: 'Garage', url: '/customer/garage', icon: <Car size={18} /> },
-          { title: 'History', url: '/customer/history', icon: <History size={18} /> },
-          { title: 'Tracking', url: '/customer/tracking', icon: <Activity size={18} /> },
-          { title: 'Reviews', url: '/customer/reviews', icon: <Star size={18} /> },
+          { title: 'Garage', url: '/vehicles', icon: <Car size={18} /> },
+          { title: 'History', url: '/history', icon: <History size={18} /> },
+          { title: 'Tracking', url: '/service-tracking', icon: <Activity size={18} /> },
+          { title: 'Book Service', url: '/book-service', icon: <CalendarPlus size={18} /> },
         ];
     }
   };

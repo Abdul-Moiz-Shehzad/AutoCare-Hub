@@ -32,9 +32,9 @@ export default function Login() {
       dispatch(setCredentials(data));
 
       const paths = {
-        customer: '/customer/dashboard',
-        mechanic: '/mechanic/dashboard',
-        manager: '/manager/dashboard',
+        customer: '/dashboard',
+        mechanic: '/dashboard',
+        manager: '/dashboard',
       };
       navigate(paths[data.role]);
     } catch (err) {

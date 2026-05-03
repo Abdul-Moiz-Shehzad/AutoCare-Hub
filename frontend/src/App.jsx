@@ -18,14 +18,27 @@ import NotFound from "./Pages/NotFound";
 import './App.css';
 
 // Protected Route Component
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
 
   if (!userInfo || !userInfo.token) {
     return <Navigate to="/login" replace />;
   }
 
+  if (allowedRoles && !allowedRoles.includes(userInfo.role)) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return children;
+};
+
+// Dashboard Switcher
+const DashboardSwitcher = () => {
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  
+  if (userInfo?.role === 'manager') return <ManagerDashboard />;
+  if (userInfo?.role === 'mechanic') return <MechanicDashboard />;
+  return <CustomerDashboard />;
 };
 
 export default function App() {
@@ -38,24 +51,24 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           
           {}
-          <Route path="/customer/dashboard" element={<ProtectedRoute><CustomerDashboard /></ProtectedRoute>} />
-          <Route path="/customer/vehicles" element={<ProtectedRoute><Vehicles /></ProtectedRoute>} />
-          <Route path="/customer/book-service" element={<ProtectedRoute><BookService /></ProtectedRoute>} />
-          <Route path="/customer/service-tracking" element={<ProtectedRoute><ServiceTracking /></ProtectedRoute>} />
-          <Route path="/customer/history" element={<ProtectedRoute><ServiceHistory /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardSwitcher /></ProtectedRoute>} />
           
           {}
-          <Route path="/mechanic/dashboard" element={<ProtectedRoute><MechanicDashboard /></ProtectedRoute>} />
-          <Route path="/mechanic/assigned-jobs" element={<ProtectedRoute><MechanicDashboard /></ProtectedRoute>} />
-          <Route path="/mechanic/updates" element={<ProtectedRoute><MechanicDashboard /></ProtectedRoute>} />
-          <Route path="/mechanic/notes" element={<ProtectedRoute><MechanicDashboard /></ProtectedRoute>} />
+          <Route path="/vehicles" element={<ProtectedRoute allowedRoles={['customer']}><Vehicles /></ProtectedRoute>} />
+          <Route path="/book-service" element={<ProtectedRoute allowedRoles={['customer']}><BookService /></ProtectedRoute>} />
+          <Route path="/service-tracking" element={<ProtectedRoute allowedRoles={['customer']}><ServiceTracking /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute allowedRoles={['customer']}><ServiceHistory /></ProtectedRoute>} />
           
           {}
-          <Route path="/manager/dashboard" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
-          <Route path="/manager/requests" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
-          <Route path="/manager/mechanics" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
-          <Route path="/manager/assignments" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
-          <Route path="/manager/workflow" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
+          <Route path="/assigned-jobs" element={<ProtectedRoute allowedRoles={['mechanic']}><MechanicDashboard /></ProtectedRoute>} />
+          <Route path="/updates" element={<ProtectedRoute allowedRoles={['mechanic']}><MechanicDashboard /></ProtectedRoute>} />
+          <Route path="/notes" element={<ProtectedRoute allowedRoles={['mechanic']}><MechanicDashboard /></ProtectedRoute>} />
+          
+          {}
+          <Route path="/requests" element={<ProtectedRoute allowedRoles={['manager']}><ManagerDashboard /></ProtectedRoute>} />
+          <Route path="/mechanics" element={<ProtectedRoute allowedRoles={['manager']}><ManagerDashboard /></ProtectedRoute>} />
+          <Route path="/assignments" element={<ProtectedRoute allowedRoles={['manager']}><ManagerDashboard /></ProtectedRoute>} />
+          <Route path="/workflow" element={<ProtectedRoute allowedRoles={['manager']}><ManagerDashboard /></ProtectedRoute>} />
           
           {}
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />

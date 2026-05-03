@@ -10,11 +10,11 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/customer/dashboard', icon: <LayoutDashboard size={18} /> },
-  { title: 'Vehicles', url: '/customer/vehicles', icon: <Car size={18} /> },
-  { title: 'Book Service', url: '/customer/book-service', icon: <CalendarPlus size={18} /> },
-  { title: 'Service Tracking', url: '/customer/service-tracking', icon: <Activity size={18} /> },
-  { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
+  { title: 'Dashboard', url: '/dashboard', icon: <LayoutDashboard size={18} /> },
+  { title: 'Vehicles', url: '/vehicles', icon: <Car size={18} /> },
+  { title: 'Book Service', url: '/book-service', icon: <CalendarPlus size={18} /> },
+  { title: 'Service Tracking', url: '/service-tracking', icon: <Activity size={18} /> },
+  { title: 'History', url: '/history', icon: <Clock size={18} /> },
 ];
 
 
@@ -84,7 +84,7 @@ export default function ServiceHistory() {
       <PageHeader
         title="Service History"
         description="View all your past service records and leave feedback."
-        breadcrumbs={[{ label: 'Dashboard', href: '/customer/dashboard' }, { label: 'History' }]}
+        breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'History' }]}
       />
 
       {}

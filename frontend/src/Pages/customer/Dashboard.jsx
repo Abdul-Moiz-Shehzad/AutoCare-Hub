@@ -10,11 +10,11 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/customer/dashboard', icon: <LayoutDashboard size={18} /> },
-  { title: 'Vehicles', url: '/customer/vehicles', icon: <Car size={18} /> },
-  { title: 'Book Service', url: '/customer/book-service', icon: <CalendarPlus size={18} /> },
-  { title: 'Service Tracking', url: '/customer/service-tracking', icon: <Activity size={18} /> },
-  { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
+  { title: 'Dashboard', url: '/dashboard', icon: <LayoutDashboard size={18} /> },
+  { title: 'Vehicles', url: '/vehicles', icon: <Car size={18} /> },
+  { title: 'Book Service', url: '/book-service', icon: <CalendarPlus size={18} /> },
+  { title: 'Service Tracking', url: '/service-tracking', icon: <Activity size={18} /> },
+  { title: 'History', url: '/history', icon: <Clock size={18} /> },
 ];
 
 
@@ -77,7 +77,7 @@ export default function CustomerDashboard() {
           <p className="mb-0 text-secondary-custom">Here's an overview of your vehicle services.</p>
         </div>
         <div className="mt-3 mt-md-0">
-          <Link to="/customer/book-service" className="btn btn-primary fw-medium d-flex align-items-center gap-2">
+          <Link to="/book-service" className="btn btn-primary fw-medium d-flex align-items-center gap-2">
             <CalendarPlus size={18} />
             Book Service
           </Link>
@@ -160,10 +160,10 @@ export default function CustomerDashboard() {
             <div className="card-body p-4">
               <div className="d-grid gap-4">
                 {[
-                  { to: '/customer/book-service', icon: <CalendarPlus size={18} />, label: 'Book New Service' },
-                  { to: '/customer/vehicles', icon: <Car size={18} />, label: 'Manage Vehicles' },
-                  { to: '/customer/service-tracking', icon: <Activity size={18} />, label: 'Track Services' },
-                  { to: '/customer/history', icon: <Clock size={18} />, label: 'View History' },
+                  { to: '/book-service', icon: <CalendarPlus size={18} />, label: 'Book New Service' },
+                  { to: '/vehicles', icon: <Car size={18} />, label: 'Manage Vehicles' },
+                  { to: '/service-tracking', icon: <Activity size={18} />, label: 'Track Services' },
+                  { to: '/history', icon: <Clock size={18} />, label: 'View History' },
                 ].map((action, i) => (
                   <Link key={i} to={action.to} className="btn text-start p-4 d-flex align-items-center gap-3 quick-action-link">
                     <span style={{ color: 'var(--accent-primary)' }}>{action.icon}</span>

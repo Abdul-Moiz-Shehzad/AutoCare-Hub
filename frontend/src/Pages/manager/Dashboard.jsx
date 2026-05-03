@@ -20,11 +20,11 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/manager/dashboard', icon: <LayoutDashboard size={18} /> },
-  { title: 'Requests', url: '/manager/requests', icon: <ClipboardList size={18} /> },
-  { title: 'Mechanics', url: '/manager/mechanics', icon: <Users size={18} /> },
-  { title: 'Assignments', url: '/manager/assignments', icon: <ArrowLeftRight size={18} /> },
-  { title: 'Workflow', url: '/manager/workflow', icon: <TrendingUp size={18} /> },
+  { title: 'Dashboard', url: '/dashboard', icon: <LayoutDashboard size={18} /> },
+  { title: 'Requests', url: '/requests', icon: <ClipboardList size={18} /> },
+  { title: 'Mechanics', url: '/mechanics', icon: <Users size={18} /> },
+  { title: 'Assignments', url: '/assignments', icon: <ArrowLeftRight size={18} /> },
+  { title: 'Workflow', url: '/workflow', icon: <TrendingUp size={18} /> },
 ];
 
 const CHART_PURPLE = '#4E4FEB'; 
@@ -861,14 +861,14 @@ export default function ManagerDashboard() {
   );
 
   const routeMap = {
-    '/manager/dashboard': { title: 'Manager Dashboard', description: 'Monitor operations, analyze revenue, and track team performance.', render: renderDashboard },
-    '/manager/requests': { title: 'Service Requests', description: 'Review incoming requests and monitor queue health.', render: renderRequests },
-    '/manager/mechanics': { title: 'Mechanics Team', description: 'Manage your roster, hire mechanics, and track individual performance.', render: renderMechanics },
-    '/manager/assignments': { title: 'Assignments', description: 'Assign and rebalance workloads across your mechanics.', render: renderAssignments },
-    '/manager/workflow': { title: 'Workflow Command Center', description: 'Monitor all active bays and track jobs through the 3-stage repair pipeline.', render: renderWorkflow },
+    '/dashboard': { title: 'Manager Dashboard', description: 'Monitor operations, analyze revenue, and track team performance.', render: renderDashboard },
+    '/requests': { title: 'Service Requests', description: 'Review incoming requests and monitor queue health.', render: renderRequests },
+    '/mechanics': { title: 'Mechanics Team', description: 'Manage your roster, hire mechanics, and track individual performance.', render: renderMechanics },
+    '/assignments': { title: 'Assignments', description: 'Assign and rebalance workloads across your mechanics.', render: renderAssignments },
+    '/workflow': { title: 'Workflow Command Center', description: 'Monitor all active bays and track jobs through the 3-stage repair pipeline.', render: renderWorkflow },
   };
 
-  const page = routeMap[pathname] || routeMap['/manager/dashboard'];
+  const page = routeMap[pathname] || routeMap['/dashboard'];
 
   return (
     <>

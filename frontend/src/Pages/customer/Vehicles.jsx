@@ -9,11 +9,11 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/customer/dashboard', icon: <LayoutDashboard size={18} /> },
-  { title: 'Vehicles', url: '/customer/vehicles', icon: <Car size={18} /> },
-  { title: 'Book Service', url: '/customer/book-service', icon: <CalendarPlus size={18} /> },
-  { title: 'Service Tracking', url: '/customer/service-tracking', icon: <Activity size={18} /> },
-  { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
+  { title: 'Dashboard', url: '/dashboard', icon: <LayoutDashboard size={18} /> },
+  { title: 'Vehicles', url: '/vehicles', icon: <Car size={18} /> },
+  { title: 'Book Service', url: '/book-service', icon: <CalendarPlus size={18} /> },
+  { title: 'Service Tracking', url: '/service-tracking', icon: <Activity size={18} /> },
+  { title: 'History', url: '/history', icon: <Clock size={18} /> },
 ];
 
 export default function Vehicles() {
@@ -53,7 +53,7 @@ export default function Vehicles() {
       }
 
       if (editingId) {
-        const { data } = await api.put(`/customer/vehicles/${editingId}`, { ...formData, image: imageUrl });
+        const { data } = await api.put(`/vehicles/${editingId}`, { ...formData, image: imageUrl });
         setVehicles(vehicles.map(v => v._id === editingId ? data : v));
       } else {
         const { data } = await api.post('/customer/vehicles', { ...formData, image: imageUrl });
@@ -83,7 +83,7 @@ export default function Vehicles() {
   const handleDeleteVehicle = async (id) => {
     if (!window.confirm("Are you sure you want to delete this vehicle?")) return;
     try {
-      await api.delete(`/customer/vehicles/${id}`);
+      await api.delete(`/vehicles/${id}`);
       setVehicles(vehicles.filter(v => v._id !== id));
     } catch (error) {
       alert("Failed to delete vehicle");
@@ -95,7 +95,7 @@ export default function Vehicles() {
       <PageHeader
         title="My Vehicles"
         description="Manage your registered vehicles."
-        breadcrumbs={[{ label: 'Dashboard', href: '/customer/dashboard' }, { label: 'Vehicles' }]}
+        breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Vehicles' }]}
         action={
           <button 
             className="btn btn-primary fw-medium d-flex align-items-center gap-2"

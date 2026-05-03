@@ -12,11 +12,11 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/customer/dashboard', icon: <LayoutDashboard size={18} /> },
-  { title: 'Vehicles', url: '/customer/vehicles', icon: <Car size={18} /> },
-  { title: 'Book Service', url: '/customer/book-service', icon: <CalendarPlus size={18} /> },
-  { title: 'Service Tracking', url: '/customer/service-tracking', icon: <Activity size={18} /> },
-  { title: 'History', url: '/customer/history', icon: <Clock size={18} /> },
+  { title: 'Dashboard', url: '/dashboard', icon: <LayoutDashboard size={18} /> },
+  { title: 'Vehicles', url: '/vehicles', icon: <Car size={18} /> },
+  { title: 'Book Service', url: '/book-service', icon: <CalendarPlus size={18} /> },
+  { title: 'Service Tracking', url: '/service-tracking', icon: <Activity size={18} /> },
+  { title: 'History', url: '/history', icon: <Clock size={18} /> },
 ];
 
 const getServiceIcon = (name) => {
@@ -47,7 +47,7 @@ export default function BookService() {
       try {
         const [vehiclesRes, typesRes] = await Promise.all([
           api.get('/customer/vehicles'),
-          api.get('/services/types'),
+          api.get('/customer/services/types'),
         ]);
         setVehicles(vehiclesRes.data);
         setServiceTypes(typesRes.data);
@@ -118,7 +118,7 @@ export default function BookService() {
       <PageHeader
         title="Book a Service"
         description="Select the services you need and schedule your appointment."
-        breadcrumbs={[{ label: 'Dashboard', href: '/customer/dashboard' }, { label: 'Book Service' }]}
+        breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Book Service' }]}
       />
 
       <div className="row g-4">

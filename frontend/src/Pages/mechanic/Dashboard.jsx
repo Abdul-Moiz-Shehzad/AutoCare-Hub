@@ -13,10 +13,10 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/mechanic/dashboard', icon: <LayoutDashboard size={18} /> },
-  { title: 'Assigned Jobs', url: '/mechanic/assigned-jobs', icon: <Briefcase size={18} /> },
-  { title: 'Updates', url: '/mechanic/updates', icon: <RefreshCw size={18} /> },
-  { title: 'Notes', url: '/mechanic/notes', icon: <FileText size={18} /> },
+  { title: 'Dashboard', url: '/dashboard', icon: <LayoutDashboard size={18} /> },
+  { title: 'Assigned Jobs', url: '/assigned-jobs', icon: <Briefcase size={18} /> },
+  { title: 'Updates', url: '/updates', icon: <RefreshCw size={18} /> },
+  { title: 'Notes', url: '/notes', icon: <FileText size={18} /> },
 ];
 
 export default function MechanicDashboard() {
@@ -653,13 +653,13 @@ export default function MechanicDashboard() {
   );
 
   const routeMap = {
-    '/mechanic/dashboard': { title: 'Mechanic Dashboard', description: 'Manage your assigned jobs and track progress.', render: renderDashboard },
-    '/mechanic/assigned-jobs': { title: 'Assigned Jobs', description: 'Review every assigned request in your queue.', render: renderAssignedJobs },
-    '/mechanic/updates': { title: 'Status Updates', description: 'Move jobs forward. Log major milestones and upload required photos.', render: renderUpdates },
-    '/mechanic/notes': { title: 'Technical Notes', description: 'Capture detailed diagnostics and attach them to your active jobs.', render: renderNotes },
+    '/dashboard': { title: 'Mechanic Dashboard', description: 'Manage your assigned jobs and track progress.', render: renderDashboard },
+    '/assigned-jobs': { title: 'Assigned Jobs', description: 'Review every assigned request in your queue.', render: renderAssignedJobs },
+    '/updates': { title: 'Status Updates', description: 'Move jobs forward. Log major milestones and upload required photos.', render: renderUpdates },
+    '/notes': { title: 'Technical Notes', description: 'Capture detailed diagnostics and attach them to your active jobs.', render: renderNotes },
   };
 
-  const page = routeMap[pathname] || routeMap['/mechanic/dashboard'];
+  const page = routeMap[pathname] || routeMap['/dashboard'];
 
   return (
     <DashboardLayout menuItems={menuItems} sectionLabel="Mechanic">
