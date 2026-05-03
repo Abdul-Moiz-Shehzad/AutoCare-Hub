@@ -75,7 +75,7 @@ export default function ServiceHistory() {
         s._id === serviceId ? { ...s, customerRating: ratingValue } : s
       ));
     } catch(err) {
-      alert('Failed to rate service');
+      alert(err.response?.data?.message || 'Failed to rate service');
     }
   };
 

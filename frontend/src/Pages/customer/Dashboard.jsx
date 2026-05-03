@@ -62,7 +62,7 @@ export default function CustomerDashboard() {
     { title: "Active Services", value: activeServices.length, icon: <TrendingUp size={24} />, color: 'var(--accent-primary)', bg: 'var(--accent-glow)', borderColor: 'var(--accent-primary)' },
     { title: "Vehicles", value: vehicles.length, icon: <Car size={24} />, color: 'var(--color-success)', bg: 'var(--color-success-bg)', borderColor: 'var(--color-success)' },
     { title: "Completed", value: completedServices.length, icon: <Clock size={24} />, color: 'var(--color-warning)', bg: 'var(--color-warning-bg)', borderColor: 'var(--color-warning)' },
-    { title: "Upcoming", value: 1, icon: <CalendarClock size={24} />, color: 'var(--color-danger)', bg: 'var(--color-danger-bg)', borderColor: 'var(--color-danger)' },
+    { title: "Upcoming", value: services.filter(s => s.status === 'pending').length, icon: <CalendarClock size={24} />, color: 'var(--color-danger)', bg: 'var(--color-danger-bg)', borderColor: 'var(--color-danger)' },
   ];
 
   return (

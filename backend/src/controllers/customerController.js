@@ -133,16 +133,12 @@ const bookService = async (req, res) => {
   try {
     // Basic price mapping for services
     const priceList = {
-      'Oil Change': 50,
-      'Brake Repair': 150,
-      'Tire Rotation': 40,
-      'Engine Diagnostic': 80,
-      'Battery Replacement': 120,
-      'AC Service': 100,
-      'Wheel Alignment': 90,
-      'Suspension Work': 200,
-      'Transmission Flush': 180,
-      'General Maintenance': 75
+      'Oil Change': 79,
+      'Brake Inspection': 49,
+      'Full Service': 299,
+      'Tire Rotation': 59,
+      'Engine Diagnostics': 99,
+      'AC Service': 129
     };
 
     // Calculate total cost based on comma-separated serviceType

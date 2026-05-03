@@ -59,9 +59,19 @@ export default function MechanicDashboard() {
     }
   };
 
-  const handleFileUpload = (id, e) => {
+  const handleFileUpload = async (id, e) => {
     if (e.target.files && e.target.files[0]) {
-      setPictureAttached(prev => ({ ...prev, [id]: e.target.files[0].name }));
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append('image', file);
+      try {
+        const { data } = await api.post('/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        setPictureAttached(prev => ({ ...prev, [id]: `http://localhost:5000${data.imagePath}` }));
+      } catch (err) {
+        alert('Failed to upload image');
+      }
     }
   };
 
@@ -72,7 +82,10 @@ export default function MechanicDashboard() {
       return;
     }
     try {
-      const { data } = await api.put(`/mechanic/jobs/${id}/milestones`, { milestone });
+      const { data } = await api.put(`/mechanic/jobs/${id}/milestones`, { 
+        milestone, 
+        image: pictureAttached[id] || null 
+      });
       setServices(prev => prev.map(s => s._id === id ? data : s));
       setMilestoneInputs(prev => ({ ...prev, [id]: '' }));
       setPictureAttached(prev => ({ ...prev, [id]: null }));

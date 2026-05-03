@@ -214,47 +214,46 @@ export default function ManagerDashboard() {
             <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Weekly Bookings</div>
             <div className="card-body">
               <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={weeklyBookings}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                    <XAxis dataKey="day" tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-                    <Bar dataKey="bookings" fill={CHART_PURPLE} radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+                <BarChart data={weeklyBookings}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                  <XAxis dataKey="day" tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+                  <Bar dataKey="bookings" fill={CHART_PURPLE} radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
-  
-          <div className="col-lg-4">
-            {}
-            <div className="card border-0 h-100 bg-card">
-              <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Services by Type</div>
-              <div className="card-body">
-                <ResponsiveContainer width="100%" height={220}>
-                  <PieChart>
-                    <Pie data={purpleServicesByType} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={window.innerWidth <= 768 ? 9 : 10} stroke="none">
-                      {purpleServicesByType.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+        </div>
+
+        <div className="col-lg-4">
+          <div className="card border-0 h-100 bg-card">
+            <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Services by Type</div>
+            <div className="card-body">
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie data={purpleServicesByType} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={window.innerWidth <= 768 ? 9 : 10} stroke="none">
+                    {purpleServicesByType.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+                  </Pie>
+                  <Tooltip content={<CustomTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
-  
-          <div className="col-lg-4">
-            <div className="card border-0 h-100 bg-card">
-              <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Quarterly Revenue</div>
-              <div className="card-body">
-                <ResponsiveContainer width="100%" height={220}>
-                  <LineChart data={revenueData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                    <XAxis dataKey="month" tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Line type="monotone" dataKey="revenue" stroke={CHART_GREEN} strokeWidth={3} dot={{ fill: CHART_GREEN, r: 4, strokeWidth: 0 }} activeDot={{ r: 6, stroke: '#ffffff', strokeWidth: 2 }} />
-                  </LineChart>
+        </div>
+
+        <div className="col-lg-4">
+          <div className="card border-0 h-100 bg-card">
+            <div className="card-header fw-bold manager-text-primary border-bottom border-opacity-10">Quarterly Revenue</div>
+            <div className="card-body">
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={revenueData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                  <XAxis dataKey="month" tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                  <YAxis tickFormatter={(value) => `$${value}`} tick={{ fontSize: window.innerWidth <= 768 ? 10 : 12, fill: CHART_TEXT }} axisLine={false} tickLine={false} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Line type="monotone" dataKey="revenue" stroke={CHART_GREEN} strokeWidth={3} dot={{ fill: CHART_GREEN, r: 4, strokeWidth: 0 }} activeDot={{ r: 6, stroke: '#ffffff', strokeWidth: 2 }} />
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -756,14 +755,15 @@ export default function ManagerDashboard() {
         <div className="col-sm-6 col-lg-3"><StatCard title="Ready for Pickup" value={completedRequests.length} icon={<CheckCircle2 size={24} />} color="accent" /></div>
       </div>
       
-      <div className="row g-4 flex-nowrap overflow-auto pb-3 kanban-scroll-area">
+      <div className="row g-4">
         {[
           { title: 'Pending Arrival', status: 'pending', color: 'var(--color-danger)' },
           { title: 'Received', status: 'received', color: 'var(--accent-primary)' },
           { title: 'In Progress', status: 'in-progress', color: 'var(--color-warning)' },
           { title: 'Completed', status: 'completed', color: 'var(--color-success)' },
+          { title: 'Handed to Customer', status: 'picked-up', color: 'var(--color-info, #38bdf8)' },
         ].map(column => (
-          <div className="col-md-6 col-xl-4 min-w-300" key={column.status}>
+          <div className="col-12 col-md-6 col-xl" key={column.status}>
             <div className="card border-0 h-100 manager-kanban-column-bg">
               <div className="card-header fw-bold manager-kanban-column-hdr d-flex justify-content-between align-items-center border-bottom border-opacity-10 py-3">
                 <span className="d-flex align-items-center gap-2">
@@ -803,6 +803,15 @@ export default function ManagerDashboard() {
                             {m ? m.name : 'Unassigned'}
                           </span>
                         </div>
+                        {column.status === 'completed' && (
+                          <button
+                            className="btn btn-sm btn-primary fw-bold d-flex align-items-center gap-1"
+                            style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem' }}
+                            onClick={() => handlePickup(s.id)}
+                          >
+                            <Briefcase size={12} /> Hand Over
+                          </button>
+                        )}
                       </div>
                     </div>
                   );
@@ -1087,6 +1096,7 @@ export default function ManagerDashboard() {
                           <option value="low">Low Priority</option>
                           <option value="medium">Medium Priority</option>
                           <option value="high">High Priority</option>
+                          <option value="urgent">Urgent Priority</option>
                         </select>
                         <button
                           type="button"

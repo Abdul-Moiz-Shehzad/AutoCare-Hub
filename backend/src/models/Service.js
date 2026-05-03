@@ -20,7 +20,7 @@ const serviceSchema = new mongoose.Schema({
     required: true,
   },
   status: { type: String, enum: ['pending', 'received', 'in-progress', 'review-pending', 'completed', 'picked-up', 'cancelled'], default: 'pending' },
-  priority: { type: String, enum: ['low', 'medium', 'high', 'critical'], default: 'medium' },
+  priority: { type: String, enum: ['low', 'medium', 'high', 'urgent'], default: 'medium' },
   customerRating: { type: Number, default: 0 },
   description: {
     type: String,
@@ -58,6 +58,9 @@ const serviceSchema = new mongoose.Schema({
   },
   scheduledTime: {
     type: String, // HH:mm
+  },
+  completionImage: {
+    type: String,
   }
 }, {
   timestamps: true,
