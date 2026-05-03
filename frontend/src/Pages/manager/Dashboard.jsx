@@ -63,25 +63,51 @@ export default function ManagerDashboard() {
   const [selectedServiceNotes, setSelectedServiceNotes] = useState(null);
   const [newPriority, setNewPriority] = useState('');
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [mechRes, reqRes, statsRes] = await Promise.all([
-          api.get('/manager/mechanics'),
-          api.get('/manager/requests'),
-          api.get('/manager/dashboard-stats'),
-        ]);
-        setMechanics(mechRes.data);
-        setServices(reqRes.data.map(s => ({...s, id: s._id})));
-        setWeeklyBookings(statsRes.data.weeklyBookings || []);
-        setRevenueData(statsRes.data.revenueByMonth || []);
-        setServicesByTypeData(statsRes.data.servicesByType || []);
-      } catch (error) {
-        console.error('Error fetching manager data', error);
+  const newPriorityRef = React.useRef(newPriority);
+  React.useEffect(() => { newPriorityRef.current = newPriority; }, [newPriority]);
+
+  const selectedIdRef = React.useRef(null);
+  React.useEffect(() => { selectedIdRef.current = selectedServiceNotes?._id?.toString() || null; }, [selectedServiceNotes]);
+
+  const fetchData = React.useCallback(async () => {
+    try {
+      const [mechRes, reqRes, statsRes] = await Promise.all([
+        api.get('/manager/mechanics'),
+        api.get('/manager/requests'),
+        api.get('/manager/dashboard-stats'),
+      ]);
+      setMechanics(mechRes.data);
+      setServices(reqRes.data.map(s => ({...s, id: s._id})));
+
+      // Only sync the open modal when user has NO unsaved priority edits
+      const currentId = selectedIdRef.current;
+      if (currentId) {
+        const fresh = reqRes.data.find(s => s._id?.toString() === currentId);
+        if (fresh) {
+          const freshMapped = { ...fresh, id: fresh._id };
+          // Only overwrite modal state if the user hasn't changed the dropdown yet
+          if (newPriorityRef.current === fresh.priority) {
+            setSelectedServiceNotes(freshMapped);
+          } else {
+            // Keep the user's chosen priority but update everything else
+            setSelectedServiceNotes(prev => ({ ...freshMapped, priority: prev.priority }));
+          }
+        }
       }
-    };
-    fetchData();
+
+      setWeeklyBookings(statsRes.data.weeklyBookings || []);
+      setRevenueData(statsRes.data.revenueByMonth || []);
+      setServicesByTypeData(statsRes.data.servicesByType || []);
+    } catch (error) {
+      console.error('Error fetching manager data', error);
+    }
   }, []);
+
+  React.useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 15000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const pendingRequests = services.filter(s => s.status === 'pending');
   const receivedRequests = services.filter(s => s.status === 'received');
@@ -165,10 +191,11 @@ export default function ManagerDashboard() {
     if (!selectedServiceNotes || !newPriority) return;
 
     try {
-      await api.put(`/manager/requests/${selectedServiceNotes._id}/priority`, { priority: newPriority });
-      setServices(prev => prev.map(s => s.id === selectedServiceNotes._id ? { ...s, priority: newPriority } : s));
-      // Keep selectedServiceNotes in sync so the Save button re-enables correctly
-      setSelectedServiceNotes(prev => ({ ...prev, priority: newPriority }));
+      const { data } = await api.put(`/manager/requests/${selectedServiceNotes._id}/priority`, { priority: newPriority });
+      const updated = { ...data, id: data._id };
+      setServices(prev => prev.map(s => s.id === updated.id ? updated : s));
+      setSelectedServiceNotes(updated);
+      setNewPriority(data.priority);
       setUiMessage({ type: 'success', text: 'Priority updated successfully!' });
       setTimeout(() => setUiMessage(null), 3000);
     } catch (err) {

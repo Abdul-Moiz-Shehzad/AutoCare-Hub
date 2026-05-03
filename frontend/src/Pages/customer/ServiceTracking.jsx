@@ -17,24 +17,27 @@ const menuItems = [
   { title: 'History', url: '/history', icon: <Clock size={18} /> },
 ];
 
-const steps = ['pending', 'in-progress', 'review-pending', 'completed'];
-const stepLabels = ['Pending', 'In Progress', 'In Review', 'Finished'];
+const steps = ['pending', 'received', 'in-progress', 'review-pending', 'completed'];
+const stepLabels = ['Pending', 'Received', 'In Progress', 'In Review', 'Finished'];
 
 export default function ServiceTracking() {
   const [services, setServices] = React.useState([]);
   const [expandedLogs, setExpandedLogs] = useState({});
 
-  React.useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const { data } = await api.get('/customer/services');
-        setServices(data);
-      } catch(err) {
-        console.error('Failed to load services');
-      }
-    };
-    fetchServices();
+  const fetchServices = React.useCallback(async () => {
+    try {
+      const { data } = await api.get('/customer/services');
+      setServices(data);
+    } catch(err) {
+      console.error('Failed to load services');
+    }
   }, []);
+
+  React.useEffect(() => {
+    fetchServices();
+    const interval = setInterval(fetchServices, 15000);
+    return () => clearInterval(interval);
+  }, [fetchServices]);
 
   const activeServices = services.filter(s => !['picked-up', 'cancelled'].includes(s.status));
 

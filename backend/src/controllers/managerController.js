@@ -145,7 +145,7 @@ const assignMechanic = async (req, res) => {
     // Assign new mechanic and increment active jobs
     if (!service.mechanicId || service.mechanicId.toString() !== mechanicId) {
       service.mechanicId = mechanicId;
-      if (['pending', 'review-pending'].includes(service.status)) {
+      if (['pending', 'received', 'review-pending'].includes(service.status)) {
          service.status = 'in-progress';
       }
       // Add manager instruction note if provided

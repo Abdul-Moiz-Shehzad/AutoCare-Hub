@@ -38,19 +38,22 @@ export default function MechanicDashboard() {
     setTimeout(() => setUiMessage(null), 4000);
   };
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const { data } = await api.get('/mechanic/jobs');
-        setServices(data);
-      } catch (err) {
-        console.error('Failed to fetch jobs', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchJobs();
+  const fetchJobs = React.useCallback(async () => {
+    try {
+      const { data } = await api.get('/mechanic/jobs');
+      setServices(data);
+    } catch (err) {
+      console.error('Failed to fetch jobs', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchJobs();
+    const interval = setInterval(fetchJobs, 15000);
+    return () => clearInterval(interval);
+  }, [fetchJobs]);
 
   const activeJobs = services.filter(s => !['completed', 'picked-up', 'cancelled'].includes(s.status));
   const inProgress = services.filter(s => s.status === 'in-progress');

@@ -39,21 +39,24 @@ export default function CustomerDashboard() {
   const [vehicles, setVehicles] = React.useState([]);
   const [services, setServices] = React.useState([]);
 
-  React.useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const [vehRes, servRes] = await Promise.all([
-          api.get('/customer/vehicles'),
-          api.get('/customer/services')
-        ]);
-        setVehicles(vehRes.data);
-        setServices(servRes.data);
-      } catch (error) {
-        console.error('Failed to load customer dashboard data', error);
-      }
-    };
-    fetchDashboardData();
+  const fetchDashboardData = React.useCallback(async () => {
+    try {
+      const [vehRes, servRes] = await Promise.all([
+        api.get('/customer/vehicles'),
+        api.get('/customer/services')
+      ]);
+      setVehicles(vehRes.data);
+      setServices(servRes.data);
+    } catch (error) {
+      console.error('Failed to load customer dashboard data', error);
+    }
   }, []);
+
+  React.useEffect(() => {
+    fetchDashboardData();
+    const interval = setInterval(fetchDashboardData, 15000);
+    return () => clearInterval(interval);
+  }, [fetchDashboardData]);
 
   const activeServices = services.filter(s => !['picked-up', 'cancelled'].includes(s?.status));
   const completedServices = services.filter(s => ['completed', 'picked-up'].includes(s?.status));
