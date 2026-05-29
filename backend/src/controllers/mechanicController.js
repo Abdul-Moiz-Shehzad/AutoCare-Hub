@@ -39,7 +39,11 @@ const updateJobStatus = async (req, res) => {
 
     if (status === 'completed' && !wasCompleted) {
       await User.findByIdAndUpdate(req.user._id, {
-        $inc: { activeJobs: -1, completedJobs: 1 },
+        $inc: { completedJobs: 1 },
+        $max: { activeJobs: 0 },
+      });
+      await User.findByIdAndUpdate(req.user._id, {
+        $inc: { activeJobs: -1 },
       });
     }
 
