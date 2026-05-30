@@ -9,6 +9,13 @@ const bcrypt = require('bcryptjs');
 const createMechanic = async (req, res) => {
   const { name, email, password, specialization } = req.body;
 
+  if (!name || !email || !password || !specialization) {
+    return res.status(400).json({ message: 'Please provide name, email, password and specialization' });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters' });
+  }
+
   try {
     const userExists = await User.findOne({ email });
 
@@ -76,6 +83,10 @@ const getRequests = async (req, res) => {
 const assignMechanic = async (req, res) => {
   const { mechanicId } = req.body;
 
+  if (!mechanicId) {
+    return res.status(400).json({ message: 'Mechanic ID is required' });
+  }
+
   try {
     const service = await Service.findById(req.params.id);
 
@@ -125,17 +136,60 @@ const getDashboardStats = async (req, res) => {
     const completedRequests = await Service.countDocuments({ status: 'completed' });
     const activeMechanics = await User.countDocuments({ role: 'mechanic' });
 
+    // Weekly bookings — last 7 days grouped by day name
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const recentServices = await Service.find({ createdAt: { $gte: sevenDaysAgo } });
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const weeklyBookings = dayNames.map(day => ({ day, bookings: 0 }));
+    recentServices.forEach(s => {
+      const dayIndex = new Date(s.createdAt).getDay();
+      weeklyBookings[dayIndex].bookings++;
+    });
+
+    // Revenue trend — last 6 months, completed services only
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const completedServices = await Service.find({ status: 'completed', createdAt: { $gte: sixMonthsAgo } });
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const revenueMap = {};
+    completedServices.forEach(s => {
+      const month = monthNames[new Date(s.createdAt).getMonth()];
+      revenueMap[month] = (revenueMap[month] || 0) + (s.cost || 0);
+    });
+    const revenueByMonth = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const monthName = monthNames[d.getMonth()];
+      revenueByMonth.push({ month: monthName, revenue: revenueMap[monthName] || 0 });
+    }
+
+    // Services by type — count all services grouped by serviceType
+    const allServices = await Service.find({}, 'serviceType');
+    const typeMap = {};
+    allServices.forEach(s => {
+      if (s.serviceType) {
+        typeMap[s.serviceType] = (typeMap[s.serviceType] || 0) + 1;
+      }
+    });
+    const servicesByType = Object.entries(typeMap).map(([name, value]) => ({ name, value }));
+
     res.json({
       totalRequests,
       pendingRequests,
       inProgressRequests,
       completedRequests,
       activeMechanics,
+      weeklyBookings,
+      revenueByMonth,
+      servicesByType,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 module.exports = {
   createMechanic,

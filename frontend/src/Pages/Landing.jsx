@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../Styles/Landing.css';
 import { Link } from 'react-router-dom';
 import PublicNavbar from '../Components/layout/PublicNavbar';
 import Footer from '../Components/layout/Footer';
-import { serviceTypes } from '../data/mockData';
-import { 
-  Car, Clock, Shield, BarChart3, Users, Wrench, 
+import { serviceTypes as defaultServiceTypes } from '../data/mockData';
+import api from '../lib/api';
+import {
+  Car, Clock, Shield, BarChart3, Users, Wrench,
   ArrowRight, Star, Headphones, CheckCircle2, Sparkles, Zap, Columns, Camera
 } from 'lucide-react';
+
 
 const features = [
   { icon: <Car size={28} />, title: 'Digital Garage', desc: 'Customers can register their vehicles and access a complete, rated service history.' },
@@ -19,6 +21,14 @@ const features = [
 ];
 
 export default function Landing() {
+  const [serviceTypes, setServiceTypes] = useState(defaultServiceTypes);
+
+  useEffect(() => {
+    api.get('/services/types')
+      .then(res => setServiceTypes(res.data))
+      .catch(() => {}); // keep static fallback on error
+  }, []);
+
   return (
     <div className="landing-page-container">
       <PublicNavbar />

@@ -18,6 +18,8 @@ app.use('/api/manager', require('./src/routes/managerRoutes'));
 app.use('/api/customer', require('./src/routes/customerRoutes'));
 app.use('/api/mechanic', require('./src/routes/mechanicRoutes'));
 app.use('/api/upload', require('./src/routes/uploadRoutes'));
+app.use('/api/services', require('./src/routes/servicesRoutes'));
+
 
 const uploadsDir = path.join(__dirname, 'uploads');
 app.use('/uploads', express.static(uploadsDir));

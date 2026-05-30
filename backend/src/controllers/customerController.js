@@ -19,6 +19,10 @@ const getVehicles = async (req, res) => {
 const addVehicle = async (req, res) => {
   const { make, model, year, color, plate, mileage, vin, image } = req.body;
 
+  if (!make || !model || !year || !color || !plate || !mileage) {
+    return res.status(400).json({ message: 'Please provide make, model, year, color, plate and mileage' });
+  }
+
   try {
     const vehicle = await Vehicle.create({
       customerId: req.user._id,
@@ -121,6 +125,10 @@ const getServices = async (req, res) => {
 const bookService = async (req, res) => {
   const { vehicleId, serviceType, description, preferredDate, preferredTime } = req.body;
 
+  if (!vehicleId || !serviceType) {
+    return res.status(400).json({ message: 'Vehicle and service type are required' });
+  }
+
   try {
     const service = await Service.create({
       customerId: req.user._id,
@@ -145,6 +153,12 @@ const bookService = async (req, res) => {
 // @access  Private/Customer
 const rateService = async (req, res) => {
   const { rating } = req.body;
+
+  const numRating = Number(rating);
+  if (rating === undefined || rating === null || isNaN(numRating) || numRating < 1 || numRating > 5) {
+    return res.status(400).json({ message: 'Rating must be a number between 1 and 5' });
+  }
+
   try {
     const service = await Service.findById(req.params.id);
     if (!service) return res.status(404).json({ message: 'Service not found' });
@@ -157,7 +171,7 @@ const rateService = async (req, res) => {
       return res.status(400).json({ message: 'Can only rate completed services' });
     }
 
-    service.customerRating = rating;
+    service.customerRating = numRating;
     await service.save();
 
     res.json(service);

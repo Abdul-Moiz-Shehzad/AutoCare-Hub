@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import '../../Styles/CustomerPages.css';
 import DashboardLayout from '../../Components/layout/DashboardLayout';
 import PageHeader from '../../Components/shared/PageHeader';
-import { serviceTypes } from '../../data/mockData';
+import { serviceTypes as defaultServiceTypes } from '../../data/mockData';
+
 import api from '../../lib/api';
 import { 
   LayoutDashboard, Car, CalendarPlus, Activity, Clock, 
@@ -36,20 +37,25 @@ export default function BookService() {
   const [selectedVehicle, setSelectedVehicle] = useState('');
   const [booked, setBooked] = useState(false);
   const [vehicles, setVehicles] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState(defaultServiceTypes);
   const [preferredDate, setPreferredDate] = useState('');
   const [preferredTime, setPreferredTime] = useState('');
   const [description, setDescription] = useState('');
 
   React.useEffect(() => {
-    const fetchVehicles = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await api.get('/customer/vehicles');
-        setVehicles(data);
+        const [vehiclesRes, typesRes] = await Promise.all([
+          api.get('/customer/vehicles'),
+          api.get('/services/types'),
+        ]);
+        setVehicles(vehiclesRes.data);
+        setServiceTypes(typesRes.data);
       } catch (err) {
-        console.error('Failed to load vehicles');
+        console.error('Failed to load data');
       }
     };
-    fetchVehicles();
+    fetchData();
   }, []);
 
   const toggleService = (id) => {
